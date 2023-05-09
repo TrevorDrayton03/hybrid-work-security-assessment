@@ -1,23 +1,37 @@
 {
-    "1": {
-      "title": "OS Check",
-      "passText": "Success",
-      "failText": "Fail",
-      "passRule": "2",
-      "failRule": "0"
-    },
-    "2": {
-        "title": "OS Check",
-        "passText": "Success",
-        "failText": "Fail",
-        "passRule": "1",
-        "failRule": "0"
-      },
-      "3": {
-        "title": "OS Check",
-        "passText": "Success",
-        "failText": "Fail",
-        "passRule": "0",
-        "failRule": "0"
-      }
+  "0": {
+    "title": "End",
+    "passText": "End",
+    "failText": "End",
+    "passRule": "0",
+    "failRule": "0"
+  },
+  "1": {
+    "title": "Global Protect Connection",
+    "passText": "Success",
+    "failText": "Fail",
+    "passRule": "2",
+    "failRule": "0"
+  },
+  "2": {
+    "title": "Valid Operating System",
+    "passText": "Success",
+    "failText": "Fail",
+    "passRule": "1",
+    "failRule": "0"
+  },
+  "3": {
+    "title": "Antivirus Enabled",
+    "passText": "Success",
+    "failText": "Fail",
+    "passRule": "0",
+    "failRule": "0"
+  },
+  "4": {
+    "title": "Antivirus Validation",
+    "passText": "Success",
+    "failText": "Fail",
+    "passRule": "0",
+    "failRule": "0"
+  }
 }

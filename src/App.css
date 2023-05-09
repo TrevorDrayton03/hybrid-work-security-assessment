@@ -4,12 +4,14 @@
   justify-content: center;
   align-items: center;
   flex: 1;
+  flex-direction: column;
   /* smoother and more legible texts to firefox on mac */
   -moz-osx-font-smoothing: grayscale;
   /* smoother and more legible texts to webkit browsers on mac and windows */
   -webkit-font-smoothing: antialiased;
   /* prevent horizontal scrollbar */
   overflow-x: hidden;
+  width: 100vw;
 }
 
 .App-logo {
@@ -23,23 +25,6 @@
   }
 } */
 
-.App-header {
-  background-color: #282c34;
-  /* min-height: 100vh; */
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  display: block;
-  font-size: calc(10px + 2vmin);
-  color: white;
-  flex: 1;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
 /* @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -48,4 +33,17 @@
   to {
     transform: rotate(360deg);
   }
-} */
+  */
+
+.App-header {
+  /* background-color: #282c34; */
+  /* min-height: 100vh; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  display: block;
+  font-size: calc(10px + 2vmin);
+  color: black;
+  flex: 1;
+}
