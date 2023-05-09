@@ -1,0 +1,23 @@
+{
+    "1": {
+      "title": "OS Check",
+      "passText": "Success",
+      "failText": "Fail",
+      "passRule": "2",
+      "failRule": "0"
+    },
+    "2": {
+        "title": "OS Check",
+        "passText": "Success",
+        "failText": "Fail",
+        "passRule": "1",
+        "failRule": "0"
+      },
+      "3": {
+        "title": "OS Check",
+        "passText": "Success",
+        "failText": "Fail",
+        "passRule": "0",
+        "failRule": "0"
+      }
+}
