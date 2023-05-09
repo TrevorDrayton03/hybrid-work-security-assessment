@@ -7,9 +7,9 @@ const ControlButton = ({ status, setStatus }) => {
     return (
         <div>
             {status === 'idle' ? (
-                <Button 
-                variant="primary" 
-                onClick={handleOnClick}
+                <Button
+                    variant="primary"
+                    onClick={handleOnClick}
                 >
                     Go
                 </Button>

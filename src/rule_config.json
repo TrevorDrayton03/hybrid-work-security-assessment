@@ -1,37 +1,47 @@
 {
   "0": {
+    "key": "END",
     "title": "End",
     "passText": "End",
     "failText": "End",
     "passRule": "0",
-    "failRule": "0"
+    "failRule": "0",
+    "maxTries": 10
   },
   "1": {
+    "key": "GP1",
     "title": "Global Protect Connection",
     "passText": "Success",
     "failText": "Fail",
-    "passRule": "2",
-    "failRule": "0"
+    "passRule": "GP2",
+    "failRule": "0",
+    "maxTries": 10
   },
   "2": {
+    "key": "GP2",
     "title": "Valid Operating System",
     "passText": "Success",
     "failText": "Fail",
-    "passRule": "1",
-    "failRule": "0"
+    "passRule": "GP3",
+    "failRule": "0",
+    "maxTries": 10
   },
   "3": {
+    "key": "GP3",
     "title": "Antivirus Enabled",
     "passText": "Success",
     "failText": "Fail",
-    "passRule": "0",
-    "failRule": "0"
+    "passRule": "GP4",
+    "failRule": "0",
+    "maxTries": 10
   },
   "4": {
+    "key": "GP4",
     "title": "Antivirus Validation",
     "passText": "Success",
     "failText": "Fail",
     "passRule": "0",
-    "failRule": "0"
+    "failRule": "0",
+    "maxTries": 10
   }
 }
