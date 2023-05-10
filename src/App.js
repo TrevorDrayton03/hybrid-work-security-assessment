@@ -7,9 +7,6 @@ import ControlButton from './ControlButton'
 import FeedbackMessage from './FeedbackMessage'
 import RuleList from './RuleList'
 
-
-// get firstRule from rule_config?
-
 function App() {
   const firstTry = 0
   const firstRule = "FirstRule"
@@ -31,8 +28,8 @@ function App() {
         // this might result in a race condition during the real fetch requests
         if (tries === firstTry) {
           setResponseStatus(status);
-        } else if (status !== responseStatus) {
-          setResponseStatus(status);
+        } else {
+          setResponseStatus(prevStatus => (status !== prevStatus) ? status : prevStatus);
         }
         await new Promise((resolve) => setTimeout(resolve, 1000));
         currentTries++;
@@ -52,6 +49,11 @@ function App() {
     } else {
       setAppStatus("completed")
     }
+  }
+
+  const handleOnReset = () => {
+    setRuleArray([])
+    setCurrentRule(Object.values(rules).find(rule => rule.key === firstRule))
   }
 
   useEffect(() => {
@@ -81,6 +83,7 @@ function App() {
         appStatus={appStatus}
         setAppStatus={setAppStatus}
         onGo={handleOnGo}
+        onReset={handleOnReset}
       />
       <FeedbackMessage
         appStatus={appStatus}
@@ -92,7 +95,7 @@ function App() {
           ruleArray={ruleArray}
           currentRule={currentRule}
           tries={tries}
-          handleRuleChange={handleRuleChange}
+          ruleChange={handleRuleChange}
         />
       }
       <RuleList ruleArray={ruleArray}></RuleList>

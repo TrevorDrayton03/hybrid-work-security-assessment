@@ -4,14 +4,13 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 
 // make it continuous by using an interval?
 
-const ProgressIndicator = ({ currentRule, tries, handleRuleChange, setRuleArray, ruleArray }) => {
+const ProgressIndicator = ({ currentRule, tries, ruleChange, setRuleArray, ruleArray }) => {
     let progressPercentage = Math.floor((tries / currentRule.maxTries) * 100);
 
     useEffect(() => {
         if (progressPercentage >= 100) {
-            handleRuleChange()
-            setRuleArray([...ruleArray, currentRule])
-            console.log("Completed!")
+            ruleChange()
+            setRuleArray([currentRule, ...ruleArray])
         }
     }, [progressPercentage]);
 

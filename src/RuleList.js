@@ -23,11 +23,9 @@ const RuleList = ({ ruleArray }) => {
                 }
             </Accordion> */}
             {Object.values(ruleArray).map((rule) => (
-                <Alert variant='success'>
-                    <div className="column">
+                <Alert key={rule.key} variant='success'>
                         <Alert.Heading>{rule.title}</Alert.Heading>
                         {rule.passText}
-                    </div>
                 </Alert>
             ))
             }

@@ -46,6 +46,7 @@ Hex: #00b18f
 
 :root {
   --color-tru-blue: #003e51;
+  --color-tru-teal: #00b0b9;
   --color-tru-sage: #bad1ba;
   --color-tru-gray: #9ab7c1;
   --color-tru-yellow: #ffcd00;
@@ -129,3 +130,9 @@ Hex: #00b18f
 .accordian-button {
   background-color: #003e51 !important;
 }
+
+  /* .alert-success {
+    color: #155724 !important;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+  } */
