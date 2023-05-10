@@ -1,12 +1,13 @@
 import Button from 'react-bootstrap/Button'
 
-const ControlButton = ({ status, setStatus }) => {
+const ControlButton = ({ appStatus, setAppStatus, onGo }) => {
     const handleOnClick = () => {
-        setStatus('running')
+        setAppStatus('running')
+        onGo()
     }
     return (
-        <div>
-            {status === 'idle' ? (
+        <div style={{padding:'20px'}}>
+            {appStatus === 'idle' ? (
                 <Button
                     variant="primary"
                     onClick={handleOnClick}

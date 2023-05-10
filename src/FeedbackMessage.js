@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react"
 
-const FeedbackMessage = ({ status }) => {
+const FeedbackMessage = ({ appStatus }) => {
     return (
         <div>
             {
-                status === "running" &&
+                appStatus === "running" &&
                 <p>
                     Please wait... analyzing your system.
                 </p>
             }
             {
-                status === "error" &&
+                appStatus === "error" &&
                 <p>
                     Found a missing requirement.
                 </p>
             }
             {
-                status === "completed" &&
+                appStatus === "completed" &&
                 <p>
                     Completed successfully without errors.
                 </p>

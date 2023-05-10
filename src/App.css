@@ -1,3 +1,59 @@
+/*
+COLOURS
+
+TRU Blue
+PANTONE: 3035
+CMYK 100/30/19/76
+RGB 0/62/81
+Hex: #003e51
+
+TRU Teal
+PANTONE: 7466
+CMYK 86/0/32/0
+RGB 0/176/185
+Hex: #00b0b9
+
+TRU Sage
+PANTONE: 5565
+CMYK 27/5/25/0 
+RGB 186/209/186 
+Hex: #bad1ba
+
+TRU Grey
+PANTONE: 5425
+CMYK 45/16/9/24
+RGB 122/153/172
+#9ab7c1
+
+TRU Yellow
+PANTONE: 116
+CMYK 0/18/100/0
+RGB 255/205/0
+Hex: #ffcd00
+
+TRU Cloud
+PMS Custom Mix
+CMYK 2/2/0/0
+RGB 255/245/222
+Hex: #fff5de
+
+OL Green
+PMS SPOT (Colour Bridge Coated*) 3278CP
+CMYK 99/0/69/0
+RGB 0/177/143
+Hex: #00b18f
+*/
+
+:root {
+  --color-tru-blue: #003e51;
+  --color-tru-sage: #bad1ba;
+  --color-tru-gray: #9ab7c1;
+  --color-tru-yellow: #ffcd00;
+  --color-tru-cloud: #fff5de;
+  --color-ol-green: #00b18f;
+  --color-teal-bg: #00b0b9;
+}
+
 .App {
   text-align: center;
   display: flex;
@@ -15,7 +71,7 @@
 }
 
 .App-logo {
-  /* height: 40vmin; */
+  height: 30vmin;
   pointer-events: none;
 }
 
@@ -35,7 +91,7 @@
   }
   */
 
-.App-header {
+.App-header h1 {
   /* background-color: #282c34; */
   /* min-height: 100vh; */
   display: flex;
@@ -46,4 +102,30 @@
   font-size: calc(10px + 2vmin);
   color: black;
   flex: 1;
+}
+
+* {
+  font-family: 'Roboto', sans-serif !important;
+  /* font-family: 'Roboto Slab', serif !important; */
+}
+
+.btn {
+  background-color: var(--color-teal-bg) !important;
+  border-color: var(--color-teal-bg) !important;
+  border-radius: 0 !important;
+  font-weight:bold !important;
+  font-size:1.125rem !important;
+  width:100px !important;
+}
+
+.btn:hover {
+  filter: brightness(115%);
+}
+
+.progress {
+  --bs-progress-bar-bg: var(--color-teal-bg) !important;
+}
+
+.accordian-button {
+  background-color: #003e51 !important;
 }
