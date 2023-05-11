@@ -21,6 +21,10 @@ function App() {
 
   // having async / state problems here with changing statuses *** anticipating a problem here
   const handleOnGo = async () => {
+    setAppStatus('running')
+    if (appStatus === 'completed') {
+      handleOnReset()
+    }
     let currentTries = firstTry;
     while (currentTries < currentRule.maxTries) {
       try {
@@ -43,6 +47,14 @@ function App() {
       }
     }
   }
+
+  // const handleOnClick = () => {
+  //   setAppStatus('running')
+  //   if (appStatus === 'completed') {
+  //     onReset()
+  //   }
+  //   onGo()
+  // }
 
   const handleRuleChange = () => {
     if (currentRule.passRule !== "END") {

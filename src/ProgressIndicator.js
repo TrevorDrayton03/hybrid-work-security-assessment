@@ -1,5 +1,4 @@
 import React from "react"
-// import { useState, useEffect } from "react"
 import ProgressBar from 'react-bootstrap/ProgressBar'
 
 // make it continuous by using an interval?

@@ -69,6 +69,7 @@ Hex: #00b18f
   /* prevent horizontal scrollbar */
   overflow-x: hidden;
   width: 100vw;
+  margin-bottom:100px;
 }
 
 .App-logo {
