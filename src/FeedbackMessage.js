@@ -6,7 +6,9 @@ const FeedbackMessage = ({ appStatus }) => {
             {
                 appStatus === "running" &&
                 <p>
-                    Please wait... analyzing your system.
+                    <em>
+                        Please wait... analyzing your system.
+                    </em>
                 </p>
             }
             {

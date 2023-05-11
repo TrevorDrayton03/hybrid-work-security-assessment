@@ -8,6 +8,7 @@ const ControlButton = ({ appStatus, setAppStatus, onGo, onReset }) => {
         }
         onGo()
     }
+    
     return (
         <div style={{ padding: '20px' }}>
             {(appStatus === 'idle' || appStatus === 'completed') ? (

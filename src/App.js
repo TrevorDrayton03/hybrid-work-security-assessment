@@ -16,14 +16,17 @@ function App() {
   const [currentRule, setCurrentRule] = useState(Object.values(rules).find(rule => rule.key === firstRule))
   const [tries, setTries] = useState(firstTry)
   const [ruleArray, setRuleArray] = useState([])
+  const [progressPercentage, setProgressPercentage] = useState(Math.floor((tries / currentRule.maxTries) * 100))
 
+
+  // having async / state problems here with changing statuses *** anticipating a problem here
   const handleOnGo = async () => {
     let currentTries = firstTry;
     while (currentTries < currentRule.maxTries) {
       try {
         // const response = await fetch("http://www.google.com");
         // const status = await response.status();
-        const response = { status: 200 };
+        let response = { status: 200 };
         const status = response.status;
         // this might result in a race condition during the real fetch requests
         if (tries === firstTry) {
@@ -34,6 +37,7 @@ function App() {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         currentTries++;
         setTries(currentTries);
+
       } catch (error) {
         console.error(error);
       }
@@ -49,9 +53,13 @@ function App() {
     } else {
       setAppStatus("completed")
     }
+    if (progressPercentage >= 100) {
+      setRuleArray(prevArray => [currentRule, ...prevArray])
+    }
   }
 
   const handleOnReset = () => {
+    setProgressPercentage(0)
     setRuleArray([])
     setCurrentRule(Object.values(rules).find(rule => rule.key === firstRule))
   }
@@ -68,6 +76,16 @@ function App() {
     currentRule,
     tries,
     ruleArray]);
+
+  useEffect(() => {
+    setProgressPercentage(Math.floor((tries / currentRule.maxTries) * 100))
+  }, [tries]);
+
+  useEffect(() => {
+    if (progressPercentage >= 100) {
+      handleRuleChange();
+    }
+  }, [progressPercentage]);
 
   // console.log(currentRule) // single object
   // console.log(ruleArray) // object with a single object
@@ -91,11 +109,8 @@ function App() {
       {appStatus === "running" &&
         <ProgressIndicator
           key={currentRule.key}
-          setRuleArray={setRuleArray}
-          ruleArray={ruleArray}
+          progressPercentage={progressPercentage}
           currentRule={currentRule}
-          tries={tries}
-          ruleChange={handleRuleChange}
         />
       }
       <RuleList ruleArray={ruleArray}></RuleList>
