@@ -15,7 +15,7 @@
     "failText": "Fail",
     "passRule": "GP2",
     "failRule": "END",
-    "maxTries": 5
+    "maxTries": 3
   },
   "2": {
     "key": "GP2",
@@ -33,7 +33,7 @@
     "failText": "Fail",
     "passRule": "GP4",
     "failRule": "END",
-    "maxTries": 5
+    "maxTries": 4
   },
   "4": {
     "key": "GP4",
@@ -42,6 +42,6 @@
     "failText": "Fail",
     "passRule": "END",
     "failRule": "END",
-    "maxTries": 5
+    "maxTries": 6
   }
 }
