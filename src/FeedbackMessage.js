@@ -1,35 +1,29 @@
-import React from "react"
+import React from "react";
+import { Spinner } from "react-bootstrap";
 
 const FeedbackMessage = ({ appStatus }) => {
     return (
         <div>
-            {
-                appStatus === "running" &&
+            {appStatus === "running" && (
                 <p>
                     <em>
-                        Please wait... analyzing your system.
+                        <Spinner animation="grow" role="status" size="sm" />
+                        &nbsp;Please wait...
                     </em>
                 </p>
-            }
-            {
-                appStatus === "error" &&
+            )}
+            {appStatus === "error" && (
                 <p>
-                    <em>
-                        Completed with errors.
-                    </em>
+                    <em>Completed with error.</em>
                 </p>
-            }
-            {
-                appStatus === "completed" &&
+            )}
+            {appStatus === "completed" && (
                 <p>
-                    <em>
-                        Completed without errors.
-                    </em>
+                    <em>Completed without error.</em>
                 </p>
-            }
-
+            )}
         </div>
-    )
-}
+    );
+};
 
-export default FeedbackMessage
+export default FeedbackMessage;

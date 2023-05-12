@@ -132,6 +132,10 @@ Hex: #00b18f
   background-color: #003e51 !important;
 }
 
+.spinner-grow {
+  background-color: var(--color-teal-bg) !important;
+}
+
 /* .alert-success {
     color: #155724 !important;
     background-color: #d4edda;

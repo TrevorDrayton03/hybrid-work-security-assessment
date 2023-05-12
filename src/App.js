@@ -39,7 +39,8 @@ function App() {
   }
 
   // does not currently handle failRule, assumes all fail results in "END"
-  const handleRuleChange = () => {
+  const handleRuleChange = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
     // if it's not over 
     if (currentRule.passRule !== "END" && (responseStatus >= 200 && responseStatus <= 299)) {
       setCurrentRule(Object.values(rules).find(rule => rule.key === currentRule.passRule))
@@ -135,7 +136,7 @@ function App() {
           } catch (error) {
             console.log(error)
           }
-          await new Promise((resolve) => setTimeout(resolve, 1000))
+          await new Promise((resolve) => setTimeout(resolve, 100))
           if (!shouldBreak) {
             currentTries++
             setTries(currentTries)
