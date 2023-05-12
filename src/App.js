@@ -10,7 +10,18 @@ import RuleList from './RuleList'
 function App() {
   const firstTry = 0
   const firstRule = "FirstRule"
-  const causeError = false
+
+  /*
+  haven't tested for multiple changes
+  causeResponseError = false
+  causeResponseChange = true
+  (F,F) = success without GP detecting a change
+  (F,T) = success with GP detecting a change
+  (T,F) = error wihout GP detecting a change
+  (T,T) = error with GP detecting a change
+  */
+  const causeResponseError = true
+  const causeResponseChange = true
 
   const [appStatus, setAppStatus] = useState('idle')
   const [responseStatus, setResponseStatus] = useState(null)
@@ -18,84 +29,128 @@ function App() {
   const [tries, setTries] = useState(firstTry)
   const [ruleArray, setRuleArray] = useState([])
   const [progressPercentage, setProgressPercentage] = useState(Math.floor((tries / currentRule.maxTries) * 100))
+  const [stop, setStop] = useState(false)
 
-  // having async / state problems here with changing statuses *** anticipating a problem here
   const handleGo = () => {
-    setAppStatus('running');
-    if (appStatus === 'completed') {
-      handleReset();
+    setAppStatus('running')
+    if (appStatus !== 'running') {
+      handleReset()
     }
   }
 
+  // does not currently handle failRule, assumes all fail results in "END"
   const handleRuleChange = () => {
-    if (currentRule.passRule !== "END") {
+    // if it's not over 
+    if (currentRule.passRule !== "END" && (responseStatus >= 200 && responseStatus <= 299)) {
       setCurrentRule(Object.values(rules).find(rule => rule.key === currentRule.passRule))
       setTries(firstTry)
       setResponseStatus(null)
+      setStop(false)
+      setProgressPercentage(0)
       handleGo()
+      // else it's over
     } else {
-      setAppStatus("completed")
+      // ending on a success
+      if (responseStatus >= 200 && responseStatus <= 299) {
+        setAppStatus("completed")
+      }
+      // ending on an error
+      else {
+        setAppStatus("error")
+      }
     }
-    if (progressPercentage >= 100) {
-      setRuleArray(prevArray => [currentRule, ...prevArray])
-    }
+    currentRule.responseStatus = responseStatus;
+    setRuleArray(prevArray => [currentRule, ...prevArray])
   }
 
   const handleReset = () => {
     setProgressPercentage(0)
     setRuleArray([])
     setCurrentRule(Object.values(rules).find(rule => rule.key === firstRule))
-    setTries(firstTry);
+    setTries(firstTry)
+    setStop(false)
   }
 
   useEffect(() => {
     console.log(appStatus, responseStatus, currentRule, tries, ruleArray)
-  }, [appStatus, responseStatus, currentRule, tries, ruleArray]);
+  }, [appStatus, responseStatus, currentRule, tries, ruleArray])
 
   useEffect(() => {
     setProgressPercentage(Math.floor((tries / currentRule.maxTries) * 100))
-  }, [tries]);
+  }, [tries])
 
   useEffect(() => {
-    if (progressPercentage >= 100) {
-      handleRuleChange();
+    if (progressPercentage >= 100 || stop) {
+      handleRuleChange()
     }
-  }, [progressPercentage]);
+  }, [progressPercentage, stop])
 
-  // this is in a use effect so that we can get the most recent currentRule's maxTries 
   useEffect(() => {
     if (appStatus === 'running') {
       (async () => {
-        let currentTries = tries;
-        while (currentTries < currentRule.maxTries) {
+        let currentTries = tries
+        let shouldBreak = false
+        let response = null
+        while (currentTries < currentRule.maxTries && !shouldBreak) {
           try {
-            console.log(currentRule.maxTries)
-            let response = { status: 200 };
-            const status = response.status;
-            if (tries === firstTry) {
-              setResponseStatus(status);
-            } else {
-              setResponseStatus(prevStatus => (status !== prevStatus) ? status : prevStatus);
+            // (T,F)
+            if (causeResponseError && currentRule.key === "GP2" && !causeResponseChange) {
+              response = await fetch("https://reqres.in/api/users/23")
+              // (T,T)
+            } else if (causeResponseError && currentRule.key === "GP2" && causeResponseChange) {
+              // start with success, change to error
+              if (currentTries === 3) {
+                response = await fetch("https://reqres.in/api/users/23")
+              } else {
+                response = await fetch("https://reqres.in/api/users?page=2")
+              }
             }
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            currentTries++;
-            setTries(currentTries);
+            //(F,T)
+            else if (!causeResponseError && currentRule.key === "GP2" && causeResponseChange) {
+              // start with error, change to success
+              if (currentTries !== 3) {
+                response = await fetch("https://reqres.in/api/users/23")
+              } else {
+                response = await fetch("https://reqres.in/api/users?page=2")
+              }
+            }
+            //(F,F) 
+            else {
+              response = await fetch("https://reqres.in/api/users?page=2")
+            }
+            let status = response.status
+            if (currentTries === firstTry) {
+              setResponseStatus(status)
+            } else {
+              setResponseStatus(prevStatus => {
+                if (status !== prevStatus) {
+                  shouldBreak = true
+                  setStop(true)
+                  return status
+                } else {
+                  return prevStatus
+                }
+              })
+            }
           } catch (error) {
-            console.error(error);
+            console.log(error)
+          }
+          await new Promise((resolve) => setTimeout(resolve, 1000))
+          if (!shouldBreak) {
+            currentTries++
+            setTries(currentTries)
           }
         }
-      })();
+      })()
     }
-  }, [currentRule, appStatus]);
+  }, [currentRule, appStatus])
 
-  // console.log(currentRule) // single object
-  // console.log(ruleArray) // object with a single object
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="TRU Logo" />
         <h1>
-          Hybrid Work At Home Pre-Screening
+          Hybrid Work at Home Pre-Screen
         </h1>
       </header>
       <ControlButton
@@ -112,9 +167,12 @@ function App() {
           currentRule={currentRule}
         />
       }
-      <RuleList ruleArray={ruleArray}></RuleList>
+      <RuleList
+        ruleArray={ruleArray}
+        responseStatus={responseStatus}
+      />
     </div>
-  );
+  )
 }
 
 export default App

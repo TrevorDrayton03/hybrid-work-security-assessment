@@ -69,7 +69,7 @@ Hex: #00b18f
   /* prevent horizontal scrollbar */
   overflow-x: hidden;
   width: 100vw;
-  margin-bottom:100px;
+  margin-bottom: 100px;
 }
 
 .App-logo {
@@ -115,9 +115,9 @@ Hex: #00b18f
   background-color: var(--color-teal-bg) !important;
   border-color: var(--color-teal-bg) !important;
   border-radius: 0 !important;
-  font-weight:bold !important;
-  font-size:1.125rem !important;
-  width:100px !important;
+  font-weight: bold !important;
+  font-size: 1.125rem !important;
+  width: 100px !important;
 }
 
 .btn:hover {
@@ -132,7 +132,7 @@ Hex: #00b18f
   background-color: #003e51 !important;
 }
 
-  /* .alert-success {
+/* .alert-success {
     color: #155724 !important;
     background-color: #d4edda;
     border-color: #c3e6cb;

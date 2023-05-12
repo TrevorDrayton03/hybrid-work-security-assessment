@@ -1,6 +1,7 @@
 {
   "END": {
     "key": "END",
+    "port": 123,
     "title": "End",
     "passText": "End",
     "failText": "End",
@@ -10,6 +11,7 @@
   },
   "1": {
     "key": "FirstRule",
+    "port": 123,
     "title": "Global Protect Connection",
     "passText": "Success",
     "failText": "Fail",
@@ -19,29 +21,42 @@
   },
   "2": {
     "key": "GP2",
+    "port": 1213,
     "title": "Valid Operating System",
     "passText": "Success",
     "failText": "Fail",
     "passRule": "GP3",
     "failRule": "END",
-    "maxTries": 5
+    "maxTries": 6
   },
   "3": {
     "key": "GP3",
+    "port": 123,
     "title": "Antivirus Enabled",
     "passText": "Success",
     "failText": "Fail",
     "passRule": "GP4",
     "failRule": "END",
-    "maxTries": 4
+    "maxTries": 3
   },
   "4": {
     "key": "GP4",
-    "title": "Antivirus Validation",
+    "port": 123,
+    "title": "Antivirus Approval",
+    "passText": "Success",
+    "failText": "Fail",
+    "passRule": "GP5",
+    "failRule": "END",
+    "maxTries": 1
+  },
+  "5": {
+    "key": "GP5",
+    "port": 123,
+    "title": "Updated Antivirus Definitions",
     "passText": "Success",
     "failText": "Fail",
     "passRule": "END",
     "failRule": "END",
-    "maxTries": 6
+    "maxTries": 1
   }
 }

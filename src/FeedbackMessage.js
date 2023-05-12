@@ -14,13 +14,17 @@ const FeedbackMessage = ({ appStatus }) => {
             {
                 appStatus === "error" &&
                 <p>
-                    Found a missing requirement.
+                    <em>
+                        Completed with errors.
+                    </em>
                 </p>
             }
             {
                 appStatus === "completed" &&
                 <p>
-                    Completed successfully without errors.
+                    <em>
+                        Completed without errors.
+                    </em>
                 </p>
             }
 
