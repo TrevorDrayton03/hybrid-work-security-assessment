@@ -13,15 +13,13 @@ function App() {
 
   /*
   haven't tested for multiple changes
-  causeResponseError = false
-  causeResponseChange = true
   (F,F) = success without GP detecting a change
   (F,T) = success with GP detecting a change
   (T,F) = error wihout GP detecting a change
   (T,T) = error with GP detecting a change
   */
   const causeResponseError = true
-  const causeResponseChange = false
+  const causeResponseChange = true
 
   const [appStatus, setAppStatus] = useState('idle')
   const [responseStatus, setResponseStatus] = useState(null)
@@ -29,13 +27,25 @@ function App() {
   const [tries, setTries] = useState(firstTry)
   const [ruleArray, setRuleArray] = useState([])
   const [progressPercentage, setProgressPercentage] = useState(Math.floor((tries / currentRule.maxTries) * 100))
-  const [stop, setStop] = useState(false)
 
-  const handleGo = () => {
+  const handleStart = () => {
     setAppStatus('running')
     if (appStatus !== 'running') {
       handleReset()
     }
+  }
+
+  const handleContinue = () => {
+    setAppStatus('running')
+    setCurrentRule(Object.values(rules).find(rule => rule.key === currentRule.passRule))
+    setProgressPercentage(0)
+    setTries(firstTry)
+  }
+
+  const handleRetry = () => {
+    setAppStatus('running')
+    setProgressPercentage(0)
+    setTries(firstTry)
   }
 
   // does not currently handle failRule, assumes all fail results in "END"
@@ -46,9 +56,8 @@ function App() {
       setCurrentRule(Object.values(rules).find(rule => rule.key === currentRule.passRule))
       setTries(firstTry)
       setResponseStatus(null)
-      setStop(false)
       setProgressPercentage(0)
-      handleGo()
+      handleStart()
       // else it's over
     } else {
       // ending on a success
@@ -69,7 +78,6 @@ function App() {
     setRuleArray([])
     setCurrentRule(Object.values(rules).find(rule => rule.key === firstRule))
     setTries(firstTry)
-    setStop(false)
   }
 
   useEffect(() => {
@@ -81,10 +89,10 @@ function App() {
   }, [tries])
 
   useEffect(() => {
-    if (progressPercentage >= 100 || stop) {
+    if (progressPercentage >= 100) {
       handleRuleChange()
     }
-  }, [progressPercentage, stop])
+  }, [progressPercentage])
 
   useEffect(() => {
     if (appStatus === 'running') {
@@ -98,7 +106,7 @@ function App() {
             if (causeResponseError && currentRule.key === "GP2" && !causeResponseChange) {
               response = await fetch("https://reqres.in/api/users/23")
               // (T,T)
-            } else if (causeResponseError && currentRule.key === "GP2" && causeResponseChange) {
+            } else if (causeResponseError && (currentRule.key === "GP2" || currentRule.key === "GP3") && causeResponseChange) {
               // start with success, change to error
               if (currentTries === 3) {
                 response = await fetch("https://reqres.in/api/users/23")
@@ -126,7 +134,7 @@ function App() {
               setResponseStatus(prevStatus => {
                 if (status !== prevStatus) {
                   shouldBreak = true
-                  setStop(true)
+                  setProgressPercentage(100)
                   return status
                 } else {
                   return prevStatus
@@ -156,7 +164,8 @@ function App() {
       </header>
       <ControlButton
         appStatus={appStatus}
-        go={handleGo}
+        start={handleStart}
+        continu={handleContinue}
       />
       <FeedbackMessage
         appStatus={appStatus}

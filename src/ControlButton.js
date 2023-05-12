@@ -1,26 +1,43 @@
 import Button from 'react-bootstrap/Button'
-import { Spinner } from "react-bootstrap";
 
-const ControlButton = ({ appStatus, go }) => {
+const ControlButton = ({ appStatus, start, continu }) => {
     return (
         <div
             style={appStatus !== "running" ? { padding: '20px' } : { padding: '5px' }}
-        // style={{ padding: '20px' }}
         >
-            {(appStatus === 'idle' || appStatus === 'completed' || appStatus === 'error') ? (
+            {(appStatus === 'idle' || appStatus === 'completed') ? (
                 <Button
                     variant="primary"
-                    onClick={go}
-                    disabled={appStatus === "running" ? true : false}
+                    onClick={start}
                 >
-                    {appStatus !== "running" ?
-                        'Go' : <Spinner animation="grow" role="status" size="sm" />
-                    }
+                    Start
                 </Button>
-            ) : (
-                null
-            )}
-        </div>
+            ) : (appStatus === 'error') ? (
+                <div style={{ padding: '0', margin: '0' }}>
+                    <Button
+                        variant="primary"
+                        onClick={start}
+                    >
+                        Restart
+                    </Button>
+                    &nbsp;
+                    <Button
+                        variant="secondary"
+                        onClick={continu}
+                    >
+                        Continue
+                    </Button>
+                    &nbsp;
+                </div>
+                // <Button
+                //     variant="primary"
+                //     onClick={start}
+                // >
+                //     Restart
+                // </Button>
+            ) : null
+            }
+        </div >
     );
 }
 

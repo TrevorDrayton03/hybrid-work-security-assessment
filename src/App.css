@@ -53,6 +53,7 @@ Hex: #00b18f
   --color-tru-cloud: #fff5de;
   --color-ol-green: #00b18f;
   --color-teal-bg: #00b0b9;
+  --color-tru-orange: #f88f23;
 }
 
 .App {
@@ -112,12 +113,20 @@ Hex: #00b18f
 }
 
 .btn {
-  background-color: var(--color-tru-teal) !important;
-  border-color: var(--color-tru-teal) !important;
   border-radius: 0 !important;
   font-weight: bold !important;
   font-size: 1.125rem !important;
   width: 100px !important;
+}
+
+.btn-primary {
+  background-color: var(--color-tru-teal) !important;
+  border-color: var(--color-tru-teal) !important;
+}
+
+.btn-secondary {
+  background-color: var(--color-tru-orange) !important;
+  border-color: var(--color-tru-orange) !important;
 }
 
 .btn:hover {

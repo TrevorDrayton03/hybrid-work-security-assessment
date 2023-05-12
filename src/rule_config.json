@@ -34,7 +34,7 @@
     "port": 123,
     "title": "Antivirus Enabled",
     "passText": "Success",
-    "failText": "Error",
+    "failText": "Must turn on antivirus.",
     "passRule": "GP4",
     "failRule": "END",
     "maxTries": 5
@@ -44,7 +44,7 @@
     "port": 123,
     "title": "Antivirus Approval",
     "passText": "Success",
-    "failText": "Error",
+    "failText": "Antivirus must be on the following list of approved antivirus'...",
     "passRule": "GP5",
     "failRule": "END",
     "maxTries": 5
@@ -55,6 +55,16 @@
     "title": "Valid Antivirus Definitions",
     "passText": "Success",
     "failText": "Error",
+    "passRule": "GP6",
+    "failRule": "END",
+    "maxTries": 5
+  },
+  "6": {
+    "key": "GP6",
+    "port": 123,
+    "title": "Sufficient RAM",
+    "passText": "Success",
+    "failText": "Must have atleast 8GB of RAM",
     "passRule": "END",
     "failRule": "END",
     "maxTries": 5
