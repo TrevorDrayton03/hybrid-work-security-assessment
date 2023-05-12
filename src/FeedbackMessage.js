@@ -14,12 +14,16 @@ const FeedbackMessage = ({ appStatus }) => {
             )}
             {appStatus === "error" && (
                 <p>
-                    <em>Completed with error.</em>
+                    <b>
+                        Completed with an error.
+                    </b>
                 </p>
             )}
             {appStatus === "completed" && (
                 <p>
-                    <em>Completed without error.</em>
+                    <b>
+                        Completed successfully.
+                    </b>
                 </p>
             )}
         </div>

@@ -14,49 +14,49 @@
     "port": 123,
     "title": "Global Protect Connection",
     "passText": "Success",
-    "failText": "Fail",
+    "failText": "Error",
     "passRule": "GP2",
     "failRule": "END",
-    "maxTries": 25
+    "maxTries": 5
   },
   "2": {
     "key": "GP2",
     "port": 1213,
     "title": "Valid Operating System",
     "passText": "Success",
-    "failText": "Fail",
+    "failText": "Must use Windows or MacOS",
     "passRule": "GP3",
     "failRule": "END",
-    "maxTries": 25
+    "maxTries": 5
   },
   "3": {
     "key": "GP3",
     "port": 123,
     "title": "Antivirus Enabled",
     "passText": "Success",
-    "failText": "Fail",
+    "failText": "Error",
     "passRule": "GP4",
     "failRule": "END",
-    "maxTries": 25
+    "maxTries": 5
   },
   "4": {
     "key": "GP4",
     "port": 123,
     "title": "Antivirus Approval",
     "passText": "Success",
-    "failText": "Fail",
+    "failText": "Error",
     "passRule": "GP5",
     "failRule": "END",
-    "maxTries": 1
+    "maxTries": 5
   },
   "5": {
     "key": "GP5",
     "port": 123,
-    "title": "Updated Antivirus Definitions",
+    "title": "Valid Antivirus Definitions",
     "passText": "Success",
-    "failText": "Fail",
+    "failText": "Error",
     "passRule": "END",
     "failRule": "END",
-    "maxTries": 1
+    "maxTries": 5
   }
 }

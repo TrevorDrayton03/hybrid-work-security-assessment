@@ -21,7 +21,7 @@ function App() {
   (T,T) = error with GP detecting a change
   */
   const causeResponseError = true
-  const causeResponseChange = true
+  const causeResponseChange = false
 
   const [appStatus, setAppStatus] = useState('idle')
   const [responseStatus, setResponseStatus] = useState(null)

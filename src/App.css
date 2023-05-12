@@ -112,8 +112,8 @@ Hex: #00b18f
 }
 
 .btn {
-  background-color: var(--color-teal-bg) !important;
-  border-color: var(--color-teal-bg) !important;
+  background-color: var(--color-tru-teal) !important;
+  border-color: var(--color-tru-teal) !important;
   border-radius: 0 !important;
   font-weight: bold !important;
   font-size: 1.125rem !important;
@@ -124,8 +124,14 @@ Hex: #00b18f
   filter: brightness(115%);
 }
 
+.btn:focus,
+.btn:active {
+  outline: none !important;
+  box-shadow: none;
+}
+
 .progress {
-  --bs-progress-bar-bg: var(--color-teal-bg) !important;
+  --bs-progress-bar-bg: var(--color-tru-teal) !important;
 }
 
 .accordian-button {
@@ -133,7 +139,8 @@ Hex: #00b18f
 }
 
 .spinner-grow {
-  background-color: var(--color-teal-bg) !important;
+  background-color: var(--color-tru-teal) !important;
+  /* background-color: white !important; */
 }
 
 /* .alert-success {

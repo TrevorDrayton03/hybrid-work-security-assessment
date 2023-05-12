@@ -44,7 +44,7 @@ const RuleList = ({ ruleArray, responseStatus }) => {
                             key={rule.key}
                             // variant={rule.responseStatus >= 200 && rule.responseStatus <= 299 ? 'success' : 'danger'}
                             variant='danger'
-                            style={{ paddingBottom: '5px', paddingTop: '5px' }}
+                            style={{ paddingBottom: '5px', paddingTop: '5px', textAlign: 'center' }}
                         >
                             <Alert.Heading
                                 style={{ margin: '0px' }}
@@ -52,7 +52,8 @@ const RuleList = ({ ruleArray, responseStatus }) => {
                                 {rule.title}
                             </Alert.Heading>
                             {/* {rule.responseStatus >= 200 && rule.responseStatus <= 299 ? rule.passText : rule.failText} */}
-                            {rule.failText}
+                            {rule.failText} <br/>
+                            Error Code: {rule.responseStatus}
                         </Alert>
                     ) : null
                 );

@@ -4,20 +4,22 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 // make it continuous by using an interval?
 
 const ProgressIndicator = ({ progressPercentage, currentRule }) => {
-    console.log(progressPercentage)
     return (
         <div>
             <p>
-                {currentRule.title} <br />
+                <b>
+                    {currentRule.title} <br />
+                </b>
                 {/* {passText} <br />
                         {failText} <br />
                         {passRule} <br />
                         {failRule} */}
             </p>
             <ProgressBar
-                animated
+                // animated
                 now={progressPercentage}
                 key={currentRule.key}
+                style={{ width: '200px' }}
             />
         </div>
     );
