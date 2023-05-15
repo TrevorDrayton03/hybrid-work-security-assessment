@@ -5,7 +5,7 @@ const RuleList = ({ ruleArray }) => {
         <div style={{ padding: '10px' }}>
             {Object.values(ruleArray).map((rule) => {
                 return (
-                    // only shows the rule in a panel callout if its the last rule that failed and ends
+                    // only shows the rule in a panel callout if the rule failed and failRule ends
                     (rule.responseStatus > 299 && rule.failRule.toLowerCase() === "end") ? (
                         < Alert
                             key={rule.key}

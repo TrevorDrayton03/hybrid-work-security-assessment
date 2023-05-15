@@ -19,7 +19,7 @@ function App() {
   (T,T) = error with GP detecting a change
   */
 
-  // to show panel callout: change GP2's failRule from 'GP7' to 'end'
+  // to show panel callout: change GP2's failRule from 'GP6' to 'end'
 
   const causeResponseError = true
   const causeResponseChange = true

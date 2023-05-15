@@ -26,7 +26,7 @@
     "passText": "Success",
     "failText": "Must use Windows or MacOS.",
     "passRule": "GP3",
-    "failRule": "GP7",
+    "failRule": "GP6",
     "maxTries": 5
   },
   "GP3": {
@@ -63,16 +63,6 @@
     "key": "GP6",
     "port": 123,
     "title": "Sufficient RAM.",
-    "passText": "Success",
-    "failText": "Must have atleast 8GB of RAM",
-    "passRule": "end",
-    "failRule": "end",
-    "maxTries": 5
-  },
-  "GP7": {
-    "key": "GP7",
-    "port": 123,
-    "title": "Fail Rule for Valid Operating System.",
     "passText": "Success",
     "failText": "Must have atleast 8GB of RAM",
     "passRule": "end",
