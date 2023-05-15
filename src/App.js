@@ -165,7 +165,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="TRU Logo" />
         <h1>
-          Hybrid Work at Home Pre-Screen
+          Hybrid Work At Home Pre-Screen
         </h1>
       </header>
       <ControlButton

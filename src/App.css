@@ -108,13 +108,13 @@ Hex: #00b18f
 }
 
 * {
-  font-family: 'Roboto', sans-serif !important;
-  /* font-family: 'Roboto Slab', serif !important; */
+  font-family: 'Adelle', sans-serif !important;
+
 }
 
 .btn {
   border-radius: 0 !important;
-  font-weight: bold !important;
+  /* font-weight: bold !important; */
   font-size: 1.125rem !important;
   width: 120px !important;
 }

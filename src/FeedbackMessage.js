@@ -8,22 +8,25 @@ const FeedbackMessage = ({ appStatus }) => {
                 <p>
                     <em>
                         <Spinner animation="grow" role="status" size="sm" />
-                        &nbsp;Please wait...
+                        &nbsp;
+                        Please standby...
                     </em>
                 </p>
             )}
             {appStatus === "error" && (
                 <p>
-                    <b>
-                        Completed with an error.
-                    </b>
+                    {/* <b> */}
+                    Completed with an error.
+                    {/* </b> */}
                 </p>
             )}
             {appStatus === "completed" && (
                 <p>
-                    <b>
+                    {/* <b> */}
+                    <em>
                         Completed successfully.
-                    </b>
+                    </em>
+                    {/* </b> */}
                 </p>
             )}
         </div>
