@@ -1,5 +1,5 @@
 /*
-COLOURS
+COLOURS FROM TRU BRANDING
 
 TRU Blue
 PANTONE: 3035
@@ -56,6 +56,10 @@ Hex: #00b18f
   --color-tru-orange: #f88f23;
 }
 
+* {
+  font-family: 'Adelle', sans-serif !important;
+}
+
 .App {
   text-align: center;
   display: flex;
@@ -107,11 +111,6 @@ Hex: #00b18f
   flex: 1;
 }
 
-* {
-  font-family: 'Adelle', sans-serif !important;
-
-}
-
 .btn {
   border-radius: 0 !important;
   /* font-weight: bold !important; */
@@ -151,9 +150,3 @@ Hex: #00b18f
   background-color: var(--color-tru-teal) !important;
   /* background-color: white !important; */
 }
-
-/* .alert-success {
-    color: #155724 !important;
-    background-color: #d4edda;
-    border-color: #c3e6cb;
-  } */

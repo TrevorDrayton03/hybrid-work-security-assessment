@@ -3,34 +3,29 @@ import { Spinner } from "react-bootstrap";
 
 const FeedbackMessage = ({ appStatus }) => {
     return (
-        <div>
+        <div style={{ paddingBottom: '10px' }}>
             {appStatus === "running" && (
-                <p>
+                <div>
                     <em>
                         <Spinner animation="grow" role="status" size="sm" />
                         &nbsp;
                         Please standby...
                     </em>
-                </p>
+                </div>
             )}
             {appStatus === "error" && (
-                <p>
-                    {/* <b> */}
+                <div>
                     <em>
-                        Completed with an error.
+                        Completed with the following error:
                     </em>
-
-                    {/* </b> */}
-                </p>
+                </div>
             )}
             {appStatus === "completed" && (
-                <p>
-                    {/* <b> */}
+                <div>
                     <em>
                         Completed successfully.
                     </em>
-                    {/* </b> */}
-                </p>
+                </div>
             )}
         </div>
     );
