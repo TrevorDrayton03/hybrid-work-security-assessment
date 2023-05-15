@@ -18,6 +18,9 @@ function App() {
   (T,F) = error wihout GP detecting a change
   (T,T) = error with GP detecting a change
   */
+
+  // to show panel callout: change GP2's failRule from 'GP7' to 'end'
+
   const causeResponseError = true
   const causeResponseChange = true
 
@@ -47,7 +50,7 @@ function App() {
   // does not currently handle failRule, assumes all fail results in "END"
   const handleRuleChange = async () => {
     await new Promise((resolve) => setTimeout(resolve, 500));
-    // if it's not over 
+    // if it's a pass
     if (
       currentRule.passRule.toLowerCase() !== "end" &&
       (responseStatus >= 200 && responseStatus <= 299)
@@ -57,8 +60,18 @@ function App() {
       setResponseStatus(null)
       setProgressPercentage(0)
       handleStart()
-      // else it's over
-    } else {
+      // else if it's a fail
+    } else if (
+      currentRule.failRule.toLowerCase() !== "end" &&
+      (responseStatus > 299)
+    ) {
+      setCurrentRule(Object.values(rules).find(rule => rule.key === currentRule.failRule))
+      setTries(firstTry)
+      setResponseStatus(null)
+      setProgressPercentage(0)
+      handleStart()
+    }
+    else {
       // ending on a success
       if (responseStatus >= 200 && responseStatus <= 299) {
         setAppStatus("completed")
@@ -158,7 +171,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="TRU Logo" />
         <h1>
-          Hybrid Work At Home Pre-Screen
+          Hybrid Work at Home Pre-Screen
         </h1>
       </header>
       <ControlButton

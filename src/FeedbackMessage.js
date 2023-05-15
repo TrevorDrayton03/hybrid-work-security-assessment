@@ -3,7 +3,7 @@ import { Spinner } from "react-bootstrap";
 
 const FeedbackMessage = ({ appStatus }) => {
     return (
-        <div style={{ paddingBottom: '10px'}}>
+        <div style={{ paddingBottom: '10px' }}>
             {appStatus === "running" && (
                 <div>
                     <em>
