@@ -9,15 +9,17 @@ const RuleList = ({ ruleArray }) => {
                         < Alert
                             key={rule.key}
                             variant='danger'
-                            style={{ paddingBottom: '5px', paddingTop: '5px', textAlign: 'center' }}
+                            style={{
+                                paddingBottom: '5px', paddingTop: '5px', textAlign: 'left'
+                            }}
                         >
                             <Alert.Heading
-                                style={{ margin: '0px', textAlign: 'center' }}
+                                style={{ margin: '0px', textAlign: 'left' }}
                             >
                                 {rule.title}
                             </Alert.Heading>
                             {rule.failText} <br />
-                            Error Code: {rule.responseStatus}
+                            Error Code: {rule.responseStatus}.
                         </Alert>
                     ) : null
                 );

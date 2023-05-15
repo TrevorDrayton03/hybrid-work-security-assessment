@@ -13,7 +13,7 @@ const ProgressIndicator = ({ progressPercentage, currentRule }) => {
                 // animated
                 now={progressPercentage}
                 key={currentRule.key}
-                style={{ width: '250px', height:'25px', borderRadius:'0' }}
+                style={{ width: '250px', height: '25px', borderRadius: '0' }}
             />
         </div>
     );

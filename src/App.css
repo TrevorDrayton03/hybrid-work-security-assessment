@@ -44,6 +44,10 @@ RGB 0/177/143
 Hex: #00b18f
 */
 
+* {
+  font-family: 'Adelle', sans-serif !important;
+}
+
 :root {
   --color-tru-blue: #003e51;
   --color-tru-teal: #00b0b9;
@@ -54,10 +58,24 @@ Hex: #00b18f
   --color-ol-green: #00b18f;
   --color-teal-bg: #00b0b9;
   --color-tru-orange: #f88f23;
+  --color-tru-callout-bg: #fff3bf;
 }
 
-* {
-  font-family: 'Adelle', sans-serif !important;
+.accordian-button {
+  background-color: #003e51 !important;
+}
+
+.alert {
+  background-color: var(--color-tru-callout-bg) !important;
+  border-color: var(--color-tru-callout-bg) !important;
+  color: #333 !important;
+  padding: 1.15em !important;
+}
+
+.alert-heading {
+  color: var(--color-tru-blue) !important;
+  border-color: var(--color-tru-callout-bg) !important;
+  padding-bottom: 10px;
 }
 
 .App {
@@ -97,6 +115,9 @@ Hex: #00b18f
     transform: rotate(360deg);
   }
   */
+.accordian-button {
+  background-color: #003e51 !important;
+}
 
 .App-header h1 {
   /* background-color: #282c34; */
@@ -106,16 +127,27 @@ Hex: #00b18f
   align-items: center;
   justify-content: center;
   display: block;
-  font-size: calc(10px + 2vmin);
-  color: black;
+  /* font-size: calc(10px + 2vmin); */
+  font-size: 2.125rem;
+  color: var(--color-tru-blue);
   flex: 1;
 }
 
 .btn {
   border-radius: 0 !important;
-  /* font-weight: bold !important; */
   font-size: 1.125rem !important;
-  width: 120px !important;
+  width: 120px;
+  margin: 5px;
+}
+
+.btn:active,
+.btn:focus {
+  outline: none !important;
+  box-shadow: none;
+}
+
+.btn:hover {
+  filter: brightness(120%);
 }
 
 .btn-primary {
@@ -128,22 +160,15 @@ Hex: #00b18f
   border-color: var(--color-tru-orange) !important;
 }
 
-.btn:hover {
-  filter: brightness(115%);
-}
-
-.btn:focus,
-.btn:active {
-  outline: none !important;
-  box-shadow: none;
+.btn-secondary:hover {
+  filter: none !important;
+  background-color: var(--color-tru-yellow) !important;
+  border-color: var(--color-tru-yellow) !important;
+  transition: none;
 }
 
 .progress {
   --bs-progress-bar-bg: var(--color-tru-teal) !important;
-}
-
-.accordian-button {
-  background-color: #003e51 !important;
 }
 
 .spinner-grow {
