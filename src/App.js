@@ -18,8 +18,8 @@ function App() {
   (T,F) = error wihout GP detecting a change
   (T,T) = error with GP detecting a change
   */
-  const causeResponseError = true
-  const causeResponseChange = true
+  const causeResponseError = false
+  const causeResponseChange = false
 
   const [appStatus, setAppStatus] = useState('idle')
   const [responseStatus, setResponseStatus] = useState(null)
@@ -45,8 +45,6 @@ function App() {
   const handleRetry = () => {
     setAppStatus('running')
     let ruleArrayCopy = ruleArray
-    console.log(ruleArray)
-    console.log(ruleArrayCopy)
     ruleArrayCopy.shift()
     setRuleArray(ruleArrayCopy)
     setProgressPercentage(0)
