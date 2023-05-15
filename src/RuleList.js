@@ -12,7 +12,7 @@ const RuleList = ({ ruleArray }) => {
                             style={{ paddingBottom: '5px', paddingTop: '5px', textAlign: 'center' }}
                         >
                             <Alert.Heading
-                                style={{ margin: '0px' }}
+                                style={{ margin: '0px', textAlign: 'center' }}
                             >
                                 {rule.title}
                             </Alert.Heading>
