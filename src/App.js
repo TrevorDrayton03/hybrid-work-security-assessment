@@ -191,7 +191,7 @@ function App() {
       }
       <RuleList
         ruleArray={ruleArray}
-        responseStatus={responseStatus}
+        appStatus={appStatus}
       />
     </div>
   )

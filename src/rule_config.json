@@ -1,13 +1,6 @@
 {
   "End": {
-    "key": "end",
-    "port": 123,
-    "title": "end.",
-    "passText": "end",
-    "failText": "end",
-    "passRule": "end",
-    "failRule": "end",
-    "maxTries": 0
+    "key": "end"
   },
   "FirstRule": {
     "key": "FirstRule",

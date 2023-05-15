@@ -59,6 +59,7 @@ Hex: #00b18f
   --color-teal-bg: #00b0b9;
   --color-tru-orange: #f88f23;
   --color-tru-callout-bg: #fff3bf;
+  --color-tru-regular-bg: #E0F6F7;
 }
 
 .accordian-button {
@@ -66,16 +67,25 @@ Hex: #00b18f
 }
 
 .alert {
-  background-color: var(--color-tru-callout-bg) !important;
-  border-color: var(--color-tru-callout-bg) !important;
   color: #333 !important;
   padding: 1.15em !important;
+}
+
+.alert-danger {
+  background-color: var(--color-tru-callout-bg) !important;
+  border-color: var(--color-tru-callout-bg) !important;
 }
 
 .alert-heading {
   color: var(--color-tru-blue) !important;
   border-color: var(--color-tru-callout-bg) !important;
   padding-bottom: 10px;
+  font-size: 1.25rem !important;
+}
+
+.alert-primary {
+  background-color: var(--color-tru-regular-bg) !important;
+  border-color: var(--color-tru-regular-bg) !important;
 }
 
 .App {

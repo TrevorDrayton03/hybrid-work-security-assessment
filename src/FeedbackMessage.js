@@ -21,11 +21,12 @@ const FeedbackMessage = ({ appStatus }) => {
                 </div>
             )}
             {appStatus === "completed" && (
-                <div>
-                    <em>
-                        Completed successfully.
-                    </em>
-                </div>
+                null
+                // <div>
+                //     <em>
+                //         Completed successfully.
+                //     </em>
+                // </div>
             )}
         </div>
     );
