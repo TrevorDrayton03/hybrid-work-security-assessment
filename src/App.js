@@ -35,13 +35,6 @@ function App() {
     }
   }
 
-  // const handleContinue = () => {
-  //   setAppStatus('running')
-  //   setCurrentRule(Object.values(rules).find(rule => rule.key === currentRule.passRule))
-  //   setProgressPercentage(0)
-  //   setTries(firstTry)
-  // }
-
   const handleRetry = () => {
     setAppStatus('running')
     let ruleArrayCopy = ruleArray

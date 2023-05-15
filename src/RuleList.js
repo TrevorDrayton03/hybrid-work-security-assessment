@@ -10,7 +10,8 @@ const RuleList = ({ ruleArray }) => {
                             key={rule.key}
                             variant='danger'
                             style={{
-                                paddingBottom: '5px', paddingTop: '5px', textAlign: 'left'
+                                paddingBottom: '5px', paddingTop: '5px', textAlign: 'left',
+                                minWidth: '200px', maxWidth: '560px', width: '90vw'
                             }}
                         >
                             <Alert.Heading

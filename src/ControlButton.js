@@ -17,7 +17,6 @@ const ControlButton = ({ appStatus, start, retry }) => {
                     <Button variant="primary" onClick={start}>
                         Restart
                     </Button>
-                    {/* &nbsp; */}
                     <Button variant="secondary" onClick={retry}>
                         Retry Error
                     </Button>
@@ -26,11 +25,9 @@ const ControlButton = ({ appStatus, start, retry }) => {
             break
         case 'completed':
             buttonContent = (
-                // <div style={{ padding: '0', margin: '0' }}>
                 <Button variant="primary" onClick={start}>
                     Restart
                 </Button>
-                // </div>
             )
             break
         default:
