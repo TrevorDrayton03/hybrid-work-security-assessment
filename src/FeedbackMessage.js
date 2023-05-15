@@ -5,13 +5,14 @@ const FeedbackMessage = ({ appStatus }) => {
     return (
         <div style={{ paddingBottom: '10px' }}>
             {appStatus === "running" && (
-                <div>
-                    <em>
-                        <Spinner animation="grow" role="status" size="sm" />
-                        &nbsp;
-                        Please standby...
-                    </em>
-                </div>
+                null
+                // <div>
+                //     <em>
+                //         <Spinner animation="grow" role="status" size="sm" />
+                //         &nbsp;
+                //         Please standby...
+                //     </em>
+                // </div>
             )}
             {appStatus === "error" && (
                 <div>

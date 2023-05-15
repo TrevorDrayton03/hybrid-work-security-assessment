@@ -10,9 +10,9 @@ const RuleList = ({ ruleArray, appStatus }) => {
                         < Alert
                             key={rule.key}
                             variant='danger'
+                            className="width-flex"
                             style={{
                                 paddingBottom: '5px', paddingTop: '5px', textAlign: 'left',
-                                minWidth: '200px', maxWidth: '560px', width: '90vw'
                             }}
                         >
                             <Alert.Heading
@@ -28,11 +28,10 @@ const RuleList = ({ ruleArray, appStatus }) => {
             })}
             {appStatus === 'completed' && (
                 < Alert
-                    // key={rule.key}
                     variant='primary'
+                    className="width-flex"
                     style={{
-                        paddingBottom: '5px', paddingTop: '5px', textAlign: 'left',
-                        minWidth: '200px', maxWidth: '560px', width: '90vw'
+                        paddingBottom: '5px', paddingTop: '5px', textAlign: 'left'
                     }}
                 >
                     <Alert.Heading
@@ -40,7 +39,7 @@ const RuleList = ({ ruleArray, appStatus }) => {
                     >
                         Success!
                     </Alert.Heading>
-                    Pre-screening test completed successfully without errors.
+                    The pre-screen test completed without error.
                 </Alert>)
             }
         </div >

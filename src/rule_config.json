@@ -19,7 +19,7 @@
     "passText": "Success",
     "failText": "Must use Windows or MacOS.",
     "passRule": "GP3",
-    "failRule": "GP6",
+    "failRule": "end",
     "maxTries": 5
   },
   "GP3": {
