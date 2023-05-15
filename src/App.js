@@ -35,15 +35,20 @@ function App() {
     }
   }
 
-  const handleContinue = () => {
-    setAppStatus('running')
-    setCurrentRule(Object.values(rules).find(rule => rule.key === currentRule.passRule))
-    setProgressPercentage(0)
-    setTries(firstTry)
-  }
+  // const handleContinue = () => {
+  //   setAppStatus('running')
+  //   setCurrentRule(Object.values(rules).find(rule => rule.key === currentRule.passRule))
+  //   setProgressPercentage(0)
+  //   setTries(firstTry)
+  // }
 
   const handleRetry = () => {
     setAppStatus('running')
+    let ruleArrayCopy = ruleArray
+    console.log(ruleArray)
+    console.log(ruleArrayCopy)
+    ruleArrayCopy.shift()
+    setRuleArray(ruleArrayCopy)
     setProgressPercentage(0)
     setTries(firstTry)
   }
@@ -52,7 +57,10 @@ function App() {
   const handleRuleChange = async () => {
     await new Promise((resolve) => setTimeout(resolve, 500));
     // if it's not over 
-    if (currentRule.passRule !== "END" && (responseStatus >= 200 && responseStatus <= 299)) {
+    if (
+      currentRule.passRule.toLowerCase() !== "end" &&
+      (responseStatus >= 200 && responseStatus <= 299)
+    ) {
       setCurrentRule(Object.values(rules).find(rule => rule.key === currentRule.passRule))
       setTries(firstTry)
       setResponseStatus(null)
@@ -165,7 +173,7 @@ function App() {
       <ControlButton
         appStatus={appStatus}
         start={handleStart}
-        continu={handleContinue}
+        retry={handleRetry}
       />
       <FeedbackMessage
         appStatus={appStatus}

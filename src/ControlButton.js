@@ -1,6 +1,6 @@
 import Button from 'react-bootstrap/Button'
 
-const ControlButton = ({ appStatus, start, continu }) => {
+const ControlButton = ({ appStatus, start, retry }) => {
     return (
         <div
             style={appStatus !== "running" ? { padding: '20px' } : { padding: '5px' }}
@@ -23,9 +23,9 @@ const ControlButton = ({ appStatus, start, continu }) => {
                     &nbsp;
                     <Button
                         variant="secondary"
-                        onClick={continu}
+                        onClick={retry}
                     >
-                        Continue
+                        Retry
                     </Button>
                     &nbsp;
                 </div>

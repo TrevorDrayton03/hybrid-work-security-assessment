@@ -4,7 +4,7 @@ import Alert from 'react-bootstrap/Alert';
 const RuleList = ({ ruleArray }) => {
     return (
         <div style={{ padding: '10px' }}>
-            {Object.values(ruleArray).map((rule) => {
+            {(ruleArray.length > 0) && Object.values(ruleArray).map((rule) => {
                 return (
                     !(rule.responseStatus >= 200 && rule.responseStatus <= 299) ? (
                         < Alert

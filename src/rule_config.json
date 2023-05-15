@@ -1,12 +1,12 @@
 {
-  "END": {
-    "key": "END",
+  "end": {
+    "key": "end",
     "port": 123,
-    "title": "End",
-    "passText": "End",
-    "failText": "End",
-    "passRule": "END",
-    "failRule": "END",
+    "title": "end",
+    "passText": "end",
+    "failText": "end",
+    "passRule": "end",
+    "failRule": "end",
     "maxTries": 0
   },
   "1": {
@@ -16,7 +16,7 @@
     "passText": "Success",
     "failText": "Error",
     "passRule": "GP2",
-    "failRule": "END",
+    "failRule": "end",
     "maxTries": 5
   },
   "2": {
@@ -26,7 +26,7 @@
     "passText": "Success",
     "failText": "Must use Windows or MacOS",
     "passRule": "GP3",
-    "failRule": "END",
+    "failRule": "end",
     "maxTries": 5
   },
   "3": {
@@ -36,7 +36,7 @@
     "passText": "Success",
     "failText": "Must turn on antivirus.",
     "passRule": "GP4",
-    "failRule": "END",
+    "failRule": "end",
     "maxTries": 5
   },
   "4": {
@@ -46,7 +46,7 @@
     "passText": "Success",
     "failText": "Antivirus must be on the following list of approved antivirus'...",
     "passRule": "GP5",
-    "failRule": "END",
+    "failRule": "end",
     "maxTries": 5
   },
   "5": {
@@ -54,9 +54,9 @@
     "port": 123,
     "title": "Valid Antivirus Definitions",
     "passText": "Success",
-    "failText": "Error",
+    "failText": "Must have antivirus definitions updated within 60 days",
     "passRule": "GP6",
-    "failRule": "END",
+    "failRule": "end",
     "maxTries": 5
   },
   "6": {
@@ -65,8 +65,8 @@
     "title": "Sufficient RAM",
     "passText": "Success",
     "failText": "Must have atleast 8GB of RAM",
-    "passRule": "END",
-    "failRule": "END",
+    "passRule": "end",
+    "failRule": "end",
     "maxTries": 5
   }
 }
