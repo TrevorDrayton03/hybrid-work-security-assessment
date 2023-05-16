@@ -1,9 +1,13 @@
 import React from "react";
 import { Spinner } from "react-bootstrap";
 
+/**
+ * Displays a feedback message based on the application status.
+ * 
+ */
 const FeedbackMessage = ({ appStatus }) => {
     return (
-        <div style={{ paddingBottom: '10px' }}>
+        <div style={{ paddingBottom: '15px' }}>
             {appStatus === "running" && (
                 null
                 // <div>
@@ -17,7 +21,9 @@ const FeedbackMessage = ({ appStatus }) => {
             {appStatus === "error" && (
                 <div>
                     <em>
-                        Completed with the following error:
+                        {/* Security check failed.  */}
+                        Your device does not meet the following security requirement:
+                        {/* for network connectivity: */}
                     </em>
                 </div>
             )}

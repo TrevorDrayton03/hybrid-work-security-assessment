@@ -67,25 +67,30 @@ Hex: #00b18f
 }
 
 .alert {
-  color: #333 !important;
+  /* color: #333 !important; */
+  color: black !important;
   padding: 1.15em !important;
+  border-radius: 0 !important;
 }
 
 .alert-danger {
-  background-color: var(--color-tru-callout-bg) !important;
-  border-color: var(--color-tru-callout-bg) !important;
+  background-color: var(--color-tru-yellow) !important;
+  border-color: var(--color-tru-yellow) !important;
 }
 
 .alert-heading {
-  color: var(--color-tru-blue) !important;
-  border-color: var(--color-tru-callout-bg) !important;
+  /* color: var(--color-tru-blue) !important; */
+  color: black !important;
+  border-color: var(--color-tru-yellow) !important;
   padding-bottom: 10px;
   font-size: 1.25rem !important;
 }
 
 .alert-primary {
-  background-color: var(--color-tru-regular-bg) !important;
-  border-color: var(--color-tru-regular-bg) !important;
+  /* background-color: var(--color-tru-teal) !important; */
+  /* border-color: var(--color-tru-teal) !important; */
+  background-color: #9ee1e5 !important;
+  border-color: #9ee1e5 !important;
 }
 
 .App {
@@ -145,7 +150,7 @@ Hex: #00b18f
 .btn {
   border-radius: 0 !important;
   font-size: 1.125rem !important;
-  width: 120px;
+  width: 200px;
   margin: 5px;
 }
 
@@ -180,9 +185,9 @@ Hex: #00b18f
   --bs-progress-bar-bg: var(--color-tru-teal) !important;
 }
 
-.spinner-border {
-  /* color: var(--color-tru-blue) !important; */
-}
+/* .spinner-border {
+  color: var(--color-tru-blue) !important;
+} */
 
 .spinner-border-sm {
   --bs-spinner-width: 1.25rem !important;
@@ -191,7 +196,7 @@ Hex: #00b18f
 }
 
 .spinner-grow {
-  /* background-color: var(--color-tru-blue) !important; */
+  background-color: var(--color-tru-blue) !important;
 }
 
 .spinner-grow-sm {

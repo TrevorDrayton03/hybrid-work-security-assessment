@@ -9,7 +9,7 @@
     "passText": "Success",
     "failText": "Error",
     "passRule": "GP2",
-    "failRule": "end",
+    "failRule": "GP6",
     "maxTries": 5
   },
   "GP2": {
@@ -17,7 +17,7 @@
     "port": 1213,
     "title": "Valid Operating System.",
     "passText": "Success",
-    "failText": "Must use Windows or MacOS.",
+    "failText": "Must use Windows or Apple operating systems.",
     "passRule": "GP3",
     "failRule": "end",
     "maxTries": 5
