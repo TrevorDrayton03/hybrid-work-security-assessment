@@ -41,7 +41,7 @@ const RuleList = ({ ruleArray, appStatus }) => {
                     >
                         Success!
                     </Alert.Heading>
-                    The pre-screen test completed without error.
+                    The pre-screening assessment completed without error.
                 </Alert>)
             }
         </div >
