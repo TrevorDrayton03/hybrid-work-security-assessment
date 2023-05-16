@@ -34,9 +34,7 @@ const RuleList = ({ ruleArray, appStatus }) => {
                 < Alert
                     variant='primary'
                     className="width-flex"
-                    style={{
-                        paddingBottom: '5px', paddingTop: '5px', textAlign: 'left'
-                    }}
+                    style={{ paddingBottom: '5px', paddingTop: '5px', textAlign: 'left' }}
                 >
                     <Alert.Heading
                         style={{ margin: '0px', textAlign: 'left' }}
