@@ -51,6 +51,22 @@ function App() {
     }
   }
 
+  const postData = async (name) => {
+    const response = await fetch('/api/data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name: name }),
+    });
+
+    if (response.ok) {
+      console.log('Data posted successfully');
+    } else {
+      console.log('Failed to post data');
+    }
+  };
+
   /**
    * Handles the retry button click event.
    * 
@@ -98,9 +114,12 @@ function App() {
     else {
       if (responseStatus >= 200 && responseStatus <= 299) {
         setAppStatus("completed")
+        postData("John Doe");
       }
       else {
         setAppStatus("error")
+        postData("John Doe");
+
       }
     }
     currentRule.responseStatus = responseStatus;
@@ -110,7 +129,7 @@ function App() {
   }
 
   /**
- * Handle copy action.
+ * Handle copy uuid action.
  * 
  * This function is used to copy the uuid that was generated when a mandatory security check is not passed.
  * 
