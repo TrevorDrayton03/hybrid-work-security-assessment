@@ -17,7 +17,7 @@
     "port": 1213,
     "title": "Valid Operating System.",
     "passText": "Success",
-    "failText": "Must use a Windows or an Apple operating systems.",
+    "failText": "Must use a Windows or an Apple operating system.",
     "passRule": "GP3",
     "failRule": "end",
     "maxTries": 5
