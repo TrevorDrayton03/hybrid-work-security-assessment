@@ -6,6 +6,7 @@ import ProgressIndicator from './ProgressIndicator'
 import ControlButton from './ControlButton'
 import FeedbackMessage from './FeedbackMessage'
 import RuleList from './RuleList'
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * The main application component.
@@ -18,6 +19,7 @@ function App() {
   // Constants
   const firstTry = 0
   const firstRule = "FirstRule"
+  const baseUrl = process.env.REACT_APP_BASE_URL
 
   /**
    * Configuration Flags
@@ -25,7 +27,7 @@ function App() {
    * To show panel callout: change GP2's failRule from 'GP6' to 'end' in rule_config.json.
    * 
    */
-  const causeResponseError = true
+  const causeResponseError = false
   const causeResponseChange = true
 
   // State variables
@@ -40,6 +42,7 @@ function App() {
    * Handles the start button click event.
    *
    * This function sets the application status to 'running' and triggers a reset if the app is not already running.
+   * 
    */
   const handleStart = () => {
     setAppStatus('running')
@@ -53,6 +56,7 @@ function App() {
    * 
    * This function updates the application status to 'running', removes the first rule from the rule array,
    * resets the progress percentage, and sets the number of tries to the initial value.
+   * 
    */
   const handleRetry = () => {
     setAppStatus('running')
@@ -67,13 +71,8 @@ function App() {
    * Handle rule change action.
    * 
    * This asynchronous function is called when a rule change occurs.
-   * It waits for a timeout of 500 milliseconds and then evaluates the current rule and response status to determine the next actions.
-   * If the current rule is a pass and the response status indicates success (between 200 and 299), it updates the current rule, resets the number of tries,
-   * sets the response status to null, resets the progress percentage, and starts the application.
-   * If the current rule is a fail and the response status indicates failure (greater than 299), it updates the current rule, resets the number of tries,
-   * sets the response status to null, resets the progress percentage, and starts the application.
-   * If neither of the above conditions are met, it determines the application status based on the response status, marking it as 'completed' for success or 'error' for failure.
-   * Finally, it updates the response status in the current rule and adds the current rule to the rule array.
+   * It evaluates the current rule and response status to determine the next actions.
+   * 
    */
   const handleRuleChange = async () => {
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -105,6 +104,8 @@ function App() {
       }
     }
     currentRule.responseStatus = responseStatus;
+    let uniqueId = uuidv4()
+    currentRule.uuid = uniqueId;
     setRuleArray(prevArray => [currentRule, ...prevArray])
   }
 
@@ -136,7 +137,6 @@ function App() {
     setProgressPercentage(Math.floor((tries / currentRule.maxTries) * 100))
   }, [tries])
 
-
   /**
    * Handle side effects related to progress reaching 100%.
    * 
@@ -150,12 +150,13 @@ function App() {
   }, [progressPercentage])
 
   /**
-   * Handle side effects related to app status and rule processing.
    * 
    * This effect hook is triggered when there are changes in the 'currentRule' and 'appStatus' states.
+   * 
    * If the app status is set to 'running', it executes an asynchronous function that handles rule processing.
    * It performs multiple checks and fetches data based on different conditions, updating the response status and other relevant states.
    * It controls the number of tries, breaks the loop if necessary conditions are met, and sets the progress percentage to 100.
+   * 
    */
   useEffect(() => {
     if (appStatus === 'running') {
@@ -167,28 +168,28 @@ function App() {
           try {
             // (T,F)
             if (causeResponseError && currentRule.key === "GP2" && !causeResponseChange) {
-              response = await fetch("https://reqres.in/api/users/23")
+              response = await fetch(baseUrl + "/23")
               // (T,T)
             } else if (causeResponseError && (currentRule.key === "GP2" || currentRule.key === "GP3") && causeResponseChange) {
               // start with success, change to error
               if (currentTries === 3) {
-                response = await fetch("https://reqres.in/api/users/23")
+                response = await fetch(baseUrl + "/23")
               } else {
-                response = await fetch("https://reqres.in/api/users?page=2")
+                response = await fetch(baseUrl + "?page=2")
               }
             }
             //(F,T)
             else if (!causeResponseError && currentRule.key === "GP2" && causeResponseChange) {
               // start with error, change to success
               if (currentTries !== 3) {
-                response = await fetch("https://reqres.in/api/users/23")
+                response = await fetch(baseUrl + "/23")
               } else {
-                response = await fetch("https://reqres.in/api/users?page=2")
+                response = await fetch(baseUrl + "?page=2")
               }
             }
             //(F,F) 
             else {
-              response = await fetch("https://reqres.in/api/users?page=2")
+              response = await fetch(baseUrl + "?page=2")
             }
             let status = response.status
             if (currentTries === firstTry) {
