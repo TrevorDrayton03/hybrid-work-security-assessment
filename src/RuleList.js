@@ -1,4 +1,6 @@
 import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/Button'
+
 /**
  * The panel component.
  *
@@ -7,7 +9,7 @@ import Alert from 'react-bootstrap/Alert';
  * One panel is visible when the current rule fails and failRule is 'end' or if the process completes successfully. 
  *  
  */
-const RuleList = ({ ruleArray, appStatus }) => {
+const RuleList = ({ ruleArray, appStatus, copy }) => {
     return (
         <div style={{ padding: '10px' }}>
             {Object.values(ruleArray).map((rule) => {
@@ -20,12 +22,25 @@ const RuleList = ({ ruleArray, appStatus }) => {
                             style={{ paddingBottom: '5px', paddingTop: '5px', textAlign: 'left' }}
                         >
                             <Alert.Heading
-                                style={{ margin: '0px', textAlign: 'left' }}
+                                style={{ margin: '0px', alignItems: 'baseline' }}
+                                className="row"
                             >
-                                {rule.title}
+                                <div className="col" style={{ padding: '0' }}>
+                                    {rule.title}
+                                </div>
+                                <div className="col" style={{ padding: '0', textAlign: 'right' }}>
+                                    <Button variant="primary" onClick={copy(rule.uuid)}>
+                                        Copy I.D. Number
+                                    </Button>
+                                </div>
                             </Alert.Heading>
-                            {rule.failText} <br />
-                            Status Code: {rule.responseStatus}.
+                            {rule.failText} <br /><br />
+                            {/* Status Code: {rule.responseStatus}. <br /> */}
+                            If you require assistance, please contact client services with the following I.D. number: {rule.uuid}.
+                            <br /><br />
+                            <a href="https://tru.teamdynamix.com/TDClient/84/Portal/Home/#19297" alt="https://www.tru.ca/its/contact.html" target="_blank">
+                                IT Service Desk
+                            </a>
                         </Alert>
                     ) : null
                 )

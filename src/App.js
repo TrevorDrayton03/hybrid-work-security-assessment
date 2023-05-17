@@ -27,7 +27,7 @@ function App() {
    * To show panel callout: change GP2's failRule from 'GP6' to 'end' in rule_config.json.
    * 
    */
-  const causeResponseError = false
+  const causeResponseError = true
   const causeResponseChange = true
 
   // State variables
@@ -107,6 +107,22 @@ function App() {
     let uniqueId = uuidv4()
     currentRule.uuid = uniqueId;
     setRuleArray(prevArray => [currentRule, ...prevArray])
+  }
+
+  /**
+ * Handle copy action.
+ * 
+ * This function is used to copy the uuid that was generated when a mandatory security check is not passed.
+ * 
+ */
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        console.log('Text copied to clipboard:', text);
+      })
+      .catch((error) => {
+        console.error('Failed to copy text:', error);
+      });
   }
 
   /**
@@ -244,6 +260,7 @@ function App() {
       <RuleList
         ruleArray={ruleArray}
         appStatus={appStatus}
+        copy={handleCopy}
       />
     </div>
   )
