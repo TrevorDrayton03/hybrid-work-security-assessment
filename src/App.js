@@ -1,12 +1,13 @@
 import logo from './logo.png'
 import React, { useState, useEffect } from "react"
 import './App.css'
-import rules from './rule_config.json'
+// import rules from './rule_config.json'
 import ProgressIndicator from './ProgressIndicator'
 import ControlButton from './ControlButton'
 import FeedbackMessage from './FeedbackMessage'
 import RuleList from './RuleList'
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
+import io from 'socket.io-client';
 
 /**
  * The main application component.
@@ -20,6 +21,7 @@ function App() {
   const firstTry = 0
   const firstRule = "FirstRule"
   const baseUrl = process.env.REACT_APP_BASE_URL
+  const socket = io('http://localhost:5000');
 
   /**
    * Configuration Flags
@@ -33,10 +35,50 @@ function App() {
   // State variables
   const [appStatus, setAppStatus] = useState('idle')
   const [responseStatus, setResponseStatus] = useState(null)
-  const [currentRule, setCurrentRule] = useState(Object.values(rules).find(rule => rule.key === firstRule))
+  const [rules, setRules] = useState({})
+  // const [currentRule, setCurrentRule] = useState(Object.values(rules).find(rule => rule.key === firstRule))
+  const [currentRule, setCurrentRule] = useState(null)
   const [tries, setTries] = useState(firstTry)
   const [ruleArray, setRuleArray] = useState([])
-  const [progressPercentage, setProgressPercentage] = useState(Math.floor((tries / currentRule.maxTries) * 100))
+  // const [progressPercentage, setProgressPercentage] = useState(Math.floor((tries / currentRule.maxTries) * 100))
+  const [progressPercentage, setProgressPercentage] = useState(0)
+
+  // useEffect(() => {
+  //   fetch("/api/rules")
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       setRules(data)
+  //       setCurrentRule(Object.values(data).find(dat => dat.key === firstRule))
+  //     })
+  //     .catch(error => {
+  //       console.error('Error:', error)
+  //     })
+  // }, [])
+
+  useEffect(() => {
+    fetch("/api/rules")
+      .then(response => response.json())
+      .then(data => {
+        setRules(data)
+        setCurrentRule(Object.values(data).find(dat => dat.key === firstRule))
+      })
+      .catch(error => {
+        console.error('Error:', error)
+      })
+    console.log('before socket.on')
+    console.log(io())
+    console.log(io("http://localhost:5000/"))
+
+    socket.on('configUpdate', (newConfig) => {
+      console.log("at newconfig", newConfig)
+      setRules(newConfig);
+      setCurrentRule(Object.values(newConfig).find(data => data.key === firstRule))
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   /**
    * Handles the start button click event.
@@ -51,6 +93,10 @@ function App() {
     }
   }
 
+  /**
+   * Logs data into the database. Called each time a user takes an action.
+   * 
+   */
   const postData = async (name) => {
     const response = await fetch('/api/data', {
       method: 'POST',
@@ -58,14 +104,13 @@ function App() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ name: name }),
-    });
-
+    })
     if (response.ok) {
-      console.log('Data posted successfully');
+      console.log('Data posted successfully')
     } else {
-      console.log('Failed to post data');
+      console.log('Failed to post data')
     }
-  };
+  }
 
   /**
    * Handles the retry button click event.
@@ -91,7 +136,7 @@ function App() {
    * 
    */
   const handleRuleChange = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500))
     if (
       currentRule.passRule.toLowerCase() !== "end" &&
       (responseStatus >= 200 && responseStatus <= 299)
@@ -114,17 +159,17 @@ function App() {
     else {
       if (responseStatus >= 200 && responseStatus <= 299) {
         setAppStatus("completed")
-        postData("John Doe");
+        postData("John Doe")
       }
       else {
         setAppStatus("error")
-        postData("John Doe");
+        postData("John Doe")
 
       }
     }
-    currentRule.responseStatus = responseStatus;
+    currentRule.responseStatus = responseStatus
     let uniqueId = uuidv4()
-    currentRule.uuid = uniqueId;
+    currentRule.uuid = uniqueId
     setRuleArray(prevArray => [currentRule, ...prevArray])
   }
 
@@ -137,11 +182,11 @@ function App() {
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text)
       .then(() => {
-        console.log('Text copied to clipboard:', text);
+        console.log('Text copied to clipboard:', text)
       })
       .catch((error) => {
-        console.error('Failed to copy text:', error);
-      });
+        console.error('Failed to copy text:', error)
+      })
   }
 
   /**
@@ -158,6 +203,10 @@ function App() {
     setTries(firstTry)
   }
 
+  /**
+   * A useful use-effect for debugging.
+   * 
+   */
   useEffect(() => {
     console.log(appStatus, responseStatus, currentRule, tries, ruleArray)
   }, [appStatus, responseStatus, currentRule, tries, ruleArray])
@@ -169,7 +218,9 @@ function App() {
    * It recalculates the progress percentage based on the number of tries and the current rule's maximum tries.
    */
   useEffect(() => {
-    setProgressPercentage(Math.floor((tries / currentRule.maxTries) * 100))
+    if (currentRule) {
+      setProgressPercentage(Math.floor((tries / currentRule.maxTries) * 100))
+    }
   }, [tries])
 
   /**
@@ -194,7 +245,7 @@ function App() {
    * 
    */
   useEffect(() => {
-    if (appStatus === 'running') {
+    if (appStatus === 'running' && currentRule) {
       (async () => {
         let currentTries = tries
         let shouldBreak = false
@@ -269,7 +320,7 @@ function App() {
       <FeedbackMessage
         appStatus={appStatus}
       />
-      {appStatus === "running" &&
+      {appStatus === "running" && currentRule &&
         <ProgressIndicator
           key={currentRule.key}
           progressPercentage={progressPercentage}

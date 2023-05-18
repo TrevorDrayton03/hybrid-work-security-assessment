@@ -1,4 +1,4 @@
-import Alert from 'react-bootstrap/Alert';
+import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
 
 /**
@@ -29,7 +29,7 @@ const RuleList = ({ ruleArray, appStatus, copy }) => {
                                     {rule.title}
                                 </div>
                                 <div className="col" style={{ padding: '0', textAlign: 'right' }}>
-                                    <Button variant="primary" onClick={copy(rule.uuid)}>
+                                    <Button variant="primary" onClick={() => copy(rule.uuid)}>
                                         Copy I.D. Number
                                     </Button>
                                 </div>
@@ -38,7 +38,12 @@ const RuleList = ({ ruleArray, appStatus, copy }) => {
                             {/* Status Code: {rule.responseStatus}. <br /> */}
                             If you require assistance, please contact client services with the following I.D. number: {rule.uuid}.
                             <br /><br />
-                            <a href="https://tru.teamdynamix.com/TDClient/84/Portal/Home/#19297" alt="https://www.tru.ca/its/contact.html" target="_blank">
+                            <a
+                                href="https://tru.teamdynamix.com/TDClient/84/Portal/Home/"
+                                alt="https://tru.teamdynamix.com/TDClient/84/Portal/Home/"
+                                target="_blank"
+                                rel="noreferrer"
+                            >
                                 IT Service Desk
                             </a>
                         </Alert>
@@ -60,7 +65,7 @@ const RuleList = ({ ruleArray, appStatus, copy }) => {
                 </Alert>)
             }
         </div >
-    );
+    )
 }
 
 export default RuleList

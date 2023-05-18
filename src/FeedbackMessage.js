@@ -1,5 +1,5 @@
-import React from "react";
-import { Spinner } from "react-bootstrap";
+import React from "react"
+import { Spinner } from "react-bootstrap"
 
 /**
  * Displays a feedback message based on the application status.
@@ -13,7 +13,7 @@ const FeedbackMessage = ({ appStatus }) => {
                 // <div>
                 //     <em>
                 //         <Spinner animation="grow" role="status" size="sm" />
-                //         &nbsp;
+                //         &nbsp
                 //         Please standby...
                 //     </em>
                 // </div>
@@ -36,7 +36,7 @@ const FeedbackMessage = ({ appStatus }) => {
                 // </div>
             )}
         </div>
-    );
-};
+    )
+}
 
-export default FeedbackMessage;
+export default FeedbackMessage
