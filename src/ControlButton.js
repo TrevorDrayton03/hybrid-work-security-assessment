@@ -2,7 +2,6 @@ import Button from 'react-bootstrap/Button'
 
 /**
  * Displays the control button(s) based on the application status.
- * 
  */
 const ControlButton = ({ appStatus, start, retry }) => {
     let buttonContent

@@ -3,7 +3,6 @@ import { Spinner } from "react-bootstrap"
 
 /**
  * Displays a feedback message based on the application status.
- * 
  */
 const FeedbackMessage = ({ appStatus }) => {
     return (

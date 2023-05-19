@@ -7,9 +7,9 @@ import ControlButton from './ControlButton'
 import FeedbackMessage from './FeedbackMessage'
 import RuleList from './RuleList'
 import { v4 as uuidv4 } from 'uuid'
-import 'whatwg-fetch';
-import openSocket from 'socket.io-client';
-const socket = openSocket('http://localhost:8000');
+import 'whatwg-fetch' // fetch polyfill
+import openSocket from 'socket.io-client'
+const socket = openSocket('http://localhost:80')
 
 
 /**
@@ -17,25 +17,37 @@ const socket = openSocket('http://localhost:8000');
  * 
  * This component represents the Hybrid Work-from-Home Pre-Screening Assessment application.
  * It manages the state, handles user interactions, and renders the UI components.
- *
  */
 function App() {
-  // Constants
+  /**
+   * Constants
+   * 
+   * firstTry is the value for where the fetch loop begins
+   * firstRule is the value for the key that determines which rule in the rule_config.json file to begin with
+   * baseUrl is the based url for the server
+   */
   const firstTry = 0
   const firstRule = "FirstRule"
   const baseUrl = process.env.REACT_APP_BASE_URL
-  // const socket = io.connect('http://localhost:5000');
 
   /**
    * Configuration Flags
    * 
    * To show panel callout: change GP2's failRule from 'GP6' to 'end' in rule_config.json.
-   * 
    */
   const causeResponseError = true
   const causeResponseChange = true
 
-  // State variables
+  /**
+   * State Variables
+   * 
+   * appStatus refers to whether the entire app is running, idle, completed, or error (which is completed with an error)
+   * responseStatus refers to the http response status code, and it gets appended to rules added to the ruleArray
+   * rules refers to the rules_config.js JSON data
+   * currentRule refers to the rule currently undergoing security assessment
+   * tries refers to the current count for the number of fetch requests for each rule, which increments until each rule's maxTries
+   * progressPercentage refers to the value that's used for the progress bar component (ProgressIndicator.js)
+   */
   const [appStatus, setAppStatus] = useState('idle')
   const [responseStatus, setResponseStatus] = useState(null)
   const [rules, setRules] = useState({})
@@ -45,7 +57,6 @@ function App() {
   const [ruleArray, setRuleArray] = useState([])
   // const [progressPercentage, setProgressPercentage] = useState(Math.floor((tries / currentRule.maxTries) * 100))
   const [progressPercentage, setProgressPercentage] = useState(0)
-  const [isConnected, setIsConnected] = useState(socket.connected);
 
   useEffect(() => {
     fetch("/api/rules")
@@ -72,7 +83,6 @@ function App() {
    * Handles the start button click event.
    *
    * This function sets the application status to 'running' and triggers a reset if the app is not already running.
-   * 
    */
   const handleStart = () => {
     setAppStatus('running')
@@ -83,7 +93,6 @@ function App() {
 
   /**
    * Logs data into the database. Called each time a user takes an action.
-   * 
    */
   const postData = async (name) => {
     const response = await fetch('/api/data', {
@@ -105,7 +114,6 @@ function App() {
    * 
    * This function updates the application status to 'running', removes the first rule from the rule array,
    * resets the progress percentage, and sets the number of tries to the initial value.
-   * 
    */
   const handleRetry = () => {
     setAppStatus('running')
@@ -121,7 +129,6 @@ function App() {
    * 
    * This asynchronous function is called when a rule change occurs.
    * It evaluates the current rule and response status to determine the next actions.
-   * 
    */
   const handleRuleChange = async () => {
     await new Promise((resolve) => setTimeout(resolve, 500))
@@ -165,7 +172,6 @@ function App() {
  * Handle copy uuid action.
  * 
  * This function is used to copy the uuid that was generated when a mandatory security check is not passed.
- * 
  */
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text)
@@ -193,7 +199,6 @@ function App() {
 
   /**
    * A useful use-effect for debugging.
-   * 
    */
   useEffect(() => {
     console.log(appStatus, responseStatus, currentRule, tries, ruleArray)
@@ -230,7 +235,6 @@ function App() {
    * If the app status is set to 'running', it executes an asynchronous function that handles rule processing.
    * It performs multiple checks and fetches data based on different conditions, updating the response status and other relevant states.
    * It controls the number of tries, breaks the loop if necessary conditions are met, and sets the progress percentage to 100.
-   * 
    */
   useEffect(() => {
     if (appStatus === 'running') {
