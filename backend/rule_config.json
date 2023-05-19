@@ -9,7 +9,7 @@
     "passText": "Success",
     "failText": "Error",
     "passRule": "GP2",
-    "failRule": "end",
+    "failRule": "GP6",
     "maxTries": 5
   },
   "GP2": {

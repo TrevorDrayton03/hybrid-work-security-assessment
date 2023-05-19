@@ -47,18 +47,6 @@ function App() {
   const [progressPercentage, setProgressPercentage] = useState(0)
   const [isConnected, setIsConnected] = useState(socket.connected);
 
-  // useEffect(() => {
-  //   fetch("/api/rules")
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       setRules(data)
-  //       setCurrentRule(Object.values(data).find(dat => dat.key === firstRule))
-  //     })
-  //     .catch(error => {
-  //       console.error('Error:', error)
-  //     })
-  // }, [])
-
   useEffect(() => {
     fetch("/api/rules")
       .then(response => response.json())
@@ -79,31 +67,6 @@ function App() {
       socket.disconnect();
     };
   }, []);
-
-  // const sendSocketIO = () => {
-  //   socket.emit('example_message', 'demo');
-  // }
-
-  // useEffect(() => {
-  //   fetch("/api/rules")
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       setRules(data)
-  //       setCurrentRule(Object.values(data).find(dat => dat.key === firstRule))
-  //     })
-  //     .catch(error => {
-  //       console.error('Error:', error)
-  //     })
-
-  //   sendSocketIO()
-  //   return () => {
-  //   };
-  // }, []);
-
-  useEffect(() => {
-    console.log(rules)
-    // setCurrentRule(Object.values(newConfig).find(data => data.key === firstRule))
-  }, [rules])
 
   /**
    * Handles the start button click event.
@@ -232,9 +195,9 @@ function App() {
    * A useful use-effect for debugging.
    * 
    */
-  // useEffect(() => {
-  //   console.log(appStatus, responseStatus, currentRule, tries, ruleArray)
-  // }, [appStatus, responseStatus, currentRule, tries, ruleArray])
+  useEffect(() => {
+    console.log(appStatus, responseStatus, currentRule, tries, ruleArray)
+  }, [appStatus, responseStatus, currentRule, tries, ruleArray])
 
   /**
    * Handle side effects related to progress, rule change, and app status.
@@ -327,7 +290,7 @@ function App() {
         }
       })()
     }
-  }, [currentRule, appStatus])
+  }, [rules, currentRule, appStatus])
 
   return (
     <div className="App">
