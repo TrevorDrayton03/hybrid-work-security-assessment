@@ -154,18 +154,16 @@ function App() {
     else {
       if (responseStatus >= 200 && responseStatus <= 299) {
         setAppStatus("completed")
-        postData("John Doe")
       }
       else {
         setAppStatus("error")
-        postData("John Doe")
-
       }
     }
     currentRule.responseStatus = responseStatus
     let uniqueId = uuidv4()
     currentRule.uuid = uniqueId
     setRuleArray(prevArray => [currentRule, ...prevArray])
+    postData(currentRule.uuid)
   }
 
   /**
@@ -301,7 +299,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="TRU Logo" />
         <h1>
-          Hybrid Work-from-Home Pre-Screening Assessment
+          Hybrid Work-from-Home <br /> Pre-Screening Assessment
         </h1>
       </header>
       <ControlButton
