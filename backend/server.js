@@ -42,42 +42,28 @@ io.on('connection', (socket) => {
     })
 })
 
-async function asyncFunction(name) {
-    let conn;
+const asyncFunction = async (name) => {
+    let conn
     try {
-        conn = await pool.getConnection();
-        const rows = await conn.query("SELECT 1 as val");
-        console.log(rows); //[ {val: 1}, meta: ... ]
-        const res = await conn.query('INSERT INTO test_table (name) VALUES (?)', [name]);
-        console.log(res); // { affectedRows: 1, insertId: 1, warningStatus: 0 }
-
+        conn = await pool.getConnection()
+        const res = await conn.query('INSERT INTO test_table (name) VALUES (?)', [name])
+        // console.log(res)
     } catch (err) {
-        throw err;
+        throw err
     } finally {
-        if (conn) return conn.end();
+        if (conn) return conn.end()
     }
 }
 
 app.post('/api/data', (req, res) => {
     const { name } = req.body
-    console.log(name)
-    // pool.getConnection()
-    //     .then((conn) => {
-    //         conn.query('INSERT INTO test_table (name) VALUES (?)', [name])
-    //         // conn.query('SELECT * FROM test_table')
-    //             .then(() => {
-    //                 console.log(res)
-    //                 res.sendStatus(200)
-    //                 conn.release()
-    //             })
-    //             .catch((err) => {
-    //                 conn.release()
-    //                 res.status(500).json({ error: err })
-    //             })
-    //     })
-    //     .catch((err) => {
-    //         res.status(500).json({ error: err })
-    //     })
+    console.log(req.ip)
+    //used to get ip when app is behind proxy or load balancer
+    console.log(req.headers['x-forwarded-for'])
+    console.log(req.headers['user-agent'])
+    // server time 
+    const timestamp = new Date();
+    console.log('User request timestamp:', timestamp);
     asyncFunction(name)
 })
 
