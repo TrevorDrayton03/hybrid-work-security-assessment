@@ -7,7 +7,10 @@ import ControlButton from './ControlButton'
 import FeedbackMessage from './FeedbackMessage'
 import RuleList from './RuleList'
 import { v4 as uuidv4 } from 'uuid'
-import io from 'socket.io-client';
+import 'whatwg-fetch';
+import openSocket from 'socket.io-client';
+const socket = openSocket('http://localhost:8000');
+
 
 /**
  * The main application component.
@@ -21,7 +24,7 @@ function App() {
   const firstTry = 0
   const firstRule = "FirstRule"
   const baseUrl = process.env.REACT_APP_BASE_URL
-  const socket = io('http://localhost:5000');
+  // const socket = io.connect('http://localhost:5000');
 
   /**
    * Configuration Flags
@@ -42,6 +45,7 @@ function App() {
   const [ruleArray, setRuleArray] = useState([])
   // const [progressPercentage, setProgressPercentage] = useState(Math.floor((tries / currentRule.maxTries) * 100))
   const [progressPercentage, setProgressPercentage] = useState(0)
+  const [isConnected, setIsConnected] = useState(socket.connected);
 
   // useEffect(() => {
   //   fetch("/api/rules")
@@ -65,12 +69,8 @@ function App() {
       .catch(error => {
         console.error('Error:', error)
       })
-    console.log('before socket.on')
-    console.log(io())
-    console.log(io("http://localhost:5000/"))
 
     socket.on('configUpdate', (newConfig) => {
-      console.log("at newconfig", newConfig)
       setRules(newConfig);
       setCurrentRule(Object.values(newConfig).find(data => data.key === firstRule))
     });
@@ -79,6 +79,31 @@ function App() {
       socket.disconnect();
     };
   }, []);
+
+  // const sendSocketIO = () => {
+  //   socket.emit('example_message', 'demo');
+  // }
+
+  // useEffect(() => {
+  //   fetch("/api/rules")
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       setRules(data)
+  //       setCurrentRule(Object.values(data).find(dat => dat.key === firstRule))
+  //     })
+  //     .catch(error => {
+  //       console.error('Error:', error)
+  //     })
+
+  //   sendSocketIO()
+  //   return () => {
+  //   };
+  // }, []);
+
+  useEffect(() => {
+    console.log(rules)
+    // setCurrentRule(Object.values(newConfig).find(data => data.key === firstRule))
+  }, [rules])
 
   /**
    * Handles the start button click event.
@@ -207,9 +232,9 @@ function App() {
    * A useful use-effect for debugging.
    * 
    */
-  useEffect(() => {
-    console.log(appStatus, responseStatus, currentRule, tries, ruleArray)
-  }, [appStatus, responseStatus, currentRule, tries, ruleArray])
+  // useEffect(() => {
+  //   console.log(appStatus, responseStatus, currentRule, tries, ruleArray)
+  // }, [appStatus, responseStatus, currentRule, tries, ruleArray])
 
   /**
    * Handle side effects related to progress, rule change, and app status.
@@ -245,7 +270,7 @@ function App() {
    * 
    */
   useEffect(() => {
-    if (appStatus === 'running' && currentRule) {
+    if (appStatus === 'running') {
       (async () => {
         let currentTries = tries
         let shouldBreak = false
@@ -320,7 +345,7 @@ function App() {
       <FeedbackMessage
         appStatus={appStatus}
       />
-      {appStatus === "running" && currentRule &&
+      {appStatus === "running" &&
         <ProgressIndicator
           key={currentRule.key}
           progressPercentage={progressPercentage}
