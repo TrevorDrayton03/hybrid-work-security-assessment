@@ -9,7 +9,7 @@
     "passText": "Success",
     "failText": "Error",
     "passRule": "GP2",
-    "failRule": "GP6",
+    "failRule": "end",
     "maxTries": 5
   },
   "GP2": {
@@ -19,7 +19,7 @@
     "passText": "Success",
     "failText": "Must use a Windows or an Apple operating system.",
     "passRule": "GP3",
-    "failRule": "GP6",
+    "failRule": "end",
     "maxTries": 5
   },
   "GP3": {

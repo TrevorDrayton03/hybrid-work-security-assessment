@@ -1,24 +1,34 @@
 require('dotenv').config()
 const express = require('express')
+const bodyParser = require('body-parser');
 const mariadb = require('mariadb')
 const path = require('path')
 const fs = require('fs')
 const chokidar = require('chokidar')
-const http = require('http');
-const socketIO = require('socket.io');
+// const http = require('http');
+// const socketIO = require('socket.io');
 
 const app = express()
+const http = require('http').Server(app);
 const port = 5000
-const server = http.createServer(app);
-const io = socketIO(server);
+// const server = http.createServer(app);
+// const io = socketIO(server);
 const cors = require('cors')
 const buildPath = path.join(__dirname, '..', 'build')
 const ruleConfigPath = path.join(__dirname, "./rule_config.json")
+const io = require('socket.io')(http, {
+    cors: {
+        origin: "http://localhost:5000",
+        methods: ["GET", "POST"]
+    }
+});
 // const watcher = chokidar.watch(ruleConfigPath)
 
 app.use(express.static(buildPath))
 app.use(express.json())
 app.use(cors())
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 const pool = mariadb.createPool({
     host: process.env.DB_HOST,
@@ -83,3 +93,7 @@ app.get('*', (req, res) => {
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`)
 })
+
+http.listen(8000, () => {
+    console.log('Server is running on port 5000');
+});
