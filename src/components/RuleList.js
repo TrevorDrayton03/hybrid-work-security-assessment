@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button'
  * Maintains a list of each rule that has been processed. 
  * One panel is visible when the current rule fails and failRule is 'end' or if the process completes successfully. 
  */
-const RuleList = ({ ruleArray, appStatus, copy }) => {
+const RuleList = ({ ruleArray, appStatus, copy, uuid }) => {
     return (
         <div style={{ padding: '10px' }}>
             {Object.values(ruleArray).map((rule) => {
@@ -27,14 +27,13 @@ const RuleList = ({ ruleArray, appStatus, copy }) => {
                                     {rule.title}
                                 </div>
                                 <div className="col" style={{ padding: '0', textAlign: 'right' }}>
-                                    <Button variant="primary" onClick={() => copy(rule.uuid)}>
+                                    <Button variant="primary" onClick={() => copy(uuid)}>
                                         Copy I.D. Number
                                     </Button>
                                 </div>
                             </Alert.Heading>
                             {rule.failText} <br /><br />
-                            {/* Status Code: {rule.responseStatus}. <br /> */}
-                            If you require assistance, please contact client services with the following I.D. number: {rule.uuid}.
+                            If you require assistance, please contact client services with the following I.D. number: {uuid}.
                             <br /><br />
                             <a
                                 href="https://tru.teamdynamix.com/TDClient/84/Portal/Home/"

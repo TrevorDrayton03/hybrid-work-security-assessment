@@ -34,7 +34,6 @@
 import logo from '../logo.png'
 import React, { useState, useEffect } from "react"
 import '../App.css'
-// import rules from './rule_config.json'
 import ProgressIndicator from './ProgressIndicator'
 import ControlButton from './ControlButton'
 import FeedbackMessage from './FeedbackMessage'
@@ -77,12 +76,11 @@ function App() {
   const [appStatus, setAppStatus] = useState('idle')
   const [responseStatus, setResponseStatus] = useState(null)
   const [rules, setRules] = useState({})
-  // const [currentRule, setCurrentRule] = useState(Object.values(rules).find(rule => rule.key === firstRule))
   const [currentRule, setCurrentRule] = useState(null)
   const [tries, setTries] = useState(firstTry)
   const [ruleArray, setRuleArray] = useState([])
-  // const [progressPercentage, setProgressPercentage] = useState(Math.floor((tries / currentRule.maxTries) * 100))
   const [progressPercentage, setProgressPercentage] = useState(0)
+  const [uuid, setUuid] = useState(null)
 
   /**
    * OnComponentDidMount Side Effect (called once after rendering)
@@ -131,13 +129,17 @@ function App() {
    * 
    * Called each time a user starts, restarts, or retries security checks.
    */
-  const postData = async (name) => {
+  const postData = async (uid, ruleArray) => {
     const response = await fetch('/api/data', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ name: name }),
+      body: JSON.stringify({
+        uid: uid,
+        sequence: ruleArray,
+        action: 'test'
+      }),
     })
     if (response.ok) {
       console.log('Data posted successfully')
@@ -149,7 +151,7 @@ function App() {
   /**
    * Handles the retry button click event.
    * 
-   * This function updates the application status to 'running', removes the first rule from the rule array,
+   * This function updates the application status to 'running', removes the last rule from the rule array,
    * resets the progress percentage, and sets the number of tries to the initial value.
    */
   const handleRetry = () => {
@@ -194,12 +196,16 @@ function App() {
       else {
         setAppStatus("error")
       }
+      currentRule.responseStatus = responseStatus
+      let uid = uuidv4()
+      setUuid(uid)
+      let rArray = [currentRule, ...ruleArray] // synchronous solution for postData
+      postData(uid, rArray)
     }
-    currentRule.responseStatus = responseStatus
-    let uniqueId = uuidv4()
-    currentRule.uuid = uniqueId
+    if (!currentRule.responseStatus) {
+      currentRule.responseStatus = responseStatus
+    }
     setRuleArray(prevArray => [currentRule, ...prevArray])
-    postData(currentRule.uuid)
   }
 
   /**
@@ -341,6 +347,7 @@ function App() {
         ruleArray={ruleArray}
         appStatus={appStatus}
         copy={handleCopy}
+        uuid={uuid}
       />
     </div>
   )

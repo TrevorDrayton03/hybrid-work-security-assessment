@@ -21,7 +21,6 @@ const ControlButton = ({ appStatus, start, retry }) => {
                         Restart
                     </Button>
                     <Button variant="secondary" onClick={retry}>
-                        {/* Retry Error */}
                         Retry Failed Check
                     </Button>
                 </div>

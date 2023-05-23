@@ -43,29 +43,26 @@ io.on('connection', (socket) => {
     })
 })
 
-const asyncFunction = async (name) => {
+const handleLog = async (uuid, sequence, ip, action, timestamp, userAgent) => {
     let conn
     try {
         conn = await pool.getConnection()
-        const res = await conn.query('INSERT INTO test_table (name) VALUES (?)', [name])
-        // console.log(res)
+        const res = await conn.query('INSERT INTO test_table2 (uuid, sequence, ip, action, timestamp, user_agent) VALUES (?, ?, ?, ?, ?, ?)', [uuid, sequence, ip, action, timestamp, userAgent])
+        console.log(res)
     } catch (err) {
-        throw err
+        // throw err
+        console.log(err)
     } finally {
         if (conn) return conn.end()
     }
 }
 
 app.post('/api/data', (req, res) => {
-    const { name } = req.body
-    console.log(req.ip)
-    //used to get ip when app is behind proxy or load balancer
-    console.log(req.headers['x-forwarded-for'])
-    console.log(req.headers['user-agent'])
-    // server time 
-    const timestamp = new Date();
-    console.log('User request timestamp:', timestamp);
-    asyncFunction(name)
+    const { uid, sequence, action } = req.body
+    const sequenceJson = JSON.stringify(sequence);
+    let timestamp = new Date();
+    console.log(uid, sequence, req.ip, action, timestamp, req.headers['user-agent']);
+    handleLog(uid, sequenceJson, req.ip, action, timestamp, req.headers['user-agent'])
 })
 
 app.get('/api/rules', (req, res) => {

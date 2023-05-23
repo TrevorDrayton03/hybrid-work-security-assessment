@@ -20,9 +20,7 @@ const FeedbackMessage = ({ appStatus }) => {
             {appStatus === "error" && (
                 <div>
                     <em>
-                        {/* Security check failed.  */}
                         Your device does not meet the following security requirement:
-                        {/* for network connectivity: */}
                     </em>
                 </div>
             )}
