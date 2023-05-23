@@ -1,4 +1,3 @@
-require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const mariadb = require('mariadb')
@@ -18,6 +17,8 @@ const io = require('socket.io')(http
     //     }
     // }
 )
+require('dotenv').config({ path: path.join(__dirname, '../.env') })
+
 
 app.use(express.static(buildPath))
 app.use(express.json())

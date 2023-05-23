@@ -22,9 +22,9 @@ function App() {
   /**
    * Constants
    * 
-   * firstTry is the value for where the fetch loop begins
-   * firstRule is the value for the key that determines which rule in the rule_config.json file to begin with
-   * baseUrl is the based url for the server
+   * firstTry is where the fetch loop begins
+   * firstRule is the key that determines which rule in the rule_config.json file to begin with
+   * baseUrl is the server url
    */
   const firstTry = 0
   const firstRule = "FirstRule"
@@ -41,11 +41,11 @@ function App() {
   /**
    * State Variables
    * 
-   * appStatus refers to whether the entire app is running, idle, completed, or error (which is completed with an error)
-   * responseStatus refers to the http response status code, and it gets appended to rules added to the ruleArray
-   * rules refers to the rules_config.js JSON data
-   * currentRule refers to the rule currently undergoing security assessment
-   * tries refers to the current count for the number of fetch requests for each rule, which increments until each rule's maxTries
+   * appStatus refers to whether the entire app is running, idle, completed, or error (which is completed with a failed mandatory security check)
+   * responseStatus refers to the http response status code; it gets appended to rules added to the ruleArray
+   * rules is the rules_config.json data
+   * currentRule refers to the rule currently undergoing security assessment (the current rule in the flow chart / sequence of rules)
+   * tries refers to the count for the number of fetch requests for the current rule, which increments until each rule's maxTries
    * progressPercentage refers to the value that's used for the progress bar component (ProgressIndicator.js)
    */
   const [appStatus, setAppStatus] = useState('idle')
@@ -58,12 +58,18 @@ function App() {
   // const [progressPercentage, setProgressPercentage] = useState(Math.floor((tries / currentRule.maxTries) * 100))
   const [progressPercentage, setProgressPercentage] = useState(0)
 
+  /**
+   * OnComponentDidMount Side Effect (called once after rendering)
+   * 
+   * This side effect fetches the rules_config.json file and store the config data in the rules state.
+   * Then, it establishes a socket that is used to emit the rules_config.json file to the front end when the config is altered.
+   */
   useEffect(() => {
     fetch("/api/rules")
       .then(response => response.json())
-      .then(data => {
-        setRules(data)
-        setCurrentRule(Object.values(data).find(dat => dat.key === firstRule))
+      .then(config => {
+        setRules(config)
+        setCurrentRule(Object.values(config).find(rule => rule.key === firstRule))
       })
       .catch(error => {
         console.error('Error:', error)
@@ -80,19 +86,24 @@ function App() {
   }, []);
 
   /**
-   * Handles the start button click event.
+   * Handles the start and restart button onClick events.
    *
-   * This function sets the application status to 'running' and triggers a reset if the app is not already running.
+   * This function sets the application status to 'running' and resets the app state if it is not already running.
    */
   const handleStart = () => {
     setAppStatus('running')
     if (appStatus !== 'running') {
-      handleReset()
+      setProgressPercentage(0)
+      setRuleArray([])
+      setCurrentRule(Object.values(rules).find(rule => rule.key === firstRule))
+      setTries(firstTry)
     }
   }
 
   /**
-   * Logs data into the database. Called each time a user takes an action.
+   * Posts data into the database for logging. 
+   * 
+   * Called each time a user starts, restarts, or retries security checks.
    */
   const postData = async (name) => {
     const response = await fetch('/api/data', {
@@ -125,31 +136,30 @@ function App() {
   }
 
   /**
-   * Handle rule change action.
-   * 
+   * Used to set the state of the app for the next security check; called in handleRuleChange 
+   * and set the next security check using the rule passed as an argument.
+   */
+  const changeRule = (nextRule) => {
+    setCurrentRule(Object.values(rules).find(rule => rule.key === nextRule))
+    setTries(firstTry)
+    setResponseStatus(null)
+    setProgressPercentage(0)
+    handleStart()
+  }
+  /**
    * This asynchronous function is called when a rule change occurs.
-   * It evaluates the current rule and response status to determine the next actions.
+   * 
+   * It evaluates the current rule and response status to determine the next actions, 
+   * contains a small timeout to help the UI run smoother, and
+   * appends the response status and uuid to the current rule before adding them to the rule array.
    */
   const handleRuleChange = async () => {
     await new Promise((resolve) => setTimeout(resolve, 500))
-    if (
-      currentRule.passRule.toLowerCase() !== "end" &&
-      (responseStatus >= 200 && responseStatus <= 299)
-    ) {
-      setCurrentRule(Object.values(rules).find(rule => rule.key === currentRule.passRule))
-      setTries(firstTry)
-      setResponseStatus(null)
-      setProgressPercentage(0)
-      handleStart()
-    } else if (
-      currentRule.failRule.toLowerCase() !== "end" &&
-      (responseStatus > 299)
-    ) {
-      setCurrentRule(Object.values(rules).find(rule => rule.key === currentRule.failRule))
-      setTries(firstTry)
-      setResponseStatus(null)
-      setProgressPercentage(0)
-      handleStart()
+    if (currentRule.passRule.toLowerCase() !== "end" && (responseStatus >= 200 && responseStatus <= 299)) {
+      changeRule(currentRule.passRule)
+    }
+    else if (currentRule.failRule.toLowerCase() !== "end" && (responseStatus > 299)) {
+      changeRule(currentRule.failRule)
     }
     else {
       if (responseStatus >= 200 && responseStatus <= 299) {
@@ -167,10 +177,10 @@ function App() {
   }
 
   /**
- * Handle copy uuid action.
- * 
- * This function is used to copy the uuid that was generated when a mandatory security check is not passed.
- */
+   * Handle copy I.D. number onClick event.
+   * 
+   * This function is used to copy the uuid that is generated when a mandatory security check is not passed.
+   */
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text)
       .then(() => {
@@ -182,31 +192,16 @@ function App() {
   }
 
   /**
-   * Handle reset action.
-   * 
-   * This function is called when the user presses the restart button.
-   * It resets the progress percentage to 0, clears the rule array, sets the current rule to the first rule in the rules configuration,
-   * and resets the number of tries to the initial value.
-   */
-  const handleReset = () => {
-    setProgressPercentage(0)
-    setRuleArray([])
-    setCurrentRule(Object.values(rules).find(rule => rule.key === firstRule))
-    setTries(firstTry)
-  }
-
-  /**
-   * A useful use-effect for debugging.
+   * A useful side effect for debugging.
    */
   useEffect(() => {
     console.log(appStatus, responseStatus, currentRule, tries, ruleArray)
   }, [appStatus, responseStatus, currentRule, tries, ruleArray])
 
   /**
-   * Handle side effects related to progress, rule change, and app status.
+   * Side effect that manages the progress bar percentage.
    * 
-   * This effect hook is triggered when there are changes in the 'tries' state.
-   * It recalculates the progress percentage based on the number of tries and the current rule's maximum tries.
+   * It calculates a normalized percentage that the ProgressIndicator uses.
    */
   useEffect(() => {
     if (currentRule) {
@@ -215,10 +210,10 @@ function App() {
   }, [tries])
 
   /**
-   * Handle side effects related to progress reaching 100%.
+   * Side effects related to progress reaching 100%.
    * 
    * This effect hook is triggered when there are changes in the 'progressPercentage' state.
-   * If the progress percentage reaches, exceeds, or is set to 100, it calls the 'handleRuleChange' function to handle the rule change.
+   * It calls handleRuleChange when progress percentage reaches 100%.
    */
   useEffect(() => {
     if (progressPercentage >= 100) {
@@ -227,12 +222,11 @@ function App() {
   }, [progressPercentage])
 
   /**
+   * Side effects that manage the fetch requests.
    * 
-   * This effect hook is triggered when there are changes in the 'currentRule' and 'appStatus' states.
-   * 
-   * If the app status is set to 'running', it executes an asynchronous function that handles rule processing.
-   * It performs multiple checks and fetches data based on different conditions, updating the response status and other relevant states.
-   * It controls the number of tries, breaks the loop if necessary conditions are met, and sets the progress percentage to 100.
+   * It immediately executes an asynchronous function that handles rule processing only if app status is 'running'.
+   * It performs multiple checks and fetches data based on different conditions.
+   * It sets the number of tries, breaks the fetch loop if necessary, and sets the progress percentage to 100.
    */
   useEffect(() => {
     if (appStatus === 'running') {
