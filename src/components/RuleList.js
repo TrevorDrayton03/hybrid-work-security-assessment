@@ -27,7 +27,7 @@ const RuleList = ({ ruleArray, appStatus, copy, uuid }) => {
                                     {rule.title}
                                 </div>
                                 <div className="col" style={{ padding: '0', textAlign: 'right' }}>
-                                    <Button variant="primary" onClick={() => copy(uuid)}>
+                                    <Button variant="primary" onClick={() => copy()}>
                                         Copy I.D. Number
                                     </Button>
                                 </div>

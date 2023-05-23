@@ -61,7 +61,7 @@ app.post('/api/data', (req, res) => {
     const { uid, sequence, action } = req.body
     const sequenceJson = JSON.stringify(sequence);
     let timestamp = new Date();
-    console.log(uid, sequence, req.ip, action, timestamp, req.headers['user-agent']);
+    // console.log(uid, sequence, req.ip, action, timestamp, req.headers['user-agent']);
     handleLog(uid, sequenceJson, req.ip, action, timestamp, req.headers['user-agent'])
 })
 
