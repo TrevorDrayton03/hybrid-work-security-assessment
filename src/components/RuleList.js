@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button'
 /**
  * The panel component.
  *
- * This component maintains a list of each rule that has been processed. 
+ * Maintains a list of each rule that has been processed. 
  * One panel is visible when the current rule fails and failRule is 'end' or if the process completes successfully. 
  */
 const RuleList = ({ ruleArray, appStatus, copy }) => {

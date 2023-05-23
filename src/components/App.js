@@ -1,28 +1,54 @@
-import logo from './logo.png'
+/**
+ * Hybrid Work-from-Home Pre-Screening Assessment
+ * 
+ * Main Component
+ * 
+ * This component represents the main entry point of the web app.
+ * It serves as the container for the entire application and handles
+ * the overall layout and function.
+ * 
+ * Features:
+ * - Assesses security requirements of staff devices to ensure they meet the necessary criteria for safely connecting remotely to TRU's network as part of the hybrid Work-from-home program.
+ * - Automatically send the data of each security check assessment to a database for logging.
+ * - Dynamically controlled by the rules_config.json configuration file.
+ * 
+ * Libraries/Dependencies:
+ * React: JavaScript library for building user interfaces.
+ * Bootstrap: Popular CSS framework for responsive and mobile-first web development.
+ * Socket.io: WebSocket functionality for real-time updates, used to relay changes made to the rules_config.json file to the front-end client.
+ * MariaDB: Database management system for storing the data of the security check assessments.
+ * Express: Web application framework for building server side applications in Node.js.
+ * react-scripts: Configuration and scripts for running a React application in development and production environments.
+ * uuid: Library for generating unique identifiers (UUIDs) for each security check assessment.
+ * whatwg-fetch: Polyfill that provides a global fetch function for making HTTP requests in browsers that do not support the native Fetch API.
+ * 
+ * Author: Trevor Drayton
+ * Version: 1.0.0
+ * Last Updated: May 23, 2023
+ * 
+ * Thompson Rivers University
+ * Department: Information Security
+ * Contact: draytont10@mytru.ca or trevorpdrayton@gmail.com
+ */
+
+import logo from '../logo.png'
 import React, { useState, useEffect } from "react"
-import './App.css'
+import '../App.css'
 // import rules from './rule_config.json'
 import ProgressIndicator from './ProgressIndicator'
 import ControlButton from './ControlButton'
 import FeedbackMessage from './FeedbackMessage'
 import RuleList from './RuleList'
 import { v4 as uuidv4 } from 'uuid'
-import 'whatwg-fetch' // fetch polyfill
+import 'whatwg-fetch'
 import openSocket from 'socket.io-client'
 const socket = openSocket('http://localhost:80')
 
-
-/**
- * The main application component.
- * 
- * This component represents the Hybrid Work-from-Home Pre-Screening Assessment application.
- * It manages the state, handles user interactions, and renders the UI components.
- */
 function App() {
   /**
    * Constants
    * 
-   * firstTry is where the fetch loop begins
+   * firstTry is the initialization value of the main loop
    * firstRule is the key that determines which rule in the rule_config.json file to begin with
    * baseUrl is the server url
    */
