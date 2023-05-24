@@ -43,11 +43,11 @@ io.on('connection', (socket) => {
     })
 })
 
-const handleLog = async (uuid, sequence, ip, action, timestamp, userAgent) => {
+const handleLog = async (uuid, sequence, ip, action, result, timestamp, userAgent) => {
     let conn
     try {
         conn = await pool.getConnection()
-        const res = await conn.query('INSERT INTO test_table2 (uuid, sequence, ip, action, timestamp, user_agent) VALUES (?, ?, ?, ?, ?, ?)', [uuid, sequence, ip, action, timestamp, userAgent])
+        const res = await conn.query('INSERT INTO test_table3 (uuid, sequence, ip, action, result, timestamp, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?)', [uuid, sequence, ip, action, result, timestamp, userAgent])
         console.log(res)
     } catch (err) {
         // throw err
@@ -58,11 +58,11 @@ const handleLog = async (uuid, sequence, ip, action, timestamp, userAgent) => {
 }
 
 app.post('/api/data', (req, res) => {
-    const { uid, sequence, action } = req.body
+    const { uid, sequence, action, result } = req.body
     const sequenceJson = JSON.stringify(sequence);
     let timestamp = new Date();
     // console.log(uid, sequence, req.ip, action, timestamp, req.headers['user-agent']);
-    handleLog(uid, sequenceJson, req.ip, action, timestamp, req.headers['user-agent'])
+    handleLog(uid, sequenceJson, req.ip, action, result, timestamp, req.headers['user-agent'])
 })
 
 app.get('/api/rules', (req, res) => {

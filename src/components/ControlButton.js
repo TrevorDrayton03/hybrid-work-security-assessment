@@ -9,7 +9,7 @@ const ControlButton = ({ appStatus, start, retry }) => {
     switch (appStatus) {
         case 'idle':
             buttonContent = (
-                <Button variant="primary" onClick={start}>
+                <Button variant="primary" onClick={() => start('start')}>
                     Start
                 </Button>
             )
@@ -17,7 +17,7 @@ const ControlButton = ({ appStatus, start, retry }) => {
         case 'error':
             buttonContent = (
                 <div style={{ padding: '0', margin: '0' }}>
-                    <Button variant="primary" onClick={start}>
+                    <Button variant="primary" onClick={() => start('restart')}>
                         Restart
                     </Button>
                     <Button variant="secondary" onClick={retry}>
@@ -28,7 +28,7 @@ const ControlButton = ({ appStatus, start, retry }) => {
             break
         case 'completed':
             buttonContent = (
-                <Button variant="primary" onClick={start}>
+                <Button variant="primary" onClick={() => start('restart')}>
                     Restart
                 </Button>
             )

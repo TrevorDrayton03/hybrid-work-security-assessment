@@ -73,6 +73,7 @@ function App() {
    * tries refers to the count for the number of fetch requests for the current rule, which increments until each rule's maxTries
    * progressPercentage refers to the value that's used for the progress bar component (ProgressIndicator.js)
    * uuid is the unique identifier for the current sequence to show, to be passed to RuleList to be shown on the front end
+   * action is solely for the purpose of logging 
    */
   const [appStatus, setAppStatus] = useState('idle')
   const [responseStatus, setResponseStatus] = useState(null)
@@ -82,6 +83,7 @@ function App() {
   const [ruleArray, setRuleArray] = useState([])
   const [progressPercentage, setProgressPercentage] = useState(0)
   const [uuid, setUuid] = useState(null)
+  const [action, setAction] = useState(null)
 
   /**
    * OnComponentDidMount Side Effect (called once after rendering)
@@ -115,7 +117,8 @@ function App() {
    *
    * This function sets the application status to 'running' and resets the app state if it is not already running.
    */
-  const handleStart = () => {
+  const handleStart = (action) => {
+    setAction(action)
     setAppStatus('running')
     if (appStatus !== 'running') {
       setProgressPercentage(0)
@@ -130,7 +133,7 @@ function App() {
    * 
    * Called each time a user starts, restarts, or retries security checks.
    */
-  const postData = async (uid, ruleArray) => {
+  const postData = async (uid, ruleArray, result) => {
     const response = await fetch('/api/data', {
       method: 'POST',
       headers: {
@@ -139,7 +142,8 @@ function App() {
       body: JSON.stringify({
         uid: uid,
         sequence: ruleArray,
-        action: 'test'
+        action: action,
+        result: result
       }),
     })
     if (response.ok) {
@@ -156,6 +160,7 @@ function App() {
    * resets the progress percentage, and sets the number of tries to the initial value.
    */
   const handleRetry = () => {
+    setAction('retry')
     setAppStatus('running')
     let ruleArrayCopy = ruleArray
     ruleArrayCopy.shift()
@@ -173,7 +178,7 @@ function App() {
     setTries(firstTry)
     setResponseStatus(null)
     setProgressPercentage(0)
-    handleStart()
+    handleStart(action)
   }
   /**
    * This asynchronous function is called when a rule change occurs.
@@ -191,17 +196,20 @@ function App() {
       changeRule(currentRule.failRule)
     }
     else {
+      let tempStatus
       if (responseStatus >= 200 && responseStatus <= 299) {
         setAppStatus("completed")
+        tempStatus = "success"
       }
       else {
         setAppStatus("error")
+        tempStatus = "fail"
       }
       currentRule.responseStatus = responseStatus
-      let uid = uuidv4()
-      setUuid(uid)
+      let id = uuidv4()
+      setUuid(id)
       let rArray = [currentRule, ...ruleArray] // synchronous solution for postData
-      postData(uid, rArray)
+      postData(id, rArray, tempStatus)
     }
     if (!currentRule.responseStatus) {
       currentRule.responseStatus = responseStatus
