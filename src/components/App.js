@@ -56,14 +56,6 @@ function App() {
   const baseUrl = process.env.REACT_APP_BASE_URL
 
   /**
-   * Configuration Flags
-   * 
-   * To show panel callout: change GP2's failRule from 'GP6' to 'end' in rule_config.json.
-   */
-  const causeResponseError = true
-  const causeResponseChange = true
-
-  /**
    * State Variables
    * 
    * appStatus refers to whether the entire app is running, idle, completed, or error (which is completed with a failed mandatory security check)
@@ -235,9 +227,9 @@ function App() {
   /**
    * A useful side effect for debugging.
    */
-  useEffect(() => {
-    console.log(appStatus, responseStatus, currentRule, tries, ruleArray)
-  }, [appStatus, responseStatus, currentRule, tries, ruleArray])
+  // useEffect(() => {
+  //   console.log(appStatus, responseStatus, currentRule, tries, ruleArray)
+  // }, [appStatus, responseStatus, currentRule, tries, ruleArray])
 
   /**
    * Side effect that manages the progress bar percentage.
@@ -277,31 +269,7 @@ function App() {
         let response = null
         while (currentTries < currentRule.maxTries && !shouldBreak) {
           try {
-            // (T,F)
-            if (causeResponseError && currentRule.key === "GP2" && !causeResponseChange) {
-              response = await fetch(baseUrl + "/23")
-              // (T,T)
-            } else if (causeResponseError && (currentRule.key === "GP2" || currentRule.key === "GP3") && causeResponseChange) {
-              // start with success, change to error
-              if (currentTries === 3) {
-                response = await fetch(baseUrl + "/23")
-              } else {
-                response = await fetch(baseUrl + "?page=2")
-              }
-            }
-            //(F,T)
-            else if (!causeResponseError && currentRule.key === "GP2" && causeResponseChange) {
-              // start with error, change to success
-              if (currentTries !== 3) {
-                response = await fetch(baseUrl + "/23")
-              } else {
-                response = await fetch(baseUrl + "?page=2")
-              }
-            }
-            //(F,F) 
-            else {
-              response = await fetch(baseUrl + "?page=2")
-            }
+            response = await fetch(baseUrl + currentRule.port)
             let status = response.status
             if (currentTries === firstTry) {
               setResponseStatus(status)

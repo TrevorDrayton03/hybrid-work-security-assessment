@@ -4,7 +4,7 @@
   },
   "FirstRule": {
     "key": "FirstRule",
-    "port": 123,
+    "port": 4001,
     "title": "Global Protect Connection",
     "passText": "Success",
     "failText": "Error",
@@ -14,17 +14,17 @@
   },
   "GP2": {
     "key": "GP2",
-    "port": 1213,
+    "port": 4002,
     "title": "Valid Operating System",
     "passText": "Success",
     "failText": "Must use a Windows or an Apple operating system.",
     "passRule": "GP3",
-    "failRule": "GP6",
+    "failRule": "end",
     "maxTries": 5
   },
   "GP3": {
     "key": "GP3",
-    "port": 123,
+    "port": 4003,
     "title": "Antivirus Enabled",
     "passText": "Success",
     "failText": "Must turn on antivirus.",
@@ -34,7 +34,7 @@
   },
   "GP4": {
     "key": "GP4",
-    "port": 123,
+    "port": 4003,
     "title": "Antivirus Approval",
     "passText": "Success",
     "failText": "Antivirus must be on the following list of approved antivirus'...",
@@ -44,7 +44,7 @@
   },
   "GP5": {
     "key": "GP5",
-    "port": 123,
+    "port": 4003,
     "title": "Valid Antivirus Definitions",
     "passText": "Success",
     "failText": "Must have antivirus definitions updated within 60 days",
@@ -54,7 +54,7 @@
   },
   "GP6": {
     "key": "GP6",
-    "port": 123,
+    "port": 4003,
     "title": "Sufficient RAM",
     "passText": "Success",
     "failText": "Must have atleast 8GB of RAM",

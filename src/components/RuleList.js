@@ -12,7 +12,7 @@ const RuleList = ({ ruleArray, appStatus, copy, uuid }) => {
         <div style={{ padding: '10px' }}>
             {Object.values(ruleArray).map((rule) => {
                 return (
-                    (rule.responseStatus > 299 && rule.failRule.toLowerCase() === "end") ? (
+                    ((rule.responseStatus > 299 || rule.responseStatus === null) && rule.failRule.toLowerCase() === "end") ? (
                         <Alert
                             key={rule.key}
                             variant='danger'
