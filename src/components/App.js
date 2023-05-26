@@ -47,8 +47,8 @@ function App() {
   /**
    * Constants
    * 
-   * firstTry is the initialization value of the main loop
-   * firstRule is the key that determines which rule in the rule_config.json file to begin with
+   * firstTry is the initialization of the fetch loop
+   * firstRule is the key value that determines which rule in the rule_config.json file the fetch loop begins with
    * baseUrl is the server url
    */
   const firstTry = 0
@@ -188,20 +188,20 @@ function App() {
       changeRule(currentRule.failRule)
     }
     else {
-      let tempStatus
+      let result
       if (responseStatus >= 200 && responseStatus <= 299) {
         setAppStatus("completed")
-        tempStatus = "success"
+        result = "success"
       }
       else {
         setAppStatus("error")
-        tempStatus = "fail"
+        result = "fail"
       }
       currentRule.responseStatus = responseStatus
       let id = uuidv4()
       setUuid(id)
       let rArray = [currentRule, ...ruleArray] // synchronous solution for postData
-      postData(id, rArray, tempStatus)
+      postData(id, rArray, result)
     }
     if (!currentRule.responseStatus) {
       currentRule.responseStatus = responseStatus
