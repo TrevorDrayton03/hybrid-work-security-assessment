@@ -9,16 +9,8 @@ const port = 80
 const cors = require('cors')
 const buildPath = path.join(__dirname, '..', 'build')
 const ruleConfigPath = path.join(__dirname, "./rule_config.json")
-const io = require('socket.io')(http
-    //     , {
-    //     cors: {
-    //         origin: "http://localhost:80",
-    //         methods: ["GET", "POST"]
-    //     }
-    // }
-)
+const io = require('socket.io')(http)
 require('dotenv').config({ path: path.join(__dirname, '../.env') })
-
 
 app.use(express.static(buildPath))
 app.use(express.json())
