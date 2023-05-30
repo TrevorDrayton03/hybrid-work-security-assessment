@@ -24,7 +24,7 @@
   },
   "GP3": {
     "key": "GP3",
-    "port": 4004,
+    "port": 4003,
     "title": "Antivirus Enabled",
     "passText": "Success",
     "failText": "Must turn on antivirus.",

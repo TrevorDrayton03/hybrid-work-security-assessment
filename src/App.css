@@ -67,7 +67,6 @@ Hex: #00b18f
 }
 
 .alert {
-  /* color: #333 !important; */
   color: black !important;
   padding: 1.15em !important;
   border-radius: 0 !important;
@@ -79,7 +78,6 @@ Hex: #00b18f
 }
 
 .alert-heading {
-  /* color: var(--color-tru-blue) !important; */
   color: black !important;
   border-color: var(--color-tru-yellow) !important;
   padding-bottom: 10px;
@@ -87,8 +85,6 @@ Hex: #00b18f
 }
 
 .alert-primary {
-  /* background-color: var(--color-tru-teal) !important; */
-  /* border-color: var(--color-tru-teal) !important; */
   background-color: #9ee1e5 !important;
   border-color: #9ee1e5 !important;
 }
@@ -135,13 +131,11 @@ Hex: #00b18f
 }
 
 .App-header h1 {
-  /* min-height: 100vh; */
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   display: block;
-  /* font-size: calc(10px + 2vmin); */
   font-size: 2.125rem;
   color: var(--color-tru-blue);
   flex: 1;

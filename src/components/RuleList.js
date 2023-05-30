@@ -6,6 +6,10 @@ import Button from 'react-bootstrap/Button'
  *
  * Maintains a list of each rule that has been processed. 
  * One panel is visible when the current rule fails and failRule is 'end' or if the process completes successfully. 
+ * @param {object} ruleArray - The array of assessed rules.
+ * @param {string} appStatus - The application status.
+ * @param {function} copy - The function to copy the UUID.
+ * @param {string} uuid - The UUID.
  */
 const RuleList = ({ ruleArray, appStatus, copy, uuid }) => {
     return (

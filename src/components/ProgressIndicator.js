@@ -4,6 +4,8 @@ import { Spinner } from "react-bootstrap"
 
 /**
  * Displays the progress indicator for the current rule.
+ * @param {number} progressPercentage - The progress percentage.
+ * @param {object} currentRule - The current rule.
  */
 const ProgressIndicator = ({ progressPercentage, currentRule }) => {
     return (

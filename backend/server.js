@@ -8,9 +8,9 @@ const http = require('http').Server(app)
 const port = 80
 const cors = require('cors')
 const buildPath = path.join(__dirname, '..', 'build')
-const ruleConfigPath = path.join(__dirname, "./rule_config.json")
 const io = require('socket.io')(http)
 require('dotenv').config({ path: path.join(__dirname, '../.env') })
+const ruleConfigPath = path.join(__dirname, process.env.CONFIG_PATH)
 
 app.use(express.static(buildPath))
 app.use(express.json())
@@ -53,7 +53,6 @@ app.post('/api/data', (req, res) => {
     const { uid, sequence, action, result } = req.body
     const sequenceJson = JSON.stringify(sequence);
     let timestamp = new Date();
-    // console.log(uid, sequence, req.ip, action, timestamp, req.headers['user-agent']);
     handleLog(uid, sequenceJson, req.ip, action, result, timestamp, req.headers['user-agent'])
 })
 

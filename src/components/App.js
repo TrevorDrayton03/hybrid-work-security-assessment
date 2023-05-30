@@ -1,6 +1,9 @@
 /**
  * Hybrid Work-from-Home Pre-Screening Assessment
- * 
+ *
+ * This application assesses security requirements of staff devices to ensure they meet the necessary criteria for safely connecting remotely 
+ * to TRU's network as part of the hybrid Work-from-home program.
+ *
  * Main Component
  * 
  * This component represents the main entry point of the web app.
@@ -8,9 +11,17 @@
  * the overall layout and function.
  * 
  * Features:
- * - Assesses security requirements of staff devices to ensure they meet the necessary criteria for safely connecting remotely to TRU's network as part of the hybrid Work-from-home program.
+ * - Fetches the rules_config.json file from the server and stores it in state.
  * - Automatically send the data of each security check assessment to a database for logging.
- * - Dynamically controlled by the rules_config.json configuration file.
+ * - Real-time updates to the rules_config.json file are reflected in the app.
+ * - Progress bar to show the user how far along they are in each security check.
+ * - Feedback message to inform the user based on the status of the application.
+ * - Control buttons to allow the user to start and restart the security check assessment and retry the last failed security check.
+ * - A spinner to indicate when the application is busy.
+ * - Responsive design for mobile, tablet, and desktop.
+ * - Cross-browser compatibility.
+ * - Error handling for failed mandatory security checks.
+ * - Complies to ES6 standards.
  * 
  * Libraries/Dependencies:
  * React: JavaScript library for building user interfaces.
@@ -24,7 +35,7 @@
  * 
  * Author: Trevor Drayton
  * Version: 1.0.0
- * Last Updated: May 23, 2023
+ * Last Updated: May 30, 2023
  * 
  * Thompson Rivers University
  * Department: Information Security
@@ -44,16 +55,17 @@ import openSocket from 'socket.io-client'
 const socket = openSocket('http://localhost:80')
 
 function App() {
+
   /**
    * Constants
    * 
    * firstTry is the initialization of the fetch loop
    * firstRule is the key value that determines which rule in the rule_config.json file the fetch loop begins with
-   * baseUrl is the server url
+   * baseUrl is the server url for the HIPS requests
    */
   const firstTry = 0
   const firstRule = "FirstRule"
-  const baseUrl = process.env.REACT_APP_BASE_URL
+  const baseUrl = process.env.REACT_APP_HIPS_BASE_URL
 
   /**
    * State Variables
@@ -66,6 +78,7 @@ function App() {
    * progressPercentage refers to the value that's used for the progress bar component (ProgressIndicator.js)
    * uuid is the unique identifier for the current sequence to show, to be passed to RuleList to be shown on the front end
    * action is solely for the purpose of logging 
+   * 
    */
   const [appStatus, setAppStatus] = useState('idle')
   const [responseStatus, setResponseStatus] = useState(null)
@@ -82,6 +95,10 @@ function App() {
    * 
    * This side effect fetches the rules_config.json file and store the config data in the rules state.
    * Then, it establishes a socket that is used to emit the rules_config.json file to the front end when the config is altered.
+   * 
+   * @param {function} fetch - fetches the rules_config.json file from the server
+   * @param {function} socket.on - listens for the configUpdate event from the server
+   * @param {function} socket.disconnect - disconnects the socket when the component unmounts
    */
   useEffect(() => {
     fetch("/api/rules")
@@ -108,6 +125,9 @@ function App() {
    * Handles the start and restart button onClick events.
    *
    * This function sets the application status to 'running' and resets the app state if it is not already running.
+   * It also gathers the action from the button that was clicked for logging.
+   * 
+   * @param {string} action - the action that was clicked (start, restart, or retry)
    */
   const handleStart = (action) => {
     setAction(action)
@@ -124,6 +144,10 @@ function App() {
    * Posts data into the database for logging. 
    * 
    * Called each time a user starts, restarts, or retries security checks.
+   * 
+   * @param {string} uid - the unique identifier for the current sequence
+   * @param {array} ruleArray - the array of rules that were assessed
+   * @param {string} result - the result of the security check assessment (pass or fail)
    */
   const postData = async (uid, ruleArray, result) => {
     const response = await fetch('/api/data', {
@@ -163,7 +187,9 @@ function App() {
 
   /**
    * Used to set the state of the app for the next security check; called in handleRuleChange 
-   * and set the next security check using the rule passed as an argument.
+   * and sets the next security check using the rule passed as an argument.
+   * 
+   * @param {string} nextRule - the key value of the next rule to be evaluated
    */
   const changeRule = (nextRule) => {
     setCurrentRule(Object.values(rules).find(rule => rule.key === nextRule))
@@ -172,6 +198,7 @@ function App() {
     setProgressPercentage(0)
     handleStart(action)
   }
+
   /**
    * This asynchronous function is called when a rule change occurs.
    * 
@@ -191,7 +218,7 @@ function App() {
       let result
       if (responseStatus >= 200 && responseStatus <= 299) {
         setAppStatus("completed")
-        result = "success"
+        result = "pass"
       }
       else {
         setAppStatus("error")

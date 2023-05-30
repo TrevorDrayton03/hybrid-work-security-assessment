@@ -1,21 +1,19 @@
 import React from "react"
-import { Spinner } from "react-bootstrap"
 
 /**
  * Displays a feedback message based on the application status.
+ * @param {string} appStatus - The application status.
  */
 const FeedbackMessage = ({ appStatus }) => {
     return (
         <div style={{ paddingBottom: appStatus === 'completed' ? '5px' : '15px' }}>
             {appStatus === "running" && (
-                null
-                // <div>
-                //     <em>
-                //         <Spinner animation="grow" role="status" size="sm" />
-                //         &nbsp
-                //         Please standby...
-                //     </em>
-                // </div>
+                // null
+                <div>
+                    <em>
+                        Please standby, this may take a few minutes.
+                    </em>
+                </div>
             )}
             {appStatus === "error" && (
                 <div>
