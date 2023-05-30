@@ -77,8 +77,7 @@ function App() {
    * tries refers to the count for the number of fetch requests for the current rule, which increments until each rule's maxTries
    * progressPercentage refers to the value that's used for the progress bar component (ProgressIndicator.js)
    * uuid is the unique identifier for the current sequence to show, to be passed to RuleList to be shown on the front end
-   * action is solely for the purpose of logging 
-   * 
+   * action is for the purpose of logging 
    */
   const [appStatus, setAppStatus] = useState('idle')
   const [responseStatus, setResponseStatus] = useState(null)
