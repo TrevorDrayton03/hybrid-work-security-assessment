@@ -2,7 +2,7 @@
  * Hybrid Work-from-Home Pre-Screening Assessment
  *
  * This application assesses security requirements of staff devices to ensure they meet the necessary criteria for safely connecting remotely 
- * to TRU's network as part of the hybrid Work-from-home program.
+ * to TRU's network as part of the hybrid Work-from-Home program.
  *
  * Main Component
  * 
@@ -12,9 +12,9 @@
  * 
  * Features:
  * - Fetches the rules_config.json file from the server and stores it in state.
- * - Automatically send the data of each security check assessment to a database for logging.
+ * - Automatically send the data of each assessment to a database for logging.
  * - Real-time updates to the rules_config.json file are reflected in the app.
- * - Progress bar to show the user how far along they are in each security check.
+ * - Progress bar to show the user how far along they are in each individual security check.
  * - Feedback message to inform the user based on the status of the application.
  * - Control buttons to allow the user to start and restart the security check assessment and retry the last failed security check.
  * - A spinner to indicate when the application is busy.
@@ -31,11 +31,11 @@
  * Express: Web application framework for building server side applications in Node.js.
  * react-scripts: Configuration and scripts for running a React application in development and production environments.
  * uuid: Library for generating unique identifiers (UUIDs) for each security check assessment.
- * whatwg-fetch: Polyfill that provides a global fetch function for making HTTP requests in browsers that do not support the native Fetch API.
+ * whatwg-fetch: Polyfill that provides a global fetch function for making web requests in browsers that do not support the native Fetch API.
  * 
  * Author: Trevor Drayton
  * Version: 1.0.0
- * Last Updated: May 30, 2023
+ * Last Updated: May 31, 2023
  * 
  * Thompson Rivers University
  * Department: Information Security
