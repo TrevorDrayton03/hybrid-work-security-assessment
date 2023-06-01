@@ -36,7 +36,8 @@ const RuleList = ({ ruleArray, appStatus, copy, uuid }) => {
                                     </Button>
                                 </div>
                             </Alert.Heading>
-                            {rule.failText} <br /><br />
+                            {rule.failText}
+                            <br /><br />
                             If you require assistance, please contact client services with the following I.D. number: {uuid}.
                             <br /><br />
                             <a
@@ -58,11 +59,21 @@ const RuleList = ({ ruleArray, appStatus, copy, uuid }) => {
                     style={{ paddingBottom: '5px', paddingTop: '5px', textAlign: 'left' }}
                 >
                     <Alert.Heading
-                        style={{ margin: '0px', textAlign: 'left' }}
+                        style={{ margin: '0px', alignItems: 'baseline' }}
+                        className="row"
                     >
-                        Success!
+                        <div className="col" style={{ padding: '0' }}>
+                            Success!
+                        </div>
+                        <div className="col" style={{ padding: '0', textAlign: 'right' }}>
+                            <Button variant="primary" onClick={() => copy()}>
+                                Copy I.D. Number
+                            </Button>
+                        </div>
                     </Alert.Heading>
                     The pre-screening assessment completed without error.
+                    <br /><br />
+                    I.D. number: {uuid}.
                 </Alert>)
             }
         </div >

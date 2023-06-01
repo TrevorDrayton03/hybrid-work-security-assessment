@@ -210,7 +210,8 @@ function App() {
     if (currentRule.passRule.toLowerCase() !== "end" && (responseStatus >= 200 && responseStatus <= 299)) {
       changeRule(currentRule.passRule)
     }
-    else if (currentRule.failRule.toLowerCase() !== "end" && (responseStatus > 299)) {
+    // null response status here
+    else if (currentRule.failRule.toLowerCase() !== "end" && (responseStatus > 299 || responseStatus === null)) {
       changeRule(currentRule.failRule)
     }
     else {
@@ -242,9 +243,9 @@ function App() {
    */
   const handleCopy = () => {
     navigator.clipboard.writeText(uuid)
-      .then(() => {
-        console.log('Text copied to clipboard:', uuid)
-      })
+      // .then(() => {
+      //   console.log('Text copied to clipboard:', uuid)
+      // })
       .catch((error) => {
         console.error('Failed to copy text:', error)
       })

@@ -4,11 +4,11 @@
   },
   "FirstRule": {
     "key": "FirstRule",
-    "port": 4001,
+    "port": 4004,
     "title": "Global Protect Connection",
     "passText": "Success",
     "failText": "Error",
-    "passRule": "GP2",
+    "passRule": "end",
     "failRule": "GP6",
     "maxTries": 5
   },
@@ -24,7 +24,7 @@
   },
   "GP3": {
     "key": "GP3",
-    "port": 4004,
+    "port": 4003,
     "title": "Antivirus Enabled",
     "passText": "Success",
     "failText": "Must turn on antivirus.",
