@@ -23,7 +23,7 @@ const ControlButton = ({ appStatus, start, retry }) => {
                     <Button variant="primary" onClick={() => start('restart')}>
                         Restart
                     </Button>
-                    <Button variant="secondary" onClick={retry}>
+                    <Button variant="primary2" onClick={retry}>
                         Retry Failed Check
                     </Button>
                 </div>

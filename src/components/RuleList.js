@@ -31,7 +31,7 @@ const RuleList = ({ ruleArray, appStatus, copy, uuid }) => {
                                     {rule.title}
                                 </div>
                                 <div className="col" style={{ padding: '0', textAlign: 'right' }}>
-                                    <Button variant="primary" onClick={() => copy()}>
+                                    <Button variant="secondary" onClick={() => copy()}>
                                         Copy I.D. Number
                                     </Button>
                                 </div>
@@ -39,6 +39,10 @@ const RuleList = ({ ruleArray, appStatus, copy, uuid }) => {
                             {rule.failText}
                             <br /><br />
                             If you require assistance, please contact client services with the following I.D. number: {uuid}.
+                            <br></br>
+                            <br></br>
+                            For your convenience, you can copy the I.D. number by using the Copy I.D. Number button,
+                            and you can find the contact information for the IT service desk from the link below.
                             <br /><br />
                             <a
                                 href="https://tru.teamdynamix.com/TDClient/84/Portal/Home/"
@@ -46,7 +50,7 @@ const RuleList = ({ ruleArray, appStatus, copy, uuid }) => {
                                 target="_blank"
                                 rel="noreferrer"
                             >
-                                IT Service Desk
+                                IT Services Portal
                             </a>
                         </Alert>
                     ) : null
@@ -66,14 +70,18 @@ const RuleList = ({ ruleArray, appStatus, copy, uuid }) => {
                             Success!
                         </div>
                         <div className="col" style={{ padding: '0', textAlign: 'right' }}>
-                            <Button variant="primary" onClick={() => copy()}>
+                            <Button variant="secondary" onClick={() => copy()}>
                                 Copy I.D. Number
                             </Button>
                         </div>
                     </Alert.Heading>
-                    The pre-screening assessment completed without error.
+                    Your pre-screening assessment completed without error.
                     <br /><br />
-                    I.D. number: {uuid}.
+                    Your I.D. number: {uuid}.
+                    <br></br>
+                    <br></br>
+                    For your convenience, you can copy the I.D. number by using the Copy I.D. Number button,
+                    which IT Services may require from you. If you lose it, you can run this assessment again for a new one.
                 </Alert>)
             }
         </div >

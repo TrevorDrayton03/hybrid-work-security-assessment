@@ -44,8 +44,17 @@ RGB 0/177/143
 Hex: #00b18f
 */
 
-* {
+*,
+*:before,
+*:after {
+  /* specified width and height include borders, padding, and content */
+  box-sizing: border-box;
   font-family: 'Adelle', sans-serif !important;
+}
+
+body,
+html {
+  overflow-x: hidden !important;
 }
 
 :root {
@@ -60,33 +69,30 @@ Hex: #00b18f
   --color-tru-orange: #f88f23;
   --color-tru-callout-bg: #fff3bf;
   --color-tru-regular-bg: #E0F6F7;
-}
-
-.accordian-button {
-  background-color: #003e51 !important;
+  --color-tru-bluebg: #003e51;
+  --color-tru-panel-paragraph: #333;
 }
 
 .alert {
-  color: black !important;
+  color: var(--color-tru-panel-paragraph) !important;
   padding: 1.15em !important;
   border-radius: 0 !important;
 }
 
 .alert-danger {
-  background-color: var(--color-tru-yellow) !important;
-  border-color: var(--color-tru-yellow) !important;
+  background-color: var(--color-tru-callout-bg) !important;
+  border-color: var(--color-tru-callout-bg) !important;
 }
 
 .alert-heading {
-  color: black !important;
-  border-color: var(--color-tru-yellow) !important;
+  color: var(--color-tru-blue) !important;
   padding-bottom: 10px;
   font-size: 1.25rem !important;
 }
 
 .alert-primary {
-  background-color: #9ee1e5 !important;
-  border-color: #9ee1e5 !important;
+  background-color: var(--color-tru-regular-bg) !important;
+  border-color: var(--color-tru-regular-bg) !important;
 }
 
 .App {
@@ -100,14 +106,14 @@ Hex: #00b18f
   -moz-osx-font-smoothing: grayscale;
   /* smoother and more legible texts to webkit browsers on mac and windows */
   -webkit-font-smoothing: antialiased;
-  /* prevent horizontal scrollbar */
-  overflow-x: hidden;
-  width: 100vw;
+  /* 30px is the margin below for left and right side */
+  width: (100vw - 30px);
+  margin: 15px;
   margin-bottom: 100px;
 }
 
 .App-logo {
-  height: 30vmin;
+  height: 15vmin;
   pointer-events: none;
 }
 
@@ -126,9 +132,6 @@ Hex: #00b18f
     transform: rotate(360deg);
   }
   */
-.accordian-button {
-  background-color: #003e51 !important;
-}
 
 .App-header h1 {
   display: flex;
@@ -144,6 +147,7 @@ Hex: #00b18f
 .btn {
   border-radius: 0 !important;
   font-size: 1.125rem !important;
+  color: white !important;
   width: 200px;
   margin: 5px;
 }
@@ -159,20 +163,37 @@ Hex: #00b18f
 }
 
 .btn-primary {
+  width: 180px;
+  padding: 0 !important;
   background-color: var(--color-tru-teal) !important;
   border-color: var(--color-tru-teal) !important;
 }
 
+.btn-primary2 {
+  width: 180px;
+  padding: 0 !important;
+  background-color: var(--color-tru-bluebg) !important;
+  border-color: var(--color-tru-bluebg) !important;
+}
+
+.btn-primary2:hover {
+  filter: none !important;
+  background-color: var(--color-tru-teal) !important;
+  border-color: var(--color-tru-teal) !important;
+  transition: none !important;
+}
+
 .btn-secondary {
-  background-color: var(--color-tru-orange) !important;
-  border-color: var(--color-tru-orange) !important;
+  color: var(--color-tru-blue) !important;
+  background-color: var(--color-tru-yellow) !important;
+  border-color: var(--color-tru-yellow) !important;
 }
 
 .btn-secondary:hover {
   filter: none !important;
-  background-color: var(--color-tru-yellow) !important;
-  border-color: var(--color-tru-yellow) !important;
-  transition: none;
+  background-color: var(--color-tru-teal) !important;
+  border-color: var(--color-tru-teal) !important;
+  transition: none !important;
 }
 
 .progress {

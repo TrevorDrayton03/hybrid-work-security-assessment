@@ -4,12 +4,12 @@
   },
   "FirstRule": {
     "key": "FirstRule",
-    "port": 4004,
+    "port": 4002,
     "title": "Global Protect Connection",
     "passText": "Success",
-    "failText": "Error",
+    "failText": "You must be connected to the Global Protect VPN",
     "passRule": "end",
-    "failRule": "GP6",
+    "failRule": "end",
     "maxTries": 5
   },
   "GP2": {
@@ -17,7 +17,7 @@
     "port": 4002,
     "title": "Valid Operating System",
     "passText": "Success",
-    "failText": "Must use a Windows or an Apple operating system.",
+    "failText": "You must use Windows or Mac operating system.",
     "passRule": "GP3",
     "failRule": "end",
     "maxTries": 5
@@ -27,7 +27,7 @@
     "port": 4003,
     "title": "Antivirus Enabled",
     "passText": "Success",
-    "failText": "Must turn on antivirus.",
+    "failText": "You must turn on your antivirus.",
     "passRule": "GP4",
     "failRule": "end",
     "maxTries": 5
@@ -37,7 +37,7 @@
     "port": 4003,
     "title": "Antivirus Approval",
     "passText": "Success",
-    "failText": "Antivirus must be on the following list of approved antivirus'...",
+    "failText": "Your antivirus must be on the following list of approved antivirus'...",
     "passRule": "GP5",
     "failRule": "end",
     "maxTries": 5
@@ -47,7 +47,7 @@
     "port": 4003,
     "title": "Valid Antivirus Definitions",
     "passText": "Success",
-    "failText": "Must have antivirus definitions updated within 60 days",
+    "failText": "Your antivirus definitions must be updated within 60 days",
     "passRule": "GP6",
     "failRule": "end",
     "maxTries": 5
@@ -57,7 +57,7 @@
     "port": 4003,
     "title": "Sufficient RAM",
     "passText": "Success",
-    "failText": "Must have atleast 8GB of RAM",
+    "failText": "Your computer must have atleast 8GB of RAM",
     "passRule": "end",
     "failRule": "end",
     "maxTries": 5

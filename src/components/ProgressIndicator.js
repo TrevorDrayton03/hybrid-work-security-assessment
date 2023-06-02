@@ -10,7 +10,7 @@ import { Spinner } from "react-bootstrap"
 const ProgressIndicator = ({ progressPercentage, currentRule }) => {
     return (
         <div>
-            <span style={{ fontSize: '1.25rem', paddingBottom: '40px', display:'block' }}>
+            <span style={{ fontSize: '1.25rem', paddingBottom: '20px', display:'block' }}>
                 <Spinner animation="grow" role="status" size="sm" /> &nbsp;
                 {currentRule.title}
             </span>
