@@ -7,6 +7,14 @@ import React from "react"
 const FeedbackMessage = ({ appStatus }) => {
     return (
         <div style={{ paddingBottom: appStatus === 'completed' ? '5px' : '15px' }}>
+            {appStatus === "idle" && (
+                // null
+                <div>
+                    <em>
+                        Press the start button to begin your assessment.
+                    </em>
+                </div>
+            )}
             {appStatus === "running" && (
                 // null
                 <div>
@@ -18,7 +26,7 @@ const FeedbackMessage = ({ appStatus }) => {
             {appStatus === "error" && (
                 <div>
                     <em>
-                        Your device does not meet the following security requirement:
+                        You did not pass the assessment due to your device not meeting the following security requirement:
                     </em>
                 </div>
             )}
@@ -26,7 +34,7 @@ const FeedbackMessage = ({ appStatus }) => {
                 null
                 // <div>
                 //     <em>
-                //         Completed successfully.
+                //         Your assessment has completed.
                 //     </em>
                 // </div>
             )}

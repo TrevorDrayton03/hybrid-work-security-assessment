@@ -4,10 +4,10 @@
   },
   "FirstRule": {
     "key": "FirstRule",
-    "port": 4002,
+    "port": 4004,
     "title": "Global Protect Connection",
     "passText": "Success",
-    "failText": "You must be connected to the Global Protect VPN",
+    "failText": "You must be connected to the Global Protect VPN.",
     "passRule": "end",
     "failRule": "end",
     "maxTries": 5
@@ -57,7 +57,7 @@
     "port": 4003,
     "title": "Sufficient RAM",
     "passText": "Success",
-    "failText": "Your computer must have atleast 8GB of RAM",
+    "failText": "Your computer must have atleast 8GB of RAM.",
     "passRule": "end",
     "failRule": "end",
     "maxTries": 5

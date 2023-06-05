@@ -38,7 +38,7 @@ const RuleList = ({ ruleArray, appStatus, copy, uuid }) => {
                             </Alert.Heading>
                             {rule.failText}
                             <br /><br />
-                            If you require assistance, please contact client services with the following I.D. number: {uuid}.
+                            If you require assistance, please contact client services with your I.D. number: {uuid}.
                             <br></br>
                             <br></br>
                             For your convenience, you can copy the I.D. number by using the Copy I.D. Number button,
@@ -67,7 +67,7 @@ const RuleList = ({ ruleArray, appStatus, copy, uuid }) => {
                         className="row"
                     >
                         <div className="col" style={{ padding: '0' }}>
-                            Success!
+                            Congratulations!
                         </div>
                         <div className="col" style={{ padding: '0', textAlign: 'right' }}>
                             <Button variant="secondary" onClick={() => copy()}>
@@ -75,7 +75,7 @@ const RuleList = ({ ruleArray, appStatus, copy, uuid }) => {
                             </Button>
                         </div>
                     </Alert.Heading>
-                    Your pre-screening assessment completed without error.
+                    Your pre-screening assessment completed successfully without error.
                     <br /><br />
                     Your I.D. number: {uuid}.
                     <br></br>
