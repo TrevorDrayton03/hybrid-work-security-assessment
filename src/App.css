@@ -113,7 +113,8 @@ html {
 }
 
 .App-logo {
-  height: 15vmin;
+  /* height: 15vmin; */
+  height:125px;
   pointer-events: none;
 }
 

@@ -99,7 +99,7 @@ function App() {
    * @param {function} socket.on - listens for the configUpdate event from the server
    * @param {function} socket.disconnect - disconnects the socket when the component unmounts
    */
-  useEffect(() => {
+  useEffect(() => { 
     fetch("/api/rules")
       .then(response => response.json())
       .then(config => {
@@ -136,35 +136,6 @@ function App() {
       setRuleArray([])
       setCurrentRule(Object.values(rules).find(rule => rule.key === firstRule))
       setTries(firstTry)
-    }
-  }
-
-  /**
-   * Posts data into the database for logging. 
-   * 
-   * Called each time a user starts, restarts, or retries security checks.
-   * 
-   * @param {string} uid - the unique identifier for the current sequence
-   * @param {array} ruleArray - the array of rules that were assessed
-   * @param {string} result - the result of the security check assessment (pass or fail)
-   */
-  const postData = async (uid, ruleArray, result) => {
-    const response = await fetch('/api/data', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        uid: uid,
-        sequence: ruleArray,
-        action: action,
-        result: result
-      }),
-    })
-    if (response.ok) {
-      console.log('Data posted successfully')
-    } else {
-      console.log('Failed to post data')
     }
   }
 
@@ -227,8 +198,24 @@ function App() {
       currentRule.responseStatus = responseStatus
       let id = uuidv4()
       setUuid(id)
-      let rArray = [currentRule, ...ruleArray] // synchronous solution for postData
-      postData(id, rArray, result)
+      let rArray = [currentRule, ...ruleArray] // synchronous solution 
+      const response = await fetch('/api/data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uid: id,
+          sequence: rArray,
+          action: action,
+          result: result
+        }),
+      })
+      if (response.ok) {
+        console.log('Data posted successfully')
+      } else {
+        console.log('Failed to post data')
+      }
     }
     if (!currentRule.responseStatus) {
       currentRule.responseStatus = responseStatus
@@ -243,9 +230,6 @@ function App() {
    */
   const handleCopy = () => {
     navigator.clipboard.writeText(uuid)
-      // .then(() => {
-      //   console.log('Text copied to clipboard:', uuid)
-      // })
       .catch((error) => {
         console.error('Failed to copy text:', error)
       })

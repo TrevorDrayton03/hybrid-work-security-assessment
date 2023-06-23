@@ -4,11 +4,11 @@
   },
   "FirstRule": {
     "key": "FirstRule",
-    "port": 4004,
+    "port": 4002,
     "title": "Global Protect Connection",
     "passText": "Success",
     "failText": "You must be connected to the Global Protect VPN.",
-    "passRule": "end",
+    "passRule": "GP2",
     "failRule": "end",
     "maxTries": 5
   },
@@ -54,8 +54,8 @@
   },
   "GP6": {
     "key": "GP6",
-    "port": 4003,
-    "title": "Sufficient RAM",
+    "port": 4004,
+    "title": "Sufficient Amount of RAM",
     "passText": "Success",
     "failText": "Your computer must have atleast 8GB of RAM.",
     "passRule": "end",

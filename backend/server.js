@@ -26,6 +26,25 @@ const pool = mariadb.createPool({
     connectionLimit: process.env.DB_CONNECTION_LIMIT
 })
 
+let rules = fs.readFileSync(ruleConfigPath, 'utf8')
+rules = JSON.parse(rules)
+const rulesArray = Object.values(rules)
+const ruleKeys = rulesArray.map(({ key }) => key)
+const rulePorts = rulesArray.map(({ port }) => port)
+const ruleTitles = rulesArray.map(({ title }) => title)
+const ruleFailTexts = rulesArray.map(({ failText }) => failText)
+const ruleFailRules = rulesArray.map(({ failRule }) => failRule)
+const rulePassTexts = rulesArray.map(({ passText }) => passText)
+const rulePassRules = rulesArray.map(({ passRule }) => passRule)
+
+console.log(ruleKeys);
+console.log(rulePorts);
+console.log(ruleTitles);
+console.log(ruleFailTexts);
+console.log(ruleFailRules);
+console.log(rulePassTexts);
+console.log(rulePassRules);
+
 io.on('connection', (socket) => {
     console.log('Client connected')
     socket.emit('configUpdate', JSON.parse(fs.readFileSync(ruleConfigPath, 'utf8')))
@@ -35,25 +54,56 @@ io.on('connection', (socket) => {
     })
 })
 
-const handleLog = async (uuid, sequence, ip, action, result, timestamp, userAgent) => {
-    let conn
-    try {
-        conn = await pool.getConnection()
-        const res = await conn.query('INSERT INTO test_table3 (uuid, sequence, ip, action, result, timestamp, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?)', [uuid, sequence, ip, action, result, timestamp, userAgent])
-        console.log(res)
-    } catch (err) {
-        // throw err
-        console.log(err)
-    } finally {
-        if (conn) return conn.end()
-    }
-}
+const isPostDataTampered = (req, res, next) => {
+  const { uid, sequence, action, result } = req.body
+  
+  const sequenceIsSafe = Object.values(sequence).every((item) => {
+    return (
+      rulePorts.some((port) => port === item.port) &&
+      ruleTitles.some((title) => title === item.title) &&
+      ruleFailTexts.some((failText) => failText === item.failText) &&
+      ruleFailRules.some((failRule) => failRule === item.failRule) &&
+      rulePassTexts.some((passText) => passText === item.passText) &&
+      rulePassRules.some((passRule) => passRule === item.passRule) &&
+      ruleKeys.some((key) => key === item.key)
+    );
+  });
 
-app.post('/api/data', (req, res) => {
+  const actionAndResultAreSafe = () => {
+    return (
+        action === "restart" || "retry" || "start" &&
+        result === "pass" || "fail"
+    )
+  }
+
+  const validUUIDLength = 36; 
+
+const uuidIsSafe = () => {
+  const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  return uuidPattern.test(uid) && uid.length === validUUIDLength;
+}
+  if (!sequenceIsSafe || !actionAndResultAreSafe || !uuidIsSafe) {
+    return res.status(400).json({ message: 'Data tampered' });
+  }
+  next();
+};
+
+app.post('/api/data', isPostDataTampered, async (req, res) => {
     const { uid, sequence, action, result } = req.body
     const sequenceJson = JSON.stringify(sequence);
     let timestamp = new Date();
-    handleLog(uid, sequenceJson, req.ip, action, result, timestamp, req.headers['user-agent'])
+    try {
+        conn = await pool.getConnection()
+        const queryResult  = await conn.query('INSERT INTO test_table3 (uuid, sequence, ip, action, result, timestamp, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?)', [uid, sequenceJson, req.ip, action, result, timestamp, req.headers['user-agent']])
+        console.log(queryResult)
+        res.status(200).json({ message: 'Data inserted successfully' });
+    } catch (err) {
+        // throw err
+        console.log(err)
+        res.status(500).json({ message: 'Error inserting data' });
+    } finally {
+        if (conn) return conn.end()
+    }
 })
 
 app.get('/api/rules', (req, res) => {
