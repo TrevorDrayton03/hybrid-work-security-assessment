@@ -47,7 +47,7 @@ Hex: #00b18f
 *,
 *:before,
 *:after {
-  /* specified width and height include borders, padding, and content */
+  /* specified width and height is all inclusive with respect to borders, padding, and content */
   box-sizing: border-box;
   font-family: 'Adelle', sans-serif !important;
 }
