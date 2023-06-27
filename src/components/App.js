@@ -321,9 +321,6 @@ function App() {
         start={handleStart}
         retry={handleRetry}
       />
-      <FeedbackMessage
-        appStatus={appStatus}
-      />
       {appStatus === "running" &&
         <ProgressIndicator
           key={currentRule.key}
@@ -331,6 +328,9 @@ function App() {
           currentRule={currentRule}
         />
       }
+      <FeedbackMessage
+        appStatus={appStatus}
+      />
       <RuleList
         ruleArray={ruleArray}
         appStatus={appStatus}

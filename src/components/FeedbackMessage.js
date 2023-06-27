@@ -16,17 +16,17 @@ const FeedbackMessage = ({ appStatus }) => {
                 </div>
             )}
             {appStatus === "running" && (
-                // null
-                <div>
-                    <em>
-                        Please standby, this may take a few minutes.
-                    </em>
-                </div>
+                null
+                // <div>
+                //     <em>
+                //         Please standby, this may take a few minutes.
+                //     </em>
+                // </div>
             )}
             {appStatus === "error" && (
                 <div>
                     <em>
-                        You did not pass the assessment due to your device not meeting the following security requirement:
+                        You did not pass the assessment due to the following security requirement:
                     </em>
                 </div>
             )}

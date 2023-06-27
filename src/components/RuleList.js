@@ -32,16 +32,16 @@ const RuleList = ({ ruleArray, appStatus, copy, uuid }) => {
                                 </div>
                                 <div className="col" style={{ padding: '0', textAlign: 'right' }}>
                                     <Button variant="secondary" onClick={() => copy()}>
-                                        Copy I.D. Number
+                                        Copy I.D.
                                     </Button>
                                 </div>
                             </Alert.Heading>
                             {rule.failText}
                             <br /><br />
-                            If you require assistance, please contact client services with your I.D. number: {uuid}.
+                            If you require assistance, please contact client services with your I.D. number: <b>{uuid}</b>.
                             <br></br>
                             <br></br>
-                            For your convenience, you can copy the I.D. number by using the Copy I.D. Number button,
+                            For your convenience, you can copy the I.D. number by using the Copy I.D. button
                             and you can find the contact information for the IT service desk from the link below.
                             <br /><br />
                             <a

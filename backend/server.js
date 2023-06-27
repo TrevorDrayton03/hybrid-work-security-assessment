@@ -26,24 +26,28 @@ const pool = mariadb.createPool({
     connectionLimit: process.env.DB_CONNECTION_LIMIT
 })
 
-let rules = fs.readFileSync(ruleConfigPath, 'utf8')
-rules = JSON.parse(rules)
+const rules = JSON.parse(fs.readFileSync(ruleConfigPath, 'utf8'))
+// rules = JSON.parse(rules)
 const rulesArray = Object.values(rules)
-const ruleKeys = rulesArray.map(({ key }) => key)
-const rulePorts = rulesArray.map(({ port }) => port)
-const ruleTitles = rulesArray.map(({ title }) => title)
-const ruleFailTexts = rulesArray.map(({ failText }) => failText)
-const ruleFailRules = rulesArray.map(({ failRule }) => failRule)
-const rulePassTexts = rulesArray.map(({ passText }) => passText)
-const rulePassRules = rulesArray.map(({ passRule }) => passRule)
+const safeKeys = rulesArray.map(({ key }) => key)
+const safePorts = rulesArray.map(({ port }) => port)
+const safeTitles = rulesArray.map(({ title }) => title)
+const safeFailTexts = rulesArray.map(({ failText }) => failText)
+const safeFailRules = rulesArray.map(({ failRule }) => failRule)
+const safePassTexts = rulesArray.map(({ passText }) => passText)
+const safePassRules = rulesArray.map(({ passRule }) => passRule)
+const safeMaxTries = rulesArray.map(({ maxTries }) => maxTries)
+const safePauseOnFail = rulesArray.map(({ pauseOnFail }) => pauseOnFail)
 
-console.log(ruleKeys);
-console.log(rulePorts);
-console.log(ruleTitles);
-console.log(ruleFailTexts);
-console.log(ruleFailRules);
-console.log(rulePassTexts);
-console.log(rulePassRules);
+console.log(safeKeys);
+console.log(safePorts);
+console.log(safeTitles);
+console.log(safeFailTexts);
+console.log(safeFailRules);
+console.log(safePassTexts);
+console.log(safePassRules);
+console.log(safeMaxTries);
+console.log(safePauseOnFail);
 
 io.on('connection', (socket) => {
     console.log('Client connected')
@@ -56,16 +60,23 @@ io.on('connection', (socket) => {
 
 const isPostDataTampered = (req, res, next) => {
   const { uid, sequence, action, result } = req.body
+  const safeHttpResponses = /[1-5]\d{2}/
+  const safeUUIDLength = 36
+  const safeUUIDPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  // const safeMaxTries = /\d{3}/
   
   const sequenceIsSafe = Object.values(sequence).every((item) => {
     return (
-      rulePorts.some((port) => port === item.port) &&
-      ruleTitles.some((title) => title === item.title) &&
-      ruleFailTexts.some((failText) => failText === item.failText) &&
-      ruleFailRules.some((failRule) => failRule === item.failRule) &&
-      rulePassTexts.some((passText) => passText === item.passText) &&
-      rulePassRules.some((passRule) => passRule === item.passRule) &&
-      ruleKeys.some((key) => key === item.key)
+      safePorts.some((safePort) => safePort === item.port) &&
+      safeTitles.some((safeTitle) => safeTitle === item.title) &&
+      safeFailTexts.some((safeFailText) => safeFailText === item.failText) &&
+      safeFailRules.some((safeFailRule) => safeFailRule === item.failRule) &&
+      safePassTexts.some((safePassText) => safePassText === item.passText) &&
+      safePassRules.some((safePassRule) => safePassRule === item.passRule) &&
+      safeKeys.some((safeKey) => safeKey === item.key) &&
+      safeMaxTries.some((safeMaxTries) => safeMaxTries === item.maxTries) &&
+      safePauseOnFail.some((safePauseOnFail) => safePauseOnFail === item.pauseOnFail) &&
+      (item.responseStatus ? (safeHttpResponses).test(item.responseStatus) || item.responseStatus === null : true) // because of the current way to test for bad response values
     );
   });
 
@@ -76,16 +87,14 @@ const isPostDataTampered = (req, res, next) => {
     )
   }
 
-  const validUUIDLength = 36; 
-
-const uuidIsSafe = () => {
-  const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-  return uuidPattern.test(uid) && uid.length === validUUIDLength;
-}
-  if (!sequenceIsSafe || !actionAndResultAreSafe || !uuidIsSafe) {
-    return res.status(400).json({ message: 'Data tampered' });
+  const uuidIsSafe = () => {
+    return safeUUIDPattern.test(uid) && uid.length === safeUUIDLength;
   }
-  next();
+
+  if (!sequenceIsSafe || !actionAndResultAreSafe || !uuidIsSafe) {
+    return res.status(405).json({ message: 'Data has been tampered with, ceasing request.' });
+  }
+    next();
 };
 
 app.post('/api/data', isPostDataTampered, async (req, res) => {

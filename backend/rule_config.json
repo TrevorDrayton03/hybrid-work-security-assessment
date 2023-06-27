@@ -10,7 +10,8 @@
     "failText": "You must be connected to the Global Protect VPN.",
     "passRule": "GP2",
     "failRule": "end",
-    "maxTries": 5
+    "maxTries": 5,
+    "pauseOnFail": true
   },
   "GP2": {
     "key": "GP2",
@@ -20,7 +21,8 @@
     "failText": "You must use Windows or Mac operating system.",
     "passRule": "GP3",
     "failRule": "end",
-    "maxTries": 5
+    "maxTries": 5,
+    "pauseOnFail": true
   },
   "GP3": {
     "key": "GP3",
@@ -30,7 +32,8 @@
     "failText": "You must turn on your antivirus.",
     "passRule": "GP4",
     "failRule": "end",
-    "maxTries": 5
+    "maxTries": 5,
+    "pauseOnFail": true
   },
   "GP4": {
     "key": "GP4",
@@ -40,7 +43,8 @@
     "failText": "Your antivirus must be on the following list of approved antivirus'...",
     "passRule": "GP5",
     "failRule": "end",
-    "maxTries": 5
+    "maxTries": 5,
+    "pauseOnFail": true
   },
   "GP5": {
     "key": "GP5",
@@ -50,7 +54,8 @@
     "failText": "Your antivirus definitions must be updated within 60 days",
     "passRule": "GP6",
     "failRule": "end",
-    "maxTries": 5
+    "maxTries": 5,
+    "pauseOnFail": true
   },
   "GP6": {
     "key": "GP6",
@@ -60,6 +65,7 @@
     "failText": "Your computer must have atleast 8GB of RAM.",
     "passRule": "end",
     "failRule": "end",
-    "maxTries": 5
+    "maxTries": 5,
+    "pauseOnFail": true
   }
 }
