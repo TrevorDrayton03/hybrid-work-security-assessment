@@ -27,7 +27,6 @@ const pool = mariadb.createPool({
 })
 
 const rules = JSON.parse(fs.readFileSync(ruleConfigPath, 'utf8'))
-// rules = JSON.parse(rules)
 const rulesArray = Object.values(rules)
 const safeKeys = rulesArray.map(({ key }) => key)
 const safePorts = rulesArray.map(({ port }) => port)
@@ -60,7 +59,7 @@ io.on('connection', (socket) => {
 
 const isPostDataTampered = (req, res, next) => {
   const { uid, sequence, action, result } = req.body
-  const safeHttpResponses = /[1-5]\d{2}/
+  const safeHttpResponses = /^[1-5]\d{2}$/
   const safeUUIDLength = 36
   const safeUUIDPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   // const safeMaxTries = /\d{3}/
@@ -76,7 +75,7 @@ const isPostDataTampered = (req, res, next) => {
       safeKeys.some((safeKey) => safeKey === item.key) &&
       safeMaxTries.some((safeMaxTries) => safeMaxTries === item.maxTries) &&
       safePauseOnFail.some((safePauseOnFail) => safePauseOnFail === item.pauseOnFail) &&
-      (item.responseStatus ? (safeHttpResponses).test(item.responseStatus) || item.responseStatus === null : true) // because of the current way to test for bad response values
+    ((safeHttpResponses).test(item.responseStatus) || item.responseStatus === null) // null due to current way of testing for failures
     );
   });
 
@@ -91,7 +90,7 @@ const isPostDataTampered = (req, res, next) => {
     return safeUUIDPattern.test(uid) && uid.length === safeUUIDLength;
   }
 
-  if (!sequenceIsSafe || !actionAndResultAreSafe || !uuidIsSafe) {
+  if (!sequenceIsSafe || !actionAndResultAreSafe() || !uuidIsSafe()) {
     return res.status(405).json({ message: 'Data has been tampered with, ceasing request.' });
   }
     next();

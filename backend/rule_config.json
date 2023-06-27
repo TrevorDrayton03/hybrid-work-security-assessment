@@ -11,7 +11,7 @@
     "passRule": "GP2",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": true
+    "pauseOnFail": false
   },
   "GP2": {
     "key": "GP2",
@@ -22,7 +22,7 @@
     "passRule": "GP3",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": true
+    "pauseOnFail": false
   },
   "GP3": {
     "key": "GP3",
@@ -33,7 +33,7 @@
     "passRule": "GP4",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": true
+    "pauseOnFail": false
   },
   "GP4": {
     "key": "GP4",
@@ -44,7 +44,7 @@
     "passRule": "GP5",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": true
+    "pauseOnFail": false
   },
   "GP5": {
     "key": "GP5",
@@ -55,7 +55,7 @@
     "passRule": "GP6",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": true
+    "pauseOnFail": false
   },
   "GP6": {
     "key": "GP6",
