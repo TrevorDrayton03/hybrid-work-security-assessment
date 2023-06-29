@@ -118,22 +118,6 @@ html {
   pointer-events: none;
 }
 
-/* @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-} */
-
-/* @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-  */
-
 .App-header h1 {
   display: flex;
   flex-direction: row;
@@ -149,7 +133,7 @@ html {
   border-radius: 0 !important;
   font-size: 1.125rem !important;
   color: white !important;
-  width: 200px;
+  width: 250px;
   margin: 5px;
 }
 
@@ -164,14 +148,14 @@ html {
 }
 
 .btn-primary {
-  width: 180px;
+  /* width: 180px; */
   padding: 0 !important;
   background-color: var(--color-tru-teal) !important;
   border-color: var(--color-tru-teal) !important;
 }
 
 .btn-primary2 {
-  width: 180px;
+  /* width: 180px; */
   padding: 0 !important;
   background-color: var(--color-tru-bluebg) !important;
   border-color: var(--color-tru-bluebg) !important;
@@ -181,6 +165,21 @@ html {
   filter: none !important;
   background-color: var(--color-tru-teal) !important;
   border-color: var(--color-tru-teal) !important;
+  transition: none !important;
+}
+
+.btn-primary3 {
+  /* width: 180px; */
+  padding: 0 !important;
+  background-color: var(--color-tru-ol-green) !important;
+  border-color: var(--color-tru-ol-green) !important;
+}
+
+.btn-primary3:hover {
+  filter: none !important;
+  /* background-color: var(--color-tru-teal) !important;
+  border-color: var(--color-tru-teal) !important; */
+  filter: brightness(115%);
   transition: none !important;
 }
 

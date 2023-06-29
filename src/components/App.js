@@ -156,7 +156,21 @@ function App() {
   }
 
   /**
-   * Used to set the state of the app for the next security check; called in handleRuleChange 
+   * Handles the continue button click event.
+   * 
+   * This function updates the application status to 'running', sets the current rule to the next rule in the sequence,
+   * resets the progress percentage, and sets the number of tries to the initial value.
+   */
+  const handleContinue = () => {
+    setAction('continue')
+    setAppStatus('running')
+    setCurrentRule(Object.values(rules).find(rule => rule.key === currentRule.passRule))
+    setProgressPercentage(0)
+    setTries(firstTry)
+  }
+
+  /**
+   * Used to set the state of the app for the next security check (aka rule); called in handleRuleChange 
    * and sets the next security check using the rule passed as an argument.
    * 
    * @param {string} nextRule - the key value of the next rule to be evaluated
@@ -173,7 +187,7 @@ function App() {
    * This asynchronous function is called when a rule change occurs.
    * 
    * It evaluates the current rule and response status to determine the next actions, 
-   * contains a small timeout to help the UI run smoother, and
+   * contains a short timeout to help the UI run smoother, and
    * appends the response status and uuid to the current rule before adding them to the rule array.
    */
   const handleRuleChange = async () => {
@@ -190,6 +204,10 @@ function App() {
       if (responseStatus >= 200 && responseStatus <= 299) {
         setAppStatus("completed")
         result = "pass"
+      }
+      else if (currentRule.pauseOnFail === true) {
+        setAppStatus("paused")
+        result = "fail"
       }
       else {
         setAppStatus("error")
@@ -320,6 +338,7 @@ function App() {
         appStatus={appStatus}
         start={handleStart}
         retry={handleRetry}
+        continu={handleContinue}
       />
       {appStatus === "running" &&
         <ProgressIndicator

@@ -26,7 +26,7 @@ const FeedbackMessage = ({ appStatus }) => {
             {appStatus === "error" && (
                 <div>
                     <em>
-                        You did not pass the assessment due to the following security requirement:
+                        You failed the following security check:
                     </em>
                 </div>
             )}
@@ -37,6 +37,13 @@ const FeedbackMessage = ({ appStatus }) => {
                 //         Your assessment has completed.
                 //     </em>
                 // </div>
+            )}
+            {appStatus === "paused" && (
+            <div>
+                <em>
+                    You failed the following security check:
+                </em>
+            </div>
             )}
         </div>
     )

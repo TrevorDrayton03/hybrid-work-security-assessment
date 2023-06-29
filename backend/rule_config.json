@@ -19,7 +19,7 @@
     "title": "Valid Operating System",
     "passText": "Success",
     "failText": "You must use Windows or Mac operating system.",
-    "passRule": "GP3",
+    "passRule": "GP6",
     "failRule": "end",
     "maxTries": 5,
     "pauseOnFail": false
@@ -44,7 +44,7 @@
     "passRule": "GP5",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": false
+    "pauseOnFail": true
   },
   "GP5": {
     "key": "GP5",
@@ -52,7 +52,7 @@
     "title": "Valid Antivirus Definitions",
     "passText": "Success",
     "failText": "Your antivirus definitions must be updated within 60 days",
-    "passRule": "GP6",
+    "passRule": "end",
     "failRule": "end",
     "maxTries": 5,
     "pauseOnFail": false
@@ -63,7 +63,7 @@
     "title": "Sufficient Amount of RAM",
     "passText": "Success",
     "failText": "Your computer must have atleast 8GB of RAM.",
-    "passRule": "end",
+    "passRule": "GP3",
     "failRule": "end",
     "maxTries": 5,
     "pauseOnFail": true

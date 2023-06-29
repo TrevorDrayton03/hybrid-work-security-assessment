@@ -3,17 +3,22 @@ import Button from 'react-bootstrap/Button'
 /**
  * Displays the control button(s) based on the application status.
  * @param {string} appStatus - The application status.
- * @param {function} start - The function to start the application.
- * @param {function} retry - The function to retry the failed check.
+ * @param {function} start - The function to start the application from the firstRule.
+ * @param {function} retry - The function to retry a failed check.
+ * @param {function} continu - The function to continue the application when it's paused on a rule.
  */
-const ControlButton = ({ appStatus, start, retry }) => {
+const ControlButton = ({ appStatus, start, retry, continu }) => {
     let buttonContent
+    const restartText = "Restart From Beginning"
+    const retryText = "Retry Failed Check"
+    const startText = "Start"
+    const continueText = "Continue To Next Check"
 
     switch (appStatus) {
         case 'idle':
             buttonContent = (
                 <Button variant="primary" onClick={() => start('start')}>
-                    Start
+                    {startText}
                 </Button>
             )
             break
@@ -21,10 +26,10 @@ const ControlButton = ({ appStatus, start, retry }) => {
             buttonContent = (
                 <div style={{ padding: '0', margin: '0' }}>
                     <Button variant="primary" onClick={() => start('restart')}>
-                        Restart
+                        {restartText}
                     </Button>
                     <Button variant="primary2" onClick={retry}>
-                        Retry Failed Check
+                        {retryText}
                     </Button>
                 </div>
             )
@@ -32,8 +37,23 @@ const ControlButton = ({ appStatus, start, retry }) => {
         case 'completed':
             buttonContent = (
                 <Button variant="primary" onClick={() => start('restart')}>
-                    Restart
+                    {restartText}
                 </Button>
+            )
+            break
+        case 'paused':
+            buttonContent = (
+                <div style={{ padding: '0', margin: '0' }}>
+                <Button variant="primary" onClick={() => start('restart')}>
+                    {restartText}
+                </Button>
+                <Button variant="primary2" onClick={retry}>
+                    {retryText}
+                </Button>
+                <Button variant="primary2" onClick={continu}>
+                    {continueText}
+                </Button>
+            </div>
             )
             break
         default:
