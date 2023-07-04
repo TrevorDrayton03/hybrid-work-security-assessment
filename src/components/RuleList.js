@@ -13,14 +13,14 @@ import Button from 'react-bootstrap/Button'
  */
 const RuleList = ({ ruleArray, appStatus, copy, uuid }) => {
     return (
-        <div style={{ padding: '10px' }}>
+        <div style={{ padding: '10px', flex:1 }}>
             {Object.values(ruleArray).map((rule) => {
                 return (
                     ((rule.responseStatus > 299 || rule.responseStatus === null) && rule.failRule.toLowerCase() === "end") ? (
                         <Alert
                             key={rule.key}
                             variant='danger'
-                            className="width-flex"
+                            // className="width-flex"
                             style={{ paddingBottom: '5px', paddingTop: '5px', textAlign: 'left' }}
                         >
                             <Alert.Heading
@@ -37,29 +37,30 @@ const RuleList = ({ ruleArray, appStatus, copy, uuid }) => {
                                 </div>
                             </Alert.Heading>
                             {rule.failText}
-                            <br /><br />
-                            If you require assistance, please contact client services with the I.D. number: <b>{uuid}</b>.
-                            <br></br>
-                            <br></br>
-                            For your convenience, you can copy the I.D. number by using the Copy I.D. button
-                            and you can find the contact information for the IT service desk from the link below.
-                            <br /><br />
-                            <a
-                                href="https://tru.teamdynamix.com/TDClient/84/Portal/Home/"
-                                alt="https://tru.teamdynamix.com/TDClient/84/Portal/Home/"
-                                target="_blank"
-                                rel="noreferrer"
-                            >
-                                IT Services Portal
-                            </a>
                         </Alert>
                     ) : null
                 )
             })}
-            {appStatus === 'completed' && (
+            {ruleArray.some(rule => rule.responseStatus > 299 || rule.responseStatus === null) && (
+                    <div>
+                            <p>If you require assistance, please contact client services with the I.D. number: <b>{uuid}</b>.</p>
+                                For your convenience, you can copy the I.D. number by using the Copy I.D. button
+                                and you can find the contact information for the IT service desk from&nbsp;
+                                <a
+                                    href="https://tru.teamdynamix.com/TDClient/84/Portal/Home/"
+                                    alt="https://tru.teamdynamix.com/TDClient/84/Portal/Home/"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                            here.
+                        </a>
+                    </div>
+                )
+            }
+            {!ruleArray.some(rule => rule.responseStatus > 299 || rule.responseStatus === null) && appStatus === 'completed' && (
                 < Alert
                     variant='primary'
-                    className="width-flex"
+                    // className="width-flex"
                     style={{ paddingBottom: '5px', paddingTop: '5px', textAlign: 'left' }}
                 >
                     <Alert.Heading
@@ -82,7 +83,8 @@ const RuleList = ({ ruleArray, appStatus, copy, uuid }) => {
                     <br></br>
                     For your convenience, you can copy the I.D. number by using the Copy I.D. Number button,
                     which IT Services may require from you. If you lose it, you can run this assessment again for a new one.
-                </Alert>)
+                </Alert>
+                )
             }
         </div >
     )

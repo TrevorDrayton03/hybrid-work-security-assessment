@@ -26,7 +26,7 @@ const FeedbackMessage = ({ appStatus }) => {
             {appStatus === "error" && (
                 <div>
                     <em>
-                        You failed the following security check:
+                        You failed the following security check(s):
                     </em>
                 </div>
             )}
@@ -41,7 +41,7 @@ const FeedbackMessage = ({ appStatus }) => {
             {appStatus === "paused" && (
             <div>
                 <em>
-                    You failed the following security check:
+                    You failed the following security check(s):
                 </em>
             </div>
             )}

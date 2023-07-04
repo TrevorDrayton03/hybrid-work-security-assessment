@@ -327,13 +327,14 @@ function App() {
   }, [rules, currentRule, appStatus])
 
   return (
-    <div className="App">
+    <div className="App-container">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="TRU Logo" />
-        <h1>
-          Hybrid Work-from-Home <br /> Pre-Screening Assessment
-        </h1>
       </header>
+      <div className="App">
+        <h1>
+            Hybrid Work-from-Home Pre-Screening Assessment
+        </h1>
       <ControlButton
         appStatus={appStatus}
         start={handleStart}
@@ -357,6 +358,7 @@ function App() {
         uuid={uuid}
       />
     </div>
+  </div>
   )
 }
 

@@ -10,7 +10,7 @@ import Button from 'react-bootstrap/Button'
 const ControlButton = ({ appStatus, start, retry, continu }) => {
     let buttonContent
     const restartText = "Restart From Beginning"
-    const retryText = "Retry Failed Check"
+    const retryText = "Retry Last Check"
     const startText = "Start"
     const continueText = "Continue To Next Check"
 
@@ -50,7 +50,7 @@ const ControlButton = ({ appStatus, start, retry, continu }) => {
                 <Button variant="primary2" onClick={retry}>
                     {retryText}
                 </Button>
-                <Button variant="primary2" onClick={continu}>
+                <Button variant="primary3" onClick={continu}>
                     {continueText}
                 </Button>
             </div>
@@ -61,7 +61,7 @@ const ControlButton = ({ appStatus, start, retry, continu }) => {
     }
 
     return (
-        <div style={appStatus !== 'running' ? { padding: '20px' } : { padding: '5px' }}>
+        <div style={appStatus !== 'running' ? { padding: '20px', paddingLeft: 0 } : { padding: '5px', paddingLeft: 0 }}>
             {buttonContent}
         </div>
     )

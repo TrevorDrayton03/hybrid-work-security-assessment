@@ -77,6 +77,7 @@ html {
   color: var(--color-tru-panel-paragraph) !important;
   padding: 1.15em !important;
   border-radius: 0 !important;
+  width:100% !important;
 }
 
 .alert-danger {
@@ -96,10 +97,14 @@ html {
 }
 
 .App {
-  text-align: center;
+  margin: 50px;
+}
+
+.App-container {
+  text-align: left;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: left;
+  align-items: left;
   flex: 1;
   flex-direction: column;
   /* smoother and more legible texts to firefox on mac */
@@ -108,7 +113,8 @@ html {
   -webkit-font-smoothing: antialiased;
   /* 30px is the margin below for left and right side */
   width: (100vw - 30px);
-  margin: 15px;
+  /* margin: 50px; */
+  margin-top: 0;
   margin-bottom: 100px;
 }
 
@@ -118,7 +124,13 @@ html {
   pointer-events: none;
 }
 
-.App-header h1 {
+.App-header {
+  background: var(--color-tru-blue);
+  margin: 0;
+  text-align: center;
+}
+
+.App-container h1 {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -127,6 +139,7 @@ html {
   font-size: 2.125rem;
   color: var(--color-tru-blue);
   flex: 1;
+  margin: 0;
 }
 
 .btn {
@@ -171,12 +184,12 @@ html {
 .btn-primary3 {
   /* width: 180px; */
   padding: 0 !important;
-  background-color: var(--color-tru-ol-green) !important;
-  border-color: var(--color-tru-ol-green) !important;
+  background-color: var(--color-ol-green) !important;
+  border-color: var(--color-ol-green) !important;
 }
 
 .btn-primary3:hover {
-  filter: none !important;
+  /* filter: none !important; */
   /* background-color: var(--color-tru-teal) !important;
   border-color: var(--color-tru-teal) !important; */
   filter: brightness(115%);
@@ -203,6 +216,11 @@ html {
 /* .spinner-border {
   color: var(--color-tru-blue) !important;
 } */
+
+#root {
+  /* background: var(--color-tru-blue); */
+  /* height: 125px !important; */
+}
 
 .spinner-border-sm {
   --bs-spinner-width: 1.25rem !important;
