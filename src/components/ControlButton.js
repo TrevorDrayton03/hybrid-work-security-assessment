@@ -61,7 +61,7 @@ const ControlButton = ({ appStatus, start, retry, continu }) => {
     }
 
     return (
-        <div style={appStatus !== 'running' ? { padding: '20px', paddingLeft: 0 } : { padding: '5px', paddingLeft: 0 }}>
+        <div style={appStatus !== 'running' ? { padding: '20px 20px 20px 0px'} : { padding: '5px 10px 5px 0px'}}>
             {buttonContent}
         </div>
     )

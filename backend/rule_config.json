@@ -26,7 +26,7 @@
   },
   "GP3": {
     "key": "GP3",
-    "port": 4004,
+    "port": 4003,
     "title": "Antivirus Enabled",
     "passText": "Success",
     "failText": "You must turn on your antivirus.",
@@ -59,7 +59,7 @@
   },
   "GP6": {
     "key": "GP6",
-    "port": 4004,
+    "port": 4003,
     "title": "Sufficient Amount of RAM",
     "passText": "Success",
     "failText": "Your computer must have atleast 8GB of RAM.",

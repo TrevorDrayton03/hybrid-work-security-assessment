@@ -98,6 +98,8 @@ html {
 
 .App {
   margin: 50px;
+  margin-left: clamp(20px, 15vw, 400px);
+  margin-right: clamp(20px, 15vw, 400px);
 }
 
 .App-container {
@@ -111,15 +113,11 @@ html {
   -moz-osx-font-smoothing: grayscale;
   /* smoother and more legible texts to webkit browsers on mac and windows */
   -webkit-font-smoothing: antialiased;
-  /* 30px is the margin below for left and right side */
-  width: (100vw - 30px);
-  /* margin: 50px; */
   margin-top: 0;
   margin-bottom: 100px;
 }
 
 .App-logo {
-  /* height: 15vmin; */
   height:125px;
   pointer-events: none;
 }
@@ -147,7 +145,9 @@ html {
   font-size: 1.125rem !important;
   color: white !important;
   width: 250px;
-  margin: 5px;
+  margin: 5px 10px 5px 0px;
+  /* margin-left: 0;
+  margin-right: 10px; */
 }
 
 .btn:active,
@@ -161,14 +161,12 @@ html {
 }
 
 .btn-primary {
-  /* width: 180px; */
   padding: 0 !important;
   background-color: var(--color-tru-teal) !important;
   border-color: var(--color-tru-teal) !important;
 }
 
 .btn-primary2 {
-  /* width: 180px; */
   padding: 0 !important;
   background-color: var(--color-tru-bluebg) !important;
   border-color: var(--color-tru-bluebg) !important;
@@ -182,16 +180,12 @@ html {
 }
 
 .btn-primary3 {
-  /* width: 180px; */
   padding: 0 !important;
   background-color: var(--color-ol-green) !important;
   border-color: var(--color-ol-green) !important;
 }
 
 .btn-primary3:hover {
-  /* filter: none !important; */
-  /* background-color: var(--color-tru-teal) !important;
-  border-color: var(--color-tru-teal) !important; */
   filter: brightness(115%);
   transition: none !important;
 }
@@ -200,6 +194,7 @@ html {
   color: var(--color-tru-blue) !important;
   background-color: var(--color-tru-yellow) !important;
   border-color: var(--color-tru-yellow) !important;
+  width: 125px !important;
 }
 
 .btn-secondary:hover {
@@ -217,11 +212,6 @@ html {
   color: var(--color-tru-blue) !important;
 } */
 
-#root {
-  /* background: var(--color-tru-blue); */
-  /* height: 125px !important; */
-}
-
 .spinner-border-sm {
   --bs-spinner-width: 1.25rem !important;
   --bs-spinner-height: 1.25rem !important;
@@ -235,10 +225,4 @@ html {
 .spinner-grow-sm {
   --bs-spinner-width: 1.25rem !important;
   --bs-spinner-height: 1.25rem !important;
-}
-
-.width-flex {
-  min-width: 200px;
-  max-width: 637px;
-  width: 90vw;
 }

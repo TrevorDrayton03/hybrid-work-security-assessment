@@ -18,7 +18,6 @@ const ProgressIndicator = ({ progressPercentage, currentRule }) => {
                 // animated
                 now={progressPercentage}
                 key={currentRule.key}
-                className="width-flex"
                 style={{ height: '25px', borderRadius: '0' }}
             />
         </div>
