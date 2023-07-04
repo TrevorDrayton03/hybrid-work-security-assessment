@@ -6,7 +6,7 @@ import React from "react"
  */
 const FeedbackMessage = ({ appStatus }) => {
     return (
-        <div style={{ paddingBottom: appStatus === 'completed' ? '5px' : '15px' }}>
+        <div style={{ paddingBottom: appStatus === 'completed' ? 0 : '15px' }}>
             {appStatus === "idle" && (
                 // null
                 <div>
@@ -39,12 +39,13 @@ const FeedbackMessage = ({ appStatus }) => {
                 // </div>
             )}
             {appStatus === "paused" && (
-            <div>
-                <em>
-                    You failed the following security check(s):
-                </em>
-            </div>
+                <div>
+                    <em>
+                        You failed the following security check(s):
+                    </em>
+                </div>
             )}
+            {/* new condition: completed with errors */}
         </div>
     )
 }

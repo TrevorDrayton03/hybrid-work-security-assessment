@@ -340,6 +340,7 @@ function App() {
         start={handleStart}
         retry={handleRetry}
         continu={handleContinue}
+        copy={handleCopy}
       />
       {appStatus === "running" &&
         <ProgressIndicator
@@ -354,7 +355,6 @@ function App() {
       <RuleList
         ruleArray={ruleArray}
         appStatus={appStatus}
-        copy={handleCopy}
         uuid={uuid}
       />
     </div>

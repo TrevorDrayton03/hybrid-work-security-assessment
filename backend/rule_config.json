@@ -37,10 +37,10 @@
   },
   "GP4": {
     "key": "GP4",
-    "port": 4003,
+    "port": 4004,
     "title": "Antivirus Approval",
     "passText": "Success",
-    "failText": "Your antivirus must be on the following list of approved antivirus'...",
+    "failText": "Your antivirus must be on the following list of approved antiviruses...",
     "passRule": "GP5",
     "failRule": "end",
     "maxTries": 5,
