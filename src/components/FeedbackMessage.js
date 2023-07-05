@@ -11,7 +11,7 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength, isLastRule }) => 
     let totalRulesCount = ruleList.length
 
     return (
-        <div style={{ paddingBottom: appStatus === 'completed' ? 0 : '15px' }}>
+        <div style={{ paddingBottom: appStatus === 'completed' || appStatus === 'paused' ? 0 : '15px' }}>
             {appStatus === "idle" && (
                 <div>
                     <em>
@@ -34,7 +34,7 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength, isLastRule }) => 
             {appStatus === "completed" && (
                 <div>
                     <em>
-                    {endPathLength !== null ? "You passed " + passedRulesCount + "/" + endPathLength + " security check(s). ": null} 
+                        {endPathLength !== null ? "You passed " + passedRulesCount + "/" + endPathLength + " security check(s). ": null} 
                     </em>
                 </div>
                 // if completed without errors
@@ -44,11 +44,13 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength, isLastRule }) => 
             )}
             {appStatus === "paused" && (
                 <div>
-                    <em>
+                    <p>
                     {endPathLength !== null ? "You passed " + passedRulesCount + "/" + endPathLength + " security check(s). ": null} 
-                    {/* {endPathLength !== null ? "You failed the following " + (endPathLength-X) + " security check(s): " : "You failed the following security check(s): "}                     */}
-                    You failed the following security check(s):
-                    </em>
+                        <em>
+                            {/* {endPathLength !== null ? "You failed the following " + (endPathLength-X) + " security check(s): " : "You failed the following security check(s): "}                     */}
+                            You failed the following security check(s):
+                        </em>
+                    </p>
                 </div>
             )}
         </div>
