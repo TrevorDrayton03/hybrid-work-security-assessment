@@ -8,7 +8,6 @@ const http = require('http').Server(app)
 const port = 80
 const cors = require('cors')
 const buildPath = path.join(__dirname, '..', 'build')
-const io = require('socket.io')(http)
 require('dotenv').config({ path: path.join(__dirname, '../.env') })
 const ruleConfigPath = path.join(__dirname, process.env.CONFIG_PATH)
 
@@ -48,22 +47,12 @@ const safePauseOnFail = rulesArray.map(({ pauseOnFail }) => pauseOnFail)
 // console.log(safeMaxTries);
 // console.log(safePauseOnFail);
 
-io.on('connection', (socket) => {
-    console.log('Client connected')
-    socket.emit('configUpdate', JSON.parse(fs.readFileSync(ruleConfigPath, 'utf8')))
-
-    socket.on('disconnect', () => {
-        console.log('Client disconnected')
-    })
-})
-
 const isPostDataTampered = (req, res, next) => {
   const { uid, sequence, action, result } = req.body
   const safeHttpResponses = /^[1-5]\d{2}$/
   const safeUUIDLength = 36
   const safeUUIDPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-  // const safeMaxTries = /\d{3}/
-  
+
   const sequenceIsSafe = Object.values(sequence).every((item) => {
     return (
       safePorts.some((safePort) => safePort === item.port) &&
@@ -121,18 +110,6 @@ app.get('/api/rules', (req, res) => {
     } catch (err) {
         console.error('Error reading file:', err)
         res.status(500).send('Error reading file')
-    }
-})
-
-fs.watchFile(ruleConfigPath, (curr, prev) => {
-    if (curr.mtime > prev.mtime) {
-        fs.readFile(ruleConfigPath, 'utf8', (err, data) => {
-            if (!err) {
-                const config = JSON.parse(data)
-                io.emit('configUpdate', config)
-                console.log("config update emitted")
-            }
-        })
     }
 })
 

@@ -26,7 +26,6 @@
  * Libraries/Dependencies:
  * React: JavaScript library for building user interfaces.
  * Bootstrap: Popular CSS framework for responsive and mobile-first web development.
- * Socket.io: WebSocket functionality for real-time updates, used to relay changes made to the rules_config.json file to the front-end client.
  * MariaDB: Database management system for storing the data of the security check assessments.
  * Express: Web application framework for building server side applications in Node.js.
  * react-scripts: Configuration and scripts for running a React application in development and production environments.
@@ -51,9 +50,6 @@ import FeedbackMessage from './FeedbackMessage'
 import RuleList from './RuleList'
 import { v4 as uuidv4 } from 'uuid'
 import 'whatwg-fetch'
-import openSocket from 'socket.io-client'
-const socket = openSocket('http://localhost:80')
-
 
 function App() {
 
@@ -95,11 +91,8 @@ function App() {
    * OnComponentDidMount Side Effect (called once after rendering)
    * 
    * This side effect fetches the rules_config.json file and store the config data in the rules state.
-   * Then, it establishes a socket that is used to emit the rules_config.json file to the front end when the config is altered.
    * 
    * @param {function} fetch - fetches the rules_config.json file from the server
-   * @param {function} socket.on - listens for the configUpdate event from the server
-   * @param {function} socket.disconnect - disconnects the socket when the component unmounts
    */
   useEffect(() => { 
     fetch("/api/rules")
@@ -111,15 +104,6 @@ function App() {
       .catch(error => {
         console.error('Error:', error)
       })
-
-    socket.on('configUpdate', (newConfig) => {
-      setRules(newConfig);
-      setCurrentRule(Object.values(newConfig).find(data => data.key === firstRule))
-    });
-
-    return () => {
-      socket.disconnect();
-    };
   }, []);
 
   /**
