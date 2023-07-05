@@ -176,6 +176,9 @@ html {
 }
 
 .btn-secondary {
+  width: 110px;
+  padding: 10px 25px 10px 25px !important;
+  margin: 0 !important;
   color: var(--color-tru-blue) !important;
   background-color: var(--color-tru-yellow) !important;
   border-color: var(--color-tru-yellow) !important;

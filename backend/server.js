@@ -38,15 +38,15 @@ const safePassRules = rulesArray.map(({ passRule }) => passRule)
 const safeMaxTries = rulesArray.map(({ maxTries }) => maxTries)
 const safePauseOnFail = rulesArray.map(({ pauseOnFail }) => pauseOnFail)
 
-console.log(safeKeys);
-console.log(safePorts);
-console.log(safeTitles);
-console.log(safeFailTexts);
-console.log(safeFailRules);
-console.log(safePassTexts);
-console.log(safePassRules);
-console.log(safeMaxTries);
-console.log(safePauseOnFail);
+// console.log(safeKeys);
+// console.log(safePorts);
+// console.log(safeTitles);
+// console.log(safeFailTexts);
+// console.log(safeFailRules);
+// console.log(safePassTexts);
+// console.log(safePassRules);
+// console.log(safeMaxTries);
+// console.log(safePauseOnFail);
 
 io.on('connection', (socket) => {
     console.log('Client connected')

@@ -4,11 +4,15 @@ import React from "react"
  * Displays a feedback message based on the application status.
  * @param {string} appStatus - The application status.
  */
-const FeedbackMessage = ({ appStatus }) => {
+// if endPathLength is not null then there is a concrete path to the last rule
+const FeedbackMessage = ({ appStatus, ruleList, endPathLength, isLastRule }) => {
+    let failedRulesCount = ruleList.filter(rule => rule.responseStatus !== 200).length
+    let passedRulesCount = ruleList.filter(rule => rule.responseStatus === 200).length
+    let totalRulesCount = ruleList.length
+
     return (
         <div style={{ paddingBottom: appStatus === 'completed' ? 0 : '15px' }}>
             {appStatus === "idle" && (
-                // null
                 <div>
                     <em>
                         Press the start button to begin your assessment.
@@ -17,35 +21,36 @@ const FeedbackMessage = ({ appStatus }) => {
             )}
             {appStatus === "running" && (
                 null
-                // <div>
-                //     <em>
-                //         Please standby, this may take a few minutes.
-                //     </em>
-                // </div>
             )}
             {appStatus === "error" && (
                 <div>
                     <em>
-                        You failed the following security check(s):
+                    {/* {endPathLength !== null ? "You passed " + X + "/" + Y + " security check(s). ": null}  */}
+                    {/* {endPathLength !== null ? "You failed the following " + (Y-X) + " security check(s): " : "You failed the following security check(s): "} */}
+                    You failed the following security check(s):
                     </em>
                 </div>
             )}
             {appStatus === "completed" && (
-                null
-                // <div>
-                //     <em>
-                //         Your assessment has completed.
-                //     </em>
-                // </div>
+                <div>
+                    <em>
+                    {endPathLength !== null ? "You passed " + passedRulesCount + "/" + endPathLength + " security check(s). ": null} 
+                    </em>
+                </div>
+                // if completed without errors
+                    // null
+                // if completed with errors
+                    // You completed the X out of Y security checks with (Y-X) errors. Please review the errors below.
             )}
             {appStatus === "paused" && (
                 <div>
                     <em>
-                        You failed the following security check(s):
+                    {endPathLength !== null ? "You passed " + passedRulesCount + "/" + endPathLength + " security check(s). ": null} 
+                    {/* {endPathLength !== null ? "You failed the following " + (endPathLength-X) + " security check(s): " : "You failed the following security check(s): "}                     */}
+                    You failed the following security check(s):
                     </em>
                 </div>
             )}
-            {/* new condition: completed with errors */}
         </div>
     )
 }

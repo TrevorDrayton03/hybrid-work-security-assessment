@@ -1,19 +1,30 @@
 import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
+import { RiFileCopy2Line } from "react-icons/ri";
+import React, { useState } from "react"
 
 /**
  * The panel component.
  *
  * Maintains a list of each rule that has been processed. 
  * One panel is visible when the current rule fails and failRule is 'end' or if the process completes successfully. 
- * @param {object} ruleArray - The array of assessed rules.
+ * @param {object} ruleList - The array of assessed rules.
  * @param {string} appStatus - The application status.
  * @param {string} uuid - The UUID.
  */
-const RuleList = ({ ruleArray, appStatus, uuid }) => {
+const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
+    const [isCopied, setIsCopied] = useState(false);
+
+    const handleClick = () => {
+      setIsCopied(true);
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 2000);
+    };
+
     return (
         <div style={{ padding: '10px', flex:1, paddingLeft: 0 }}>
-            {Object.values(ruleArray).map((rule) => {
+            {Object.values(ruleList).map((rule) => {
                 return (
                     ((rule.responseStatus > 299 || rule.responseStatus === null) && rule.failRule.toLowerCase() === "end") ? (
                         <Alert
@@ -34,28 +45,34 @@ const RuleList = ({ ruleArray, appStatus, uuid }) => {
                     ) : null
                 )
             })}
-            {ruleArray.some(rule => rule.responseStatus > 299 || rule.responseStatus === null) && (
+            {ruleList.some(rule => rule.responseStatus > 299 || rule.responseStatus === null) && appStatus !== "running" && (
                     <div>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            Reference number:&nbsp;<b>{uuid}</b>&nbsp;
+                            <Button
+                                variant="secondary"
+                                style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                                onClick={() => { copy(); handleClick(); }}
+                            >
+                                {isCopied ? 'Copied!' : <RiFileCopy2Line style={{alignSelf:'center'}} size={27} />}
+                            </Button>
+                        </div>
                         <p>
-                            Reference number: <b>{uuid}</b>.
-                        </p>
-                        <p>
-                            If you require assistance, please contact client services with the reference number.
-                            For your convenience, you can copy the reference number by using the Copy Reference Number button
-                            and you can find the contact information for the IT service desk from&nbsp;
+                            If you require assistance, please contact&nbsp;  
                             <a
                                 href="https://tru.teamdynamix.com/TDClient/84/Portal/Home/"
                                 alt="https://tru.teamdynamix.com/TDClient/84/Portal/Home/"
                                 target="_blank"
                                 rel="noreferrer"
                                 >
-                                here.
+                                IT Services
                             </a>
+                            &nbsp;with the reference number.
                         </p>
                     </div>
                 )
             }
-            {!ruleArray.some(rule => rule.responseStatus > 299 || rule.responseStatus === null) && appStatus === 'completed' && (
+            {!ruleList.some(rule => rule.responseStatus > 299 || rule.responseStatus === null) && appStatus === 'completed' && (
                 <div style={{padding:0, margin:0}}>
                     < Alert
                         variant='primary'
@@ -71,12 +88,18 @@ const RuleList = ({ ruleArray, appStatus, uuid }) => {
                         </Alert.Heading>
                         Your pre-screening assessment completed successfully without error.
                     </Alert>
-                    <p>
-                        Reference number: <b>{uuid}</b>.
-                    </p>
-                    <p>
-                        For your convenience, you can copy the reference number by using the Copy Reference Number button,
-                        which&nbsp;
+                    <div>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            Reference number:&nbsp;<b>{uuid}</b>&nbsp;
+                        <Button
+                                variant="secondary"
+                                style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                                onClick={() => { copy(); handleClick(); }}
+                            >
+                                {isCopied ? 'Copied!' : <RiFileCopy2Line style={{alignSelf:'center'}} size={27} />}
+                            </Button>
+                            </div>
+                        <p>  
                             <a
                                 href="https://tru.teamdynamix.com/TDClient/84/Portal/Home/"
                                 alt="https://tru.teamdynamix.com/TDClient/84/Portal/Home/"
@@ -84,9 +107,10 @@ const RuleList = ({ ruleArray, appStatus, uuid }) => {
                                 rel="noreferrer"
                                 >
                                 IT Services
-                            </a> 
-                        &nbsp;may require from you. If you lose it, you can run this assessment again for a new one.
-                    </p>
+                            </a>
+                                &nbsp;may require this reference number. If you lose it, you can run this assessment again for a new one.
+                        </p>
+                    </div>
                 </div>
                 )
             }

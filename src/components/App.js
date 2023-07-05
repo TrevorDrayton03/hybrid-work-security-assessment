@@ -54,6 +54,7 @@ import 'whatwg-fetch'
 import openSocket from 'socket.io-client'
 const socket = openSocket('http://localhost:80')
 
+
 function App() {
 
   /**
@@ -71,7 +72,7 @@ function App() {
    * State Variables
    * 
    * appStatus refers to whether the entire app is running, idle, completed, or error (which is completed with a failed mandatory security check)
-   * responseStatus refers to the http response status code; it gets appended to rules added to the ruleArray
+   * responseStatus refers to the http response status code; it gets appended to rules added to the ruleList
    * rules is the rules_config.json data
    * currentRule refers to the rule currently undergoing security assessment (the current rule in the flow chart / sequence of rules)
    * tries refers to the count for the number of fetch requests for the current rule, which increments until each rule's maxTries
@@ -84,10 +85,11 @@ function App() {
   const [rules, setRules] = useState({})
   const [currentRule, setCurrentRule] = useState(null)
   const [tries, setTries] = useState(firstTry)
-  const [ruleArray, setRuleArray] = useState([])
+  const [ruleList, setRuleList] = useState([])
   const [progressPercentage, setProgressPercentage] = useState(0)
   const [uuid, setUuid] = useState(null)
   const [action, setAction] = useState(null)
+  const [endPathLength, setEndPathLength] = useState(null)
 
   /**
    * OnComponentDidMount Side Effect (called once after rendering)
@@ -133,7 +135,7 @@ function App() {
     setAppStatus('running')
     if (appStatus !== 'running') {
       setProgressPercentage(0)
-      setRuleArray([])
+      setRuleList([])
       setCurrentRule(Object.values(rules).find(rule => rule.key === firstRule))
       setTries(firstTry)
     }
@@ -148,9 +150,9 @@ function App() {
   const handleRetry = () => {
     setAction('retry')
     setAppStatus('running')
-    let ruleArrayCopy = ruleArray
-    ruleArrayCopy.shift()
-    setRuleArray(ruleArrayCopy)
+    let ruleListCopy = ruleList
+    ruleListCopy.shift()
+    setRuleList(ruleListCopy)
     setProgressPercentage(0)
     setTries(firstTry)
   }
@@ -192,23 +194,29 @@ function App() {
    */
   const handleRuleChange = async () => {
     await new Promise((resolve) => setTimeout(resolve, 500))
+    // go to next rule on pass
     if (currentRule.passRule.toLowerCase() !== "end" && (responseStatus >= 200 && responseStatus <= 299)) {
       changeRule(currentRule.passRule)
     }
+    // go to next rule on fail
     // null response status here
     else if (currentRule.failRule.toLowerCase() !== "end" && (responseStatus > 299 || responseStatus === null)) {
       changeRule(currentRule.failRule)
     }
+    // do not go to a new rule
     else {
       let result
+      // because completed
       if (responseStatus >= 200 && responseStatus <= 299) {
         setAppStatus("completed")
         result = "pass"
       }
+      // because failed with pause (continue option)
       else if (currentRule.pauseOnFail === true) {
         setAppStatus("paused")
         result = "fail"
       }
+      // because failed without pause (end)
       else {
         setAppStatus("error")
         result = "fail"
@@ -216,7 +224,7 @@ function App() {
       currentRule.responseStatus = responseStatus
       let id = uuidv4()
       setUuid(id)
-      let rArray = [currentRule, ...ruleArray] // synchronous solution 
+      let rArray = [currentRule, ...ruleList] // synchronous solution 
       const response = await fetch('/api/data', {
         method: 'POST',
         headers: {
@@ -238,7 +246,7 @@ function App() {
     if (!currentRule.responseStatus) {
       currentRule.responseStatus = responseStatus
     }
-    setRuleArray(prevArray => [currentRule, ...prevArray])
+    setRuleList(prevArray => [currentRule, ...prevArray])
   }
 
   /**
@@ -257,8 +265,8 @@ function App() {
    * A useful side effect for debugging.
    */
   // useEffect(() => {
-  //   console.log(appStatus, responseStatus, currentRule, tries, ruleArray)
-  // }, [appStatus, responseStatus, currentRule, tries, ruleArray])
+  //   console.log(appStatus, responseStatus, currentRule, tries, ruleList)
+  // }, [appStatus, responseStatus, currentRule, tries, ruleList])
 
   /**
    * Side effect that manages the progress bar percentage.
@@ -326,6 +334,29 @@ function App() {
     }
   }, [rules, currentRule, appStatus])
 
+  useEffect(() => {
+    // if all of the next rules have a passrule and the failrule is end & we reach the last rule (both are end)
+    // then we define Y, otherwise Y is null, which will be used to determine the feedback message
+    // starting from the last rule in ruleList (which is being inserted into the first position)
+    if(ruleList.length !== 0) {
+      let tempCurrentRule = ruleList[0]
+      // for as long as the pass rule has a passRule and the failRule is end
+      let count = 0
+        while (tempCurrentRule.passRule.toLowerCase() !== "end" && tempCurrentRule.failRule.toLowerCase() === "end") {
+          // make the currentRule to the next pass rule
+          tempCurrentRule = rules[tempCurrentRule.passRule]
+          count++
+          // if we have reached the final rule, then the current rule's passrule and failrule are end
+          if (tempCurrentRule.passRule.toLowerCase() === "end" && tempCurrentRule.failRule.toLowerCase() === "end") {
+            setEndPathLength(ruleList.length + count)
+            break
+          } else {
+            setEndPathLength(null)
+        }
+      }
+    }
+  }, [ruleList])
+
   return (
     <div className="App-container">
       <header className="App-header">
@@ -341,6 +372,7 @@ function App() {
         retry={handleRetry}
         continu={handleContinue}
         copy={handleCopy}
+        isLastRule={currentRule && currentRule.passRule.toLowerCase() === "end" && currentRule.failRule.toLowerCase() === "end"}
       />
       {appStatus === "running" &&
         <ProgressIndicator
@@ -351,11 +383,15 @@ function App() {
       }
       <FeedbackMessage
         appStatus={appStatus}
+        ruleList={ruleList}
+        endPathLength={endPathLength}
+        isLastRule={currentRule && currentRule.passRule.toLowerCase() === "end" && currentRule.failRule.toLowerCase() === "end"}
       />
       <RuleList
-        ruleArray={ruleArray}
+        ruleList={ruleList}
         appStatus={appStatus}
         uuid={uuid}
+        copy={handleCopy}
       />
     </div>
   </div>

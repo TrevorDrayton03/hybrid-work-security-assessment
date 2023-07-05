@@ -8,13 +8,13 @@ import Button from 'react-bootstrap/Button'
  * @param {function} continu - The function to continue the application when it's paused on a rule.
  * @param {function} copy - The function to copy the UUID.
  */
-const ControlButton = ({ appStatus, start, retry, continu, copy }) => {
+const ControlButton = ({ appStatus, start, retry, continu, copy, isLastRule }) => {
     let buttonContent
-    const restartText = "Restart From Beginning"
+    const restartText = "Restart From Beginning" 
     const retryText = "Retry Last Check"
     const startText = "Start"
     const continueText = "Continue To Next Check"
-    const copyButtonName ="Copy Reference Number"
+    // const copyButtonName = "Copy Reference Number"
 
     switch (appStatus) {
         case 'idle':
@@ -33,9 +33,9 @@ const ControlButton = ({ appStatus, start, retry, continu, copy }) => {
                     <Button variant="primary2" onClick={retry}>
                         {retryText}
                     </Button>
-                    <Button variant="secondary" onClick={() => copy()}>
+                    {/* <Button variant="secondary" onClick={() => copy()}>
                         {copyButtonName}
-                    </Button>
+                    </Button> */}
                 </div>
             )
             break
@@ -45,9 +45,9 @@ const ControlButton = ({ appStatus, start, retry, continu, copy }) => {
                     <Button variant="primary" onClick={() => start('restart')}>
                         {restartText}
                     </Button>
-                    <Button variant="secondary" onClick={() => copy()}>
+                    {/* <Button variant="secondary" onClick={() => copy()}>
                         {copyButtonName}
-                    </Button>
+                    </Button> */}
                 </div>
             )
             break
@@ -60,12 +60,12 @@ const ControlButton = ({ appStatus, start, retry, continu, copy }) => {
                     <Button variant="primary2" onClick={retry}>
                         {retryText}
                     </Button>
-                    <Button variant="primary3" onClick={continu}>
+                    {!isLastRule && <Button variant="primary3" onClick={continu}>
                         {continueText}
-                    </Button>
-                    <Button variant="secondary" onClick={() => copy()}>
+                    </Button>}
+                    {/* <Button variant="secondary" onClick={() => copy()}>
                         {copyButtonName}
-                    </Button>
+                    </Button> */}
                 </div>
             )
             break
