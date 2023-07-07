@@ -11,7 +11,7 @@
     "passRule": "GP2",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": false
+    "pauseOnFail": true
   },
   "GP2": {
     "key": "GP2",
@@ -22,7 +22,7 @@
     "passRule": "GP3",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": false
+    "pauseOnFail": true
   },
   "GP3": {
     "key": "GP3",
@@ -33,11 +33,11 @@
     "passRule": "GP4",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": false
+    "pauseOnFail": true
   },
   "GP4": {
     "key": "GP4",
-    "port": 4003,
+    "port": 4004,
     "title": "Antivirus Approval",
     "passText": "Success",
     "failText": "Your antivirus must be on the following list of approved antiviruses...",
@@ -59,7 +59,7 @@
   },
   "GP6": {
     "key": "GP6",
-    "port": 4004,
+    "port": 4003,
     "title": "Sufficient Amount of RAM",
     "passText": "Success",
     "failText": "Your computer must have atleast 8GB of RAM.",

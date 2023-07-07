@@ -5,7 +5,7 @@ import React from "react"
  * @param {string} appStatus - The application status.
  */
 // if endPathLength is not null then there is a concrete path to the last rule
-const FeedbackMessage = ({ appStatus, ruleList, endPathLength, isLastRule }) => {
+const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
     let failedRulesCount = ruleList.filter(rule => rule.responseStatus !== 200).length
     let passedRulesCount = ruleList.filter(rule => rule.responseStatus === 200).length
     let totalRulesCount = ruleList.length
@@ -33,14 +33,13 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength, isLastRule }) => 
             )}
             {appStatus === "completed" && (
                 <div>
-                    <em>
-                        {endPathLength !== null ? "You passed " + passedRulesCount + "/" + endPathLength + " security check(s). ": null} 
-                    </em>
+                    <p>
+                    You have completed the assessment. &nbsp;
+                        <em>
+                            {endPathLength !== null ? "You passed " + passedRulesCount + "/" + endPathLength + " security check(s). ": null} 
+                        </em>
+                    </p>
                 </div>
-                // if completed without errors
-                    // null
-                // if completed with errors
-                    // You completed the X out of Y security checks with (Y-X) errors. Please review the errors below.
             )}
             {appStatus === "paused" && (
                 <div>

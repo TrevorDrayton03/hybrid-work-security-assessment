@@ -2,7 +2,7 @@
  * Hybrid Work-from-Home Pre-Screening Assessment
  *
  * This application assesses security requirements of staff devices to ensure they meet the necessary criteria for safely connecting remotely 
- * to TRU's network as part of the hybrid Work-from-Home program.
+ * to TRU's network as part of the hybrid Work-from-Home program. It was initialized using create-react-app.
  *
  * Main Component
  * 
@@ -24,6 +24,7 @@
  * - Complies to ES6 standards.
  * 
  * Libraries/Dependencies:
+ * Node.js: JavaScript runtime environment.
  * React: JavaScript library for building user interfaces.
  * Bootstrap: Popular CSS framework for responsive and mobile-first web development.
  * MariaDB: Database management system for storing the data of the security check assessments.
@@ -80,8 +81,10 @@ function App() {
   const [responseStatus, setResponseStatus] = useState(null)
   const [rules, setRules] = useState({})
   const [currentRule, setCurrentRule] = useState(null)
-  const [tries, setTries] = useState(firstTry)
   const [ruleList, setRuleList] = useState([])
+  const [retryRules, setRetryRules] = useState(null)
+  const [currentRetryRule, setCurrentRetryRule] = useState(null)
+  const [tries, setTries] = useState(firstTry)
   const [progressPercentage, setProgressPercentage] = useState(0)
   const [uuid, setUuid] = useState(null)
   const [action, setAction] = useState(null)
@@ -128,17 +131,28 @@ function App() {
   /**
    * Handles the retry button click event.
    * 
-   * This function updates the application status to 'running', removes the last rule from the rule array,
-   * resets the progress percentage, and sets the number of tries to the initial value.
    */
-  const handleRetry = () => {
+  const handleRetry = async () => {
     setAction('retry')
-    setAppStatus('running')
-    let ruleListCopy = ruleList
-    ruleListCopy.shift()
-    setRuleList(ruleListCopy)
+    setAppStatus('retry')
     setProgressPercentage(0)
     setTries(firstTry)
+    let retryRules = Object.values(ruleList).filter(rule => rule.responseStatus !== 200)
+    let updatedRetryRules = retryRules.map((rule, index, array) => {
+      if (index < array.length - 1) {
+        return {
+          ...rule,
+          nextRule: array[index + 1].key
+        };
+      } else {
+        return {
+          ...rule,
+          nextRule: null
+        };
+      }
+    });
+    setRetryRules(updatedRetryRules);
+    setCurrentRetryRule(updatedRetryRules[0])
   }
 
   /**
@@ -161,7 +175,7 @@ function App() {
    * 
    * @param {string} nextRule - the key value of the next rule to be evaluated
    */
-  const changeRule = (nextRule) => {
+  const changeToRule = (nextRule) => {
     setCurrentRule(Object.values(rules).find(rule => rule.key === nextRule))
     setTries(firstTry)
     setResponseStatus(null)
@@ -180,20 +194,35 @@ function App() {
     await new Promise((resolve) => setTimeout(resolve, 500))
     // go to next rule on pass
     if (currentRule.passRule.toLowerCase() !== "end" && (responseStatus >= 200 && responseStatus <= 299)) {
-      changeRule(currentRule.passRule)
+      changeToRule(currentRule.passRule)
     }
     // go to next rule on fail
     // null response status here
     else if (currentRule.failRule.toLowerCase() !== "end" && (responseStatus > 299 || responseStatus === null)) {
-      changeRule(currentRule.failRule)
+      changeToRule(currentRule.failRule)
     }
     // do not go to a new rule
     else {
+      let rList = [currentRule, ...ruleList] // synchronous solution for posting immediately
+      let id = uuidv4()
       let result
-      // because completed
-      if (responseStatus >= 200 && responseStatus <= 299) {
-        setAppStatus("completed")
-        result = "pass"
+      // if (responseStatus >= 200 && responseStatus <= 299) {
+      // because completed (assessed the last rule)
+      if (currentRule.passRule.toLowerCase() === "end" && currentRule.failRule.toLowerCase() === "end") {
+        // see if all the rules in rList have a responseStatus of 200
+        if (rList.every(rule => rule.responseStatus === 200)) {
+          setAppStatus("completed")
+          result = "completed successfully"
+        }
+        // see if for all rule without a responseStatus of 200 has a warning of true
+        else if (rList.filter(rule => rule.responseStatus !== 200).every(rule => rule.warning === true)) {
+          setAppStatus("completed")
+          result = "completed successfully with warning(s)"
+        }
+        else {
+          setAppStatus("completed")
+          result = "completed unsuccessfully"
+          }
       }
       // because failed with pause (continue option)
       else if (currentRule.pauseOnFail === true) {
@@ -206,9 +235,7 @@ function App() {
         result = "fail"
       }
       currentRule.responseStatus = responseStatus
-      let id = uuidv4()
       setUuid(id)
-      let rArray = [currentRule, ...ruleList] // synchronous solution 
       const response = await fetch('/api/data', {
         method: 'POST',
         headers: {
@@ -216,7 +243,7 @@ function App() {
         },
         body: JSON.stringify({
           uid: id,
-          sequence: rArray,
+          sequence: rList,
           action: action,
           result: result
         }),
@@ -231,6 +258,43 @@ function App() {
       currentRule.responseStatus = responseStatus
     }
     setRuleList(prevArray => [currentRule, ...prevArray])
+  }
+
+  const handleRetryRuleChange = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    if(currentRetryRule.nextRule !== null) {
+      setTries(firstTry)
+      setProgressPercentage(0)
+      // setCurrentRetryRule(retryRules[currentRetryRule.nextRule])
+      let nextRetryRule = Object.values(retryRules).find(rule => rule.key === currentRetryRule.nextRule);
+      setCurrentRetryRule(nextRetryRule)
+    } else if (currentRetryRule.nextRule === null) {
+      let result
+      let id = uuidv4()
+      let rList
+      // determining app status and result
+      // if() {
+         setAppStatus("completed")
+      // }
+      setUuid(id)
+      const response = await fetch('/api/data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uid: id,
+          sequence: rList,
+          action: action,
+          result: result
+        }),
+      })
+      if (response.ok) {
+        console.log('Data posted successfully')
+      } else {
+        console.log('Failed to post data')
+      }
+    }
   }
 
   /**
@@ -248,9 +312,9 @@ function App() {
   /**
    * A useful side effect for debugging.
    */
-  // useEffect(() => {
-  //   console.log(appStatus, responseStatus, currentRule, tries, ruleList)
-  // }, [appStatus, responseStatus, currentRule, tries, ruleList])
+  useEffect(() => {
+    console.log(appStatus, responseStatus, currentRule, tries, ruleList)
+  }, [appStatus, responseStatus, currentRule, tries, ruleList])
 
   /**
    * Side effect that manages the progress bar percentage.
@@ -270,8 +334,11 @@ function App() {
    * It calls handleRuleChange when progress percentage reaches 100%.
    */
   useEffect(() => {
-    if (progressPercentage >= 100) {
+    if (progressPercentage >= 100 && appStatus === "running") {
       handleRuleChange()
+    }
+    else if (progressPercentage >= 100 && appStatus === "retry") {
+      handleRetryRuleChange()
     }
   }, [progressPercentage])
 
@@ -283,11 +350,12 @@ function App() {
    * It sets the number of tries, breaks the fetch loop if necessary, and sets the progress percentage to 100.
    */
   useEffect(() => {
+    let currentTries = tries
+    let shouldBreak = false
+    let response = null
     if (appStatus === 'running') {
       (async () => {
-        let currentTries = tries
-        let shouldBreak = false
-        let response = null
+        // this loop is looking for changes in the response status
         while (currentTries < currentRule.maxTries && !shouldBreak) {
           try {
             response = await fetch(baseUrl + currentRule.port)
@@ -316,13 +384,54 @@ function App() {
         }
       })()
     }
-  }, [rules, currentRule, appStatus])
+  }, [currentRule, appStatus])
 
   useEffect(() => {
-    // if all of the next rules have a passrule and the failrule is end & we reach the last rule (both are end)
-    // then we define Y, otherwise Y is null, which will be used to determine the feedback message
+    let currentTries = tries
+    let shouldBreak = false
+    let response = null
+
+    if (appStatus === "retry") {
+      (async () => {
+        while (currentTries < currentRetryRule.maxTries && !shouldBreak) {
+          try {
+            console.log(typeof currentRetryRule, " currentRetryRule")
+            console.log(typeof retryRules, " retryRules")
+            response = await fetch(baseUrl + currentRetryRule.port)
+            let status = response.status
+            if (currentRetryRule.responseStatus !== status) {
+              setProgressPercentage(100);
+              shouldBreak = true;
+              setRetryRules(prevRetryRules => {
+                let updatedRetryRules = [...prevRetryRules];
+                console.log(typeof updatedRetryRules)
+                let index = updatedRetryRules.findIndex(rule => rule.key === currentRetryRule.key);
+                if (index !== -1) {
+                  updatedRetryRules[index] = {
+                    ...updatedRetryRules[index],
+                    responseStatus: status
+                  }
+                }
+                return updatedRetryRules;
+              })
+            }            
+          } catch (error) {
+            console.log(error)
+          }
+          await new Promise((resolve) => setTimeout(resolve, 100))
+          if (!shouldBreak) {
+            currentTries++
+            setTries(currentTries)
+          }
+        }
+      })()
+    }
+  }, [currentRetryRule, appStatus])
+
+  // assesses if an endpathlength is calculable and if so, calculates it
+  useEffect(() => {
     // starting from the last rule in ruleList (which is being inserted into the first position)
-    if(ruleList.length !== 0) {
+    if(ruleList.length !== 0 && appStatus !== 'retry') {
       let tempCurrentRule = ruleList[0]
       // for as long as the pass rule has a passRule and the failRule is end
       let count = 0
@@ -350,35 +459,34 @@ function App() {
         <h1>
             Hybrid Work-from-Home Pre-Screening Assessment
         </h1>
-      <ControlButton
-        appStatus={appStatus}
-        start={handleStart}
-        retry={handleRetry}
-        continu={handleContinue}
-        copy={handleCopy}
-        isLastRule={currentRule && currentRule.passRule.toLowerCase() === "end" && currentRule.failRule.toLowerCase() === "end"}
-      />
-      {appStatus === "running" &&
-        <ProgressIndicator
-          key={currentRule.key}
-          progressPercentage={progressPercentage}
-          currentRule={currentRule}
+        <ControlButton
+          appStatus={appStatus}
+          start={handleStart}
+          retry={handleRetry}
+          continu={handleContinue}
+          hasErrors={ruleList.some(rule => rule.responseStatus !== 200)}
         />
-      }
-      <FeedbackMessage
-        appStatus={appStatus}
-        ruleList={ruleList}
-        endPathLength={endPathLength}
-        isLastRule={currentRule && currentRule.passRule.toLowerCase() === "end" && currentRule.failRule.toLowerCase() === "end"}
-      />
-      <RuleList
-        ruleList={ruleList}
-        appStatus={appStatus}
-        uuid={uuid}
-        copy={handleCopy}
-      />
+        {(appStatus === "running" || appStatus === "retry") &&
+          <ProgressIndicator
+            key={currentRule.key}
+            progressPercentage={progressPercentage}
+            currentRule={currentRule}
+            currentRetryRule={currentRetryRule}
+          />
+        }
+        <FeedbackMessage
+          appStatus={appStatus}
+          ruleList={ruleList}
+          endPathLength={endPathLength}
+        />
+        <RuleList
+          ruleList={ruleList}
+          appStatus={appStatus}
+          uuid={uuid}
+          copy={handleCopy}
+        />
+      </div>
     </div>
-  </div>
   )
 }
 
