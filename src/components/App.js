@@ -138,7 +138,19 @@ function App() {
     setProgressPercentage(0)
     setTries(firstTry)
     let retryRules = Object.values(ruleList).filter(rule => rule.responseStatus !== 200)
-    let updatedRetryRules = retryRules.map((rule, index, array) => {
+    // let updatedRetryRules = retryRules.map((rule, index, array) => {
+    //   if (index < array.length - 1) {
+    //     return {
+    //       ...rule,
+    //       nextRule: array[index + 1].key
+    //     };
+    //   } else {
+    //     return {
+    //       ...rule,
+    //       nextRule: null
+    //     };
+    //   }
+    let updatedRetryRules = [...retryRules].reverse().map((rule, index, array) => {
       if (index < array.length - 1) {
         return {
           ...rule,
@@ -151,8 +163,10 @@ function App() {
         };
       }
     });
+    
     setRetryRules(updatedRetryRules);
     setCurrentRetryRule(updatedRetryRules[0])
+    // setCurrentRetryRule(updatedRetryRules[updatedRetryRules.length - 1])
   }
 
   /**
@@ -192,75 +206,79 @@ function App() {
    */
   const handleRuleChange = async () => {
     await new Promise((resolve) => setTimeout(resolve, 500))
-    // go to next rule on pass
-    if (currentRule.passRule.toLowerCase() !== "end" && (responseStatus >= 200 && responseStatus <= 299)) {
+    currentRule.responseStatus = responseStatus
+    if (isPassRule(currentRule)) {
       changeToRule(currentRule.passRule)
-    }
-    // go to next rule on fail
-    // null response status here
-    else if (currentRule.failRule.toLowerCase() !== "end" && (responseStatus > 299 || responseStatus === null)) {
+    } else if (isFailRule(currentRule)) {
       changeToRule(currentRule.failRule)
-    }
-    // do not go to a new rule
-    else {
-      currentRule.responseStatus = responseStatus
-      let rList = [currentRule, ...ruleList] // synchronous solution for posting immediately
-      console.log(rList, " rList")
-      let id = uuidv4()
-      let result
-      // if (responseStatus >= 200 && responseStatus <= 299) {
-      // because completed (assessed the last rule)
-      if (currentRule.passRule.toLowerCase() === "end" && currentRule.failRule.toLowerCase() === "end") {
-        // see if all the rules in rList have a responseStatus of 200
-        if (rList.every(rule => rule.responseStatus === 200)) {
-          setAppStatus("completed")
-          result = "completed successfully"
-        }
-        // see if for all rule without a responseStatus of 200 has a warning of true
-        else if (rList.filter(rule => rule.responseStatus !== 200).every(rule => rule.warning === true)) {
-          setAppStatus("completed")
-          result = "completed successfully with warning(s)"
-        }
-        else {
-          setAppStatus("completed")
-          result = "completed unsuccessfully"
-          }
-      }
-      // because failed with pause (continue option)
-      else if (currentRule.pauseOnFail === true) {
-        setAppStatus("paused")
-        result = "fail"
-      }
-      // because failed without pause (end)
-      else {
-        setAppStatus("error")
-        result = "fail"
-      }
-      setUuid(id)
-      const response = await fetch('/api/data', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          uid: id,
-          sequence: rList,
-          action: action,
-          result: result
-        }),
-      })
-      if (response.ok) {
-        console.log('Data posted successfully')
-      } else {
-        console.log('Failed to post data')
-      }
-    }
-    if (!currentRule.responseStatus) {
-      currentRule.responseStatus = responseStatus
+    } else {
+      handleNoRuleChange(currentRule, ruleList);
     }
     setRuleList(prevArray => [currentRule, ...prevArray])
   }
-
+  
+  const isPassRule = (currentRule) => {
+    return currentRule.passRule.toLowerCase() !== "end" && (currentRule.responseStatus >= 200 && currentRule.responseStatus <= 299);
+  }
+  
+  const isFailRule = (currentRule) => {
+    return currentRule.failRule.toLowerCase() !== "end" && (currentRule.responseStatus > 299 || currentRule.responseStatus === null);
+  }
+  
+  const handleNoRuleChange = async (currentRule, ruleList) => {
+    let rList = [currentRule, ...ruleList] // synchronous solution for posting immediately
+    let id = uuidv4()
+    setUuid(id)
+    let result
+  
+    if (isEndRule(currentRule)) {
+      result = handleEndRule(rList);
+    } else if (currentRule.pauseOnFail === true) {
+      setAppStatus("paused")
+      result = "incomplete"
+    } else {
+      setAppStatus("error")
+      result = "incomplete"
+    }
+  
+    const response = await fetch('/api/data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        uid: id,
+        sequence: rList,
+        action: action,
+        result: result
+      }),
+    })
+    if (response.ok) {
+      console.log('Data posted successfully')
+    } else {
+      console.log('Failed to post data')
+    }
+  }
+  
+  const isEndRule = (currentRule) => {
+    return currentRule.passRule.toLowerCase() === "end" && currentRule.failRule.toLowerCase() === "end";
+  }
+  
+  const handleEndRule = (rList) => {
+    let result;
+    if (rList.every(rule => rule.responseStatus === 200)) {
+      setAppStatus("completed")
+      result = "completed successfully"
+    } else if (rList.filter(rule => rule.responseStatus !== 200).every(rule => rule.warning === true)) {
+      setAppStatus("completed")
+      result = "completed successfully with warning(s)"
+    } else {
+      setAppStatus("completed")
+      result = "completed unsuccessfully"
+    }
+    return result;
+  }
+  
   const handleRetryRuleChange = async () => {
     await new Promise((resolve) => setTimeout(resolve, 500))
     if(currentRetryRule.nextRule !== null) {
@@ -271,12 +289,29 @@ function App() {
     } else if (currentRetryRule.nextRule === null) {
       let result
       let id = uuidv4()
-      let rList
-      // determining app status and result
-      // if() {
-         setAppStatus("completed")
-      // }
       setUuid(id)
+      let rList = [...ruleList]
+
+      rList = rList.map(rule => {
+        let retryRule = retryRules.find(r => r.key === rule.key)
+        if (retryRule && rule.responseStatus !== retryRule.responseStatus) {
+          rule.responseStatus = retryRule.responseStatus
+        }
+        return rule
+      })
+
+      setRuleList(rList)
+
+      if (isEndRule(currentRetryRule)) {
+        result = handleEndRule(rList);
+      } else if (currentRetryRule.pauseOnFail === true) {
+        setAppStatus("paused")
+        result = "incomplete"
+      } else {
+        setAppStatus("error")
+        result = "incomplete"
+      }
+
       const response = await fetch('/api/data', {
         method: 'POST',
         headers: {
@@ -294,6 +329,7 @@ function App() {
       } else {
         console.log('Failed to post data')
       }
+      setCurrentRetryRule(null)
     }
   }
 
