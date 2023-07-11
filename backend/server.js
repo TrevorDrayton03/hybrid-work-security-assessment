@@ -71,7 +71,7 @@ const isPostDataTampered = (req, res, next) => {
   const actionAndResultAreSafe = () => {
     return (
         (action === "restart" || action === "retry" || action === "start" || action === "continue") &&
-        (result === "pass" || result === "fail")
+        (result === "incomplete" || result === "completed successfully" || result === "successfully with warning(s)" || result === "completed unsuccessfully")
     )
 }
 
