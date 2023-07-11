@@ -203,7 +203,9 @@ function App() {
     }
     // do not go to a new rule
     else {
+      currentRule.responseStatus = responseStatus
       let rList = [currentRule, ...ruleList] // synchronous solution for posting immediately
+      console.log(rList, " rList")
       let id = uuidv4()
       let result
       // if (responseStatus >= 200 && responseStatus <= 299) {
@@ -234,7 +236,6 @@ function App() {
         setAppStatus("error")
         result = "fail"
       }
-      currentRule.responseStatus = responseStatus
       setUuid(id)
       const response = await fetch('/api/data', {
         method: 'POST',
@@ -265,7 +266,6 @@ function App() {
     if(currentRetryRule.nextRule !== null) {
       setTries(firstTry)
       setProgressPercentage(0)
-      // setCurrentRetryRule(retryRules[currentRetryRule.nextRule])
       let nextRetryRule = Object.values(retryRules).find(rule => rule.key === currentRetryRule.nextRule);
       setCurrentRetryRule(nextRetryRule)
     } else if (currentRetryRule.nextRule === null) {
@@ -313,8 +313,8 @@ function App() {
    * A useful side effect for debugging.
    */
   useEffect(() => {
-    console.log(appStatus, responseStatus, currentRule, tries, ruleList)
-  }, [appStatus, responseStatus, currentRule, tries, ruleList])
+    console.log(appStatus, responseStatus, currentRule, tries, ruleList, action)
+  }, [appStatus, responseStatus, currentRule, tries, ruleList, action])
 
   /**
    * Side effect that manages the progress bar percentage.

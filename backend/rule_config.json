@@ -37,7 +37,7 @@
   },
   "GP4": {
     "key": "GP4",
-    "port": 4004,
+    "port": 4003,
     "title": "Antivirus Approval",
     "passText": "Success",
     "failText": "Your antivirus must be on the following list of approved antiviruses...",
@@ -48,7 +48,7 @@
   },
   "GP5": {
     "key": "GP5",
-    "port": 4004,
+    "port": 4003,
     "title": "Valid Antivirus Definitions",
     "passText": "Success",
     "failText": "Your antivirus definitions must be updated within 60 days",
@@ -59,7 +59,7 @@
   },
   "GP6": {
     "key": "GP6",
-    "port": 4003,
+    "port": 4004,
     "title": "Sufficient Amount of RAM",
     "passText": "Success",
     "failText": "Your computer must have atleast 8GB of RAM.",

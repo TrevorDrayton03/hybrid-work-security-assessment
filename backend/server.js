@@ -70,10 +70,11 @@ const isPostDataTampered = (req, res, next) => {
 
   const actionAndResultAreSafe = () => {
     return (
-        action === "restart" || "retry" || "start" || "continue" &&
-        result === "pass" || "fail"
+        (action === "restart" || action === "retry" || action === "start" || action === "continue") &&
+        (result === "pass" || result === "fail")
     )
-  }
+}
+
 
   const uuidIsSafe = () => {
     return safeUUIDPattern.test(uid) && uid.length === safeUUIDLength;
