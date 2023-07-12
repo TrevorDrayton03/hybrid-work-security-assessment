@@ -1,5 +1,5 @@
 /**
- * Hybrid Work-from-Home Pre-Screening Assessment
+ * Hybrid Work-from-Home Security Assessment
  *
  * This application assesses security requirements of staff devices to ensure they meet the necessary criteria for safely connecting remotely 
  * to TRU's network as part of the hybrid Work-from-Home program. It was initialized using create-react-app.
@@ -138,18 +138,6 @@ function App() {
     setProgressPercentage(0)
     setTries(firstTry)
     let retryRules = Object.values(ruleList).filter(rule => rule.responseStatus !== 200)
-    // let updatedRetryRules = retryRules.map((rule, index, array) => {
-    //   if (index < array.length - 1) {
-    //     return {
-    //       ...rule,
-    //       nextRule: array[index + 1].key
-    //     };
-    //   } else {
-    //     return {
-    //       ...rule,
-    //       nextRule: null
-    //     };
-    //   }
     let updatedRetryRules = [...retryRules].reverse().map((rule, index, array) => {
       if (index < array.length - 1) {
         return {
@@ -163,10 +151,8 @@ function App() {
         };
       }
     });
-    
     setRetryRules(updatedRetryRules);
     setCurrentRetryRule(updatedRetryRules[0])
-    // setCurrentRetryRule(updatedRetryRules[updatedRetryRules.length - 1])
   }
 
   /**
@@ -232,7 +218,7 @@ function App() {
     let result
   
     if (isEndRule(currentRule)) {
-      result = handleEndRule(rList);
+      result = handleEndRuleResult(rList);
     } else if (currentRule.pauseOnFail === true) {
       setAppStatus("paused")
       result = "incomplete"
@@ -264,15 +250,15 @@ function App() {
     return currentRule.passRule.toLowerCase() === "end" && currentRule.failRule.toLowerCase() === "end";
   }
   
-  const handleEndRule = (rList) => {
+  const handleEndRuleResult = (rList) => {
     let result;
-    if (rList.every(rule => rule.responseStatus === 200)) {
+    if (rList.every(rule => rule.responseStatus === 200)) { 
       setAppStatus("completed")
       result = "completed successfully"
-    } else if (rList.filter(rule => rule.responseStatus !== 200).every(rule => rule.warning === true)) {
+    } else if (rList.filter(rule => rule.responseStatus !== 200).every(rule => rule.warning === true)) { 
       setAppStatus("completed")
       result = "completed successfully with warning(s)"
-    } else {
+    } else { 
       setAppStatus("completed")
       result = "completed unsuccessfully"
     }
@@ -303,7 +289,7 @@ function App() {
       setRuleList(rList)
 
       if (isEndRule(currentRetryRule)) {
-        result = handleEndRule(rList);
+        result = handleEndRuleResult(rList);
       } else if (currentRetryRule.pauseOnFail === true) {
         setAppStatus("paused")
         result = "incomplete"
@@ -493,14 +479,14 @@ function App() {
       </header>
       <div className="App">
         <h1>
-            Hybrid Work-from-Home Pre-Screening Assessment
+            Hybrid Work-from-Home Security Assessment
         </h1>
         <ControlButton
           appStatus={appStatus}
           start={handleStart}
           retry={handleRetry}
           continu={handleContinue}
-          hasErrors={ruleList.some(rule => rule.responseStatus !== 200)}
+          hasErrors={ruleList.some(rule => rule.response !== 200) ? ruleList.filter(rule => rule.responseStatus !== 200).some(rule => rule.warning !== true) : false}
         />
         {(appStatus === "running" || appStatus === "retry") &&
           <ProgressIndicator

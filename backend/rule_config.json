@@ -1,7 +1,4 @@
 {
-  "End": {
-    "key": "end"
-  },
   "GP1": {
     "key": "FirstRule",
     "port": 4003,
@@ -11,7 +8,8 @@
     "passRule": "GP2",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": true
+    "pauseOnFail": true,
+    "warning": false
   },
   "GP2": {
     "key": "GP2",
@@ -22,7 +20,8 @@
     "passRule": "GP3",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": true
+    "pauseOnFail": true,
+    "warning": false
   },
   "GP3": {
     "key": "GP3",
@@ -33,7 +32,8 @@
     "passRule": "GP4",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": true
+    "pauseOnFail": true,
+    "warning": false
   },
   "GP4": {
     "key": "GP4",
@@ -44,7 +44,8 @@
     "passRule": "GP5",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": true
+    "pauseOnFail": true,
+    "warning": true
   },
   "GP5": {
     "key": "GP5",
@@ -55,17 +56,22 @@
     "passRule": "GP6",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": true
+    "pauseOnFail": true,
+    "warning": false
   },
   "GP6": {
     "key": "GP6",
-    "port": 4004,
+    "port": 4003,
     "title": "Sufficient Amount of RAM",
     "passText": "Success",
     "failText": "Your computer must have atleast 8GB of RAM.",
     "passRule": "end",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": true
+    "pauseOnFail": true,
+    "warning": false
+  },
+  "End": {
+    "key": "end"
   }
 }

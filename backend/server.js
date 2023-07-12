@@ -36,16 +36,7 @@ const safePassTexts = rulesArray.map(({ passText }) => passText)
 const safePassRules = rulesArray.map(({ passRule }) => passRule)
 const safeMaxTries = rulesArray.map(({ maxTries }) => maxTries)
 const safePauseOnFail = rulesArray.map(({ pauseOnFail }) => pauseOnFail)
-
-// console.log(safeKeys);
-// console.log(safePorts);
-// console.log(safeTitles);
-// console.log(safeFailTexts);
-// console.log(safeFailRules);
-// console.log(safePassTexts);
-// console.log(safePassRules);
-// console.log(safeMaxTries);
-// console.log(safePauseOnFail);
+const safeWarning = rulesArray.map(({ warning }) => warning)
 
 const isPostDataTampered = (req, res, next) => {
   const { uid, sequence, action, result } = req.body
@@ -64,6 +55,7 @@ const isPostDataTampered = (req, res, next) => {
       safeKeys.some((safeKey) => safeKey === item.key) &&
       safeMaxTries.some((safeMaxTries) => safeMaxTries === item.maxTries) &&
       safePauseOnFail.some((safePauseOnFail) => safePauseOnFail === item.pauseOnFail) &&
+      safeWarning.some((safeWarning) => safeWarning === item.warning) &&
     ((safeHttpResponses).test(item.responseStatus) || item.responseStatus === null) // null due to current way of testing for failures
     );
   });
@@ -71,10 +63,10 @@ const isPostDataTampered = (req, res, next) => {
   const actionAndResultAreSafe = () => {
     return (
         (action === "restart" || action === "retry" || action === "start" || action === "continue") &&
-        (result === "incomplete" || result === "completed successfully" || result === "successfully with warning(s)" || result === "completed unsuccessfully")
+        (result === "incomplete" || result === "completed successfully" ||
+         result === "completed successfully with warning(s)" || result === "completed unsuccessfully")
     )
 }
-
 
   const uuidIsSafe = () => {
     return safeUUIDPattern.test(uid) && uid.length === safeUUIDLength;

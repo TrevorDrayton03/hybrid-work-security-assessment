@@ -96,6 +96,11 @@ html {
   border-color: var(--color-tru-regular-bg) !important;
 }
 
+.alert-warning {
+  background-color: var(--color-tru-orange) !important;
+  border-color: var(--color-tru-orange) !important;
+}
+
 .App {
   margin: 0 50px 0 50px;
   margin-left: clamp(20px, 15vw, 400px);

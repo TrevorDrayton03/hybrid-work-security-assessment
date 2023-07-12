@@ -10,13 +10,20 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
     let passedRulesCount = ruleList.filter(rule => rule.responseStatus === 200).length
     let totalRulesCount = ruleList.length
 
+    // goal is "You have completed with X error and Y warning"
+
     return (
         <div style={{ paddingBottom: appStatus === 'completed' || appStatus === 'paused' ? 0 : '15px' }}>
             {appStatus === "idle" && (
                 <div>
-                    <em>
-                        Press the start button to begin your assessment.
-                    </em>
+                    <p>
+                        This application will assess your computer's security settings against Thompson River University's network security requirements. &nbsp;
+                    </p>
+                    <p>
+                        <em>
+                            Press the start button to begin your assessment.
+                        </em>
+                    </p>
                 </div>
             )}
             {appStatus === "running" && (
@@ -25,16 +32,14 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
             {appStatus === "error" && (
                 <div>
                     <em>
-                    {/* {endPathLength !== null ? "You passed " + X + "/" + Y + " security check(s). ": null}  */}
-                    {/* {endPathLength !== null ? "You failed the following " + (Y-X) + " security check(s): " : "You failed the following security check(s): "} */}
-                    You failed the following security check(s):
+                        You did not pass the following security check(s):
                     </em>
                 </div>
             )}
             {appStatus === "completed" && (
                 <div>
                     <p>
-                    You have completed the assessment. &nbsp;
+                        Your assessment is complete. &nbsp;
                         <em>
                             {endPathLength !== null ? "You passed " + passedRulesCount + "/" + endPathLength + " security check(s). ": null} 
                         </em>
@@ -44,10 +49,9 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
             {appStatus === "paused" && (
                 <div>
                     <p>
-                    {endPathLength !== null ? "You passed " + passedRulesCount + "/" + endPathLength + " security check(s). ": null} 
+                        {endPathLength !== null ? "You passed " + passedRulesCount + "/" + endPathLength + " security check(s). ": null} 
                         <em>
-                            {/* {endPathLength !== null ? "You failed the following " + (endPathLength-X) + " security check(s): " : "You failed the following security check(s): "}                     */}
-                            You failed the following security check(s):
+                            You did not pass the following security check(s):
                         </em>
                     </p>
                 </div>
