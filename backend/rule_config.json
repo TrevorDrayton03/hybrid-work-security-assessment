@@ -49,7 +49,7 @@
   },
   "GP5": {
     "key": "GP5",
-    "port": 4003,
+    "port": 4004,
     "title": "Valid Antivirus Definitions",
     "passText": "Success",
     "failText": "Your antivirus definitions must be updated within 60 days",

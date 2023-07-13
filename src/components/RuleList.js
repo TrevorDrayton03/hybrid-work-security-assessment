@@ -27,7 +27,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
     }
 
     const isNotFetching = (appStatus) => {
-        return (appStatus !== "running")
+        return (appStatus !== "running" && appStatus !== "retry")
     }
 
     const isAnError = (rule) => {
@@ -54,7 +54,6 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
     }
 
     const Panel = ({rule, variant, body}) => {
-        console.log(rule, " is the rule", rule.title, " is the title")
         return (
             <Alert
                 // key={rule.rule.key}
@@ -76,18 +75,47 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
 
     return (
         <div style={{ padding: '10px', flex:1, paddingLeft: 0 }}>
-            {isNotFetching(appStatus) && Object.values(ruleList).map((rule) => { // error panels
-            console.log(isAnError(rule), " is an error")
+            {isNotFetching(appStatus) && Object.values(ruleList).map((rule) => { // error panel
                 return (
                     isAnError(rule) ? 
                         <Panel rule={rule} variant='danger' body={rule.failText} />
                      : null
                 )
             })}
-            {appStatus === 'completed' && !ruleList.some(rule => isAnError(rule)) && // complete panel and footer
+            {appStatus === 'completed' && !ruleList.some(rule => isAnError(rule)) && // complete panel
                 ( 
-                    <div style={{padding:0, margin:0}}>
-                        <Panel rule={{title:"Success"}} variant='primary' body="You can connect to Thompson Rivers University's network." />
+                    <Panel rule={{title:"Success"}} variant='primary' body="You can connect to Thompson Rivers University's network." />       
+                )
+            }
+            {isNotFetching(appStatus) && Object.values(ruleList).map((rule) => { // warning panel
+                return (
+                    isAWarning(rule) ? 
+                        <Panel rule={rule} variant='warning' body={rule.failText} />
+                     : null
+                )
+            })}
+            <div id="footers" style={{margin:0, padding:'50px 0 0 0'}}>
+                {isNotFetching(appStatus) && ruleList.some(rule => isUnsuccessful(rule)) && // error footer
+                    (
+                        <div>
+                            <CopyUUID />
+                            <p>
+                                If you require assistance, please contact&nbsp;  
+                                <a
+                                    href="https://tru.teamdynamix.com/TDClient/84/Portal/Home/"
+                                    alt="https://tru.teamdynamix.com/TDClient/84/Portal/Home/"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    >
+                                    IT Services
+                                </a>
+                                &nbsp;with the reference number.
+                            </p>
+                        </div>
+                    )
+                }
+                {appStatus === 'completed' && !ruleList.some(rule => isUnsuccessful(rule)) && // complete footer
+                    (
                         <div>
                             <CopyUUID />
                             <p>  
@@ -102,36 +130,9 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
                                 &nbsp;may require this reference number. If you lose it, you can restart the assessment for a new one.
                             </p>
                         </div>
-                    </div>
-                )
-            }
-            {isNotFetching(appStatus) && Object.values(ruleList).map((rule) => { // error panels
-                console.log(isAWarning(rule), " is a warning")
-                return (
-                    isAWarning(rule) ? 
-                        <Panel rule={rule} variant='danger' body={rule.failText} />
-                     : null
-                )
-            })}
-            {isNotFetching(appStatus) && ruleList.some(rule => isAnError(rule)) && // error footer
-                (
-                    <div>
-                        <CopyUUID />
-                        <p>
-                            If you require assistance, please contact&nbsp;  
-                            <a
-                                href="https://tru.teamdynamix.com/TDClient/84/Portal/Home/"
-                                alt="https://tru.teamdynamix.com/TDClient/84/Portal/Home/"
-                                target="_blank"
-                                rel="noreferrer"
-                                >
-                                IT Services
-                            </a>
-                            &nbsp;with the reference number.
-                        </p>
-                    </div>
-                )
-            }
+                    )
+                }
+            </div>
         </div >
     )
 }

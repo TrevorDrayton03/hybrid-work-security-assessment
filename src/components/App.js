@@ -217,8 +217,8 @@ function App() {
     setUuid(id)
     let result
   
-    if (isEndRule(currentRule)) {
-      result = handleEndRuleResult(rList);
+    if (isRuleEnd(currentRule)) {
+      result = handleEndResultAndAppStatus(rList);
     } else if (currentRule.pauseOnFail === true) {
       setAppStatus("paused")
       result = "incomplete"
@@ -246,11 +246,14 @@ function App() {
     }
   }
   
-  const isEndRule = (currentRule) => {
+  const isRuleEnd = (currentRule) => {
     return currentRule.passRule.toLowerCase() === "end" && currentRule.failRule.toLowerCase() === "end";
   }
+  const isRetryRuleEnd = (currentRetryRule) => {
+    return currentRetryRule.nextRule === null
+  }
   
-  const handleEndRuleResult = (rList) => {
+  const handleEndResultAndAppStatus = (rList) => {
     let result;
     if (rList.every(rule => rule.responseStatus === 200)) { 
       setAppStatus("completed")
@@ -267,12 +270,12 @@ function App() {
   
   const handleRetryRuleChange = async () => {
     await new Promise((resolve) => setTimeout(resolve, 500))
-    if(currentRetryRule.nextRule !== null) {
+    if(!isRetryRuleEnd(currentRetryRule)) {
       setTries(firstTry)
       setProgressPercentage(0)
       let nextRetryRule = Object.values(retryRules).find(rule => rule.key === currentRetryRule.nextRule);
       setCurrentRetryRule(nextRetryRule)
-    } else if (currentRetryRule.nextRule === null) {
+    } else if (isRetryRuleEnd(currentRetryRule)) {
       let result
       let id = uuidv4()
       setUuid(id)
@@ -287,9 +290,9 @@ function App() {
       })
 
       setRuleList(rList)
-
-      if (isEndRule(currentRetryRule)) {
-        result = handleEndRuleResult(rList);
+      
+      if (isRetryRuleEnd(currentRetryRule) && isRuleEnd(rList[0])) {
+        result = handleEndResultAndAppStatus(rList);
       } else if (currentRetryRule.pauseOnFail === true) {
         setAppStatus("paused")
         result = "incomplete"
@@ -417,8 +420,6 @@ function App() {
       (async () => {
         while (currentTries < currentRetryRule.maxTries && !shouldBreak) {
           try {
-            console.log(typeof currentRetryRule, " currentRetryRule")
-            console.log(typeof retryRules, " retryRules")
             response = await fetch(baseUrl + currentRetryRule.port)
             let status = response.status
             if (currentRetryRule.responseStatus !== status) {
@@ -486,7 +487,7 @@ function App() {
           start={handleStart}
           retry={handleRetry}
           continu={handleContinue}
-          hasErrors={ruleList.some(rule => rule.response !== 200) ? ruleList.filter(rule => rule.responseStatus !== 200).some(rule => rule.warning !== true) : false}
+          hasUnsuccessfulRules={ruleList.some(rule => rule.response !== 200)}
         />
         {(appStatus === "running" || appStatus === "retry") &&
           <ProgressIndicator

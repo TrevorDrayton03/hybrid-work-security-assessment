@@ -69,6 +69,7 @@ html {
   --color-tru-orange: #f88f23;
   --color-tru-callout-bg: #fff3bf;
   --color-tru-regular-bg: #E0F6F7;
+  --color-tru-error-bg: #ffbfbf;
   --color-tru-bluebg: #003e51;
   --color-tru-panel-paragraph: #333;
 }
@@ -81,8 +82,8 @@ html {
 }
 
 .alert-danger {
-  background-color: var(--color-tru-callout-bg) !important;
-  border-color: var(--color-tru-callout-bg) !important;
+  background-color: var(--color-tru-error-bg) !important;
+  border-color: var(--color-tru-error-bg) !important;
 }
 
 .alert-heading {
@@ -97,8 +98,8 @@ html {
 }
 
 .alert-warning {
-  background-color: var(--color-tru-orange) !important;
-  border-color: var(--color-tru-orange) !important;
+  background-color: var(--color-tru-callout-bg) !important;
+  border-color: var(--color-tru-callout-bg) !important;
 }
 
 .App {

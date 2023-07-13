@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button'
  * @param {function} retry - The function to retry failed checks.
  * @param {function} continu - The function to continue the application when it's paused on a rule.
  */
-const ControlButton = ({ appStatus, start, retry, continu, hasErrors }) => {
+const ControlButton = ({ appStatus, start, retry, continu, hasUnsuccessfulRules }) => {
     let buttonContent
     const restartText = "Restart From Beginning" 
     const retryText = "Retry Failed Check(s)"
@@ -40,7 +40,7 @@ const ControlButton = ({ appStatus, start, retry, continu, hasErrors }) => {
                     <Button variant="primary" onClick={() => start('restart')}>
                         {restartText}
                     </Button>
-                    { hasErrors && <Button variant="primary2" onClick={retry}>
+                    { hasUnsuccessfulRules && <Button variant="primary2" onClick={retry}>
                         {retryText}
                     </Button>}
                 </div>
