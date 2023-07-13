@@ -63,6 +63,7 @@ function App() {
    */
   const firstTry = 0
   const firstRule = "FirstRule"
+  const delay = "tryDelay"
   const baseUrl = process.env.REACT_APP_HIPS_BASE_URL
 
   /**
@@ -85,6 +86,7 @@ function App() {
   const [retryRules, setRetryRules] = useState(null)
   const [currentRetryRule, setCurrentRetryRule] = useState(null)
   const [tries, setTries] = useState(firstTry)
+  const [tryDelay, setTryDelay] = useState(firstTry)
   const [progressPercentage, setProgressPercentage] = useState(0)
   const [uuid, setUuid] = useState(null)
   const [action, setAction] = useState(null)
@@ -103,6 +105,7 @@ function App() {
       .then(config => {
         setRules(config)
         setCurrentRule(Object.values(config).find(rule => rule.key === firstRule))
+        setTryDelay(Object.values(config).find(rule => rule.key === delay)?.milliseconds)
       })
       .catch(error => {
         console.error('Error:', error)
@@ -191,7 +194,7 @@ function App() {
    * appends the response status and uuid to the current rule before adding them to the rule array.
    */
   const handleRuleChange = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
     currentRule.responseStatus = responseStatus
     if (isPassRule(currentRule)) {
       changeToRule(currentRule.passRule)
@@ -269,7 +272,7 @@ function App() {
   }
   
   const handleRetryRuleChange = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
     if(!isRetryRuleEnd(currentRetryRule)) {
       setTries(firstTry)
       setProgressPercentage(0)
@@ -398,10 +401,10 @@ function App() {
                 }
               })
             }
+            await new Promise((resolve) => setTimeout(resolve, tryDelay))
           } catch (error) {
             console.log(error)
           }
-          await new Promise((resolve) => setTimeout(resolve, 100))
           if (!shouldBreak) {
             currentTries++
             setTries(currentTries)
@@ -438,10 +441,10 @@ function App() {
                 return updatedRetryRules;
               })
             }            
+            await new Promise((resolve) => setTimeout(resolve, tryDelay))
           } catch (error) {
             console.log(error)
           }
-          await new Promise((resolve) => setTimeout(resolve, 100))
           if (!shouldBreak) {
             currentTries++
             setTries(currentTries)
@@ -451,19 +454,17 @@ function App() {
     }
   }, [currentRetryRule, appStatus])
 
-  // assesses if an endpathlength is calculable and if so, calculates it
+  // needs to account for warnings
+  // warnings are soft security checks
+  // 
   useEffect(() => {
-    // starting from the last rule in ruleList (which is being inserted into the first position)
     if(ruleList.length !== 0 && appStatus !== 'retry') {
       let tempCurrentRule = ruleList[0]
-      // for as long as the pass rule has a passRule and the failRule is end
       let count = 0
         while (tempCurrentRule.passRule.toLowerCase() !== "end" && tempCurrentRule.failRule.toLowerCase() === "end") {
-          // make the currentRule to the next pass rule
           tempCurrentRule = rules[tempCurrentRule.passRule]
           count++
-          // if we have reached the final rule, then the current rule's passrule and failrule are end
-          if (tempCurrentRule.passRule.toLowerCase() === "end" && tempCurrentRule.failRule.toLowerCase() === "end") {
+          if (isRuleEnd(tempCurrentRule)) {
             setEndPathLength(ruleList.length + count)
             break
           } else {

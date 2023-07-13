@@ -61,17 +61,21 @@
   },
   "GP6": {
     "key": "GP6",
-    "port": 4003,
+    "port": 4004,
     "title": "Sufficient Amount of RAM",
     "passText": "Success",
     "failText": "Your computer must have atleast 8GB of RAM.",
     "passRule": "end",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": true,
-    "warning": false
+    "pauseOnFail": false,
+    "warning": true
   },
   "End": {
     "key": "end"
+  },
+  "TryDelay": {
+    "key": "tryDelay",
+    "milliseconds": 100
   }
 }

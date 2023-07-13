@@ -15,6 +15,12 @@ import React, { useState } from "react"
 const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
     const [isCopied, setIsCopied] = useState(false)
 
+    let failed = ruleList.filter(rule => rule.responseStatus !== 200).length
+    let passed = ruleList.filter(rule => rule.responseStatus === 200).length
+    let warnings = ruleList.filter(rule => rule.responseStatus !== 200 && rule.warning === true).length
+    let errors = ruleList.filter(rule => rule.responseStatus !== 200 && rule.warning !== true).length
+    let total = passed + errors // warnings are not counted in the total
+
     const handleClick = () => {
       setIsCopied(true)
       setTimeout(() => {
@@ -41,7 +47,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
     const CopyUUID = () => {
         return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-                Reference number:&nbsp;<b>{uuid}</b>&nbsp;
+                Your reference number is:&nbsp;<b>{uuid}</b>&nbsp;
                 <Button
                     variant="secondary"
                     style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
@@ -56,7 +62,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
     const Panel = ({rule, variant, body}) => {
         return (
             <Alert
-                // key={rule.rule.key}
+                key={rule.key}
                 variant={variant}
                 style={{ paddingBottom: '5px', paddingTop: '5px', textAlign: 'left' }}
             >
@@ -65,6 +71,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
                     className="row"
                 >
                     <div className="col" style={{ padding: '0' }}>
+                        {rule.warning ? <b>Warning: </b> : <b>Error: </b>}
                         {rule.title}
                     </div>
                 </Alert.Heading>
@@ -98,6 +105,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
                 {isNotFetching(appStatus) && ruleList.some(rule => isUnsuccessful(rule)) && // error footer
                     (
                         <div>
+                            You passed {passed}/{total} security check(s). &nbsp;
                             <CopyUUID />
                             <p>
                                 If you require assistance, please contact&nbsp;  
@@ -117,6 +125,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
                 {appStatus === 'completed' && !ruleList.some(rule => isUnsuccessful(rule)) && // complete footer
                     (
                         <div>
+                            You passed {passed}/{total} security check(s). &nbsp;
                             <CopyUUID />
                             <p>  
                                 <a

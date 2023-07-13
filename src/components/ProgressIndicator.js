@@ -9,7 +9,7 @@ import { Spinner } from "react-bootstrap"
  */
 const ProgressIndicator = ({ progressPercentage, currentRule, currentRetryRule }) => {
     return (
-        <div>
+        <div style={{paddingTop: '175px'}}>
             <span style={{ fontSize: '1.25rem', padding: '20px 0 20px 0', display:'block' }}>
                 <Spinner animation="grow" role="status" size="sm" /> &nbsp;
                 {currentRetryRule ? currentRetryRule.title : currentRule.title}

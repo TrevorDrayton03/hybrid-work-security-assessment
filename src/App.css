@@ -152,7 +152,7 @@ html {
   color: white !important;
   width: 250px;
   margin: 5px 10px 5px 0px;
-  padding: 0 !important;
+  padding: 10px 0 10px 0 !important;
 }
 
 .btn:active,
@@ -190,6 +190,10 @@ html {
   border-color: var(--color-tru-yellow) !important;
 }
 
+.errors {
+  background-color: var(--color-tru-error-bg);
+}
+
 .progress {
   --bs-progress-bar-bg: var(--color-tru-teal) !important;
 }
@@ -211,4 +215,8 @@ html {
 .spinner-grow-sm {
   --bs-spinner-width: 1.25rem !important;
   --bs-spinner-height: 1.25rem !important;
+}
+
+.warnings {
+  background-color: var(--color-tru-callout-bg);
 }
