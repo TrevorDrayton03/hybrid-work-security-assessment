@@ -61,7 +61,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
 
     const Panel = ({ rule, variant, body }) => {
         const csvValues = body.includes(':')
-        ? body.split(':')[1].trim().split(', ')
+        ? body.split(':')[1].trim().split(', ').sort()
         : null;
         if(csvValues) {
             body = body.split(':')[0].trim();
