@@ -52,7 +52,7 @@
     "port": 4004,
     "title": "Valid Antivirus Definitions",
     "passText": "Success",
-    "failText": "Your antivirus definitions must be updated within 60 days",
+    "failText": "Your antivirus definitions must be updated from within 60 days",
     "passRule": "GP6",
     "failRule": "end",
     "maxTries": 5,
@@ -76,6 +76,6 @@
   },
   "TryDelay": {
     "key": "tryDelay",
-    "milliseconds": 100
+    "milliseconds": 500
   }
 }

@@ -194,7 +194,7 @@ function App() {
    * appends the response status and uuid to the current rule before adding them to the rule array.
    */
   const handleRuleChange = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 500))
     currentRule.responseStatus = responseStatus
     if (isPassRule(currentRule)) {
       changeToRule(currentRule.passRule)
@@ -272,7 +272,7 @@ function App() {
   }
   
   const handleRetryRuleChange = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 500))
     if(!isRetryRuleEnd(currentRetryRule)) {
       setTries(firstTry)
       setProgressPercentage(0)
@@ -385,6 +385,7 @@ function App() {
       (async () => {
         // this loop is looking for changes in the response status
         while (currentTries < currentRule.maxTries && !shouldBreak) {
+          await new Promise((resolve) => setTimeout(resolve, tryDelay))
           try {
             response = await fetch(baseUrl + currentRule.port)
             let status = response.status
@@ -401,7 +402,6 @@ function App() {
                 }
               })
             }
-            await new Promise((resolve) => setTimeout(resolve, tryDelay))
           } catch (error) {
             console.log(error)
           }
@@ -422,6 +422,7 @@ function App() {
     if (appStatus === "retry") {
       (async () => {
         while (currentTries < currentRetryRule.maxTries && !shouldBreak) {
+          await new Promise((resolve) => setTimeout(resolve, tryDelay)) // has to be here
           try {
             response = await fetch(baseUrl + currentRetryRule.port)
             let status = response.status
@@ -440,8 +441,7 @@ function App() {
                 }
                 return updatedRetryRules;
               })
-            }            
-            await new Promise((resolve) => setTimeout(resolve, tryDelay))
+            }    
           } catch (error) {
             console.log(error)
           }
