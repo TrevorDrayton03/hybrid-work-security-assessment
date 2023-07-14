@@ -59,26 +59,37 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
         )
     }
 
-    const Panel = ({rule, variant, body}) => {
+    const Panel = ({ rule, variant, body }) => {
+        const csvValues = body.includes(':')
+        ? body.split(':')[1].trim().split(', ')
+        : null;
+        if(csvValues) {
+            body = body.split(':')[0].trim();
+        }
+      
         return (
-            <Alert
-                key={rule.key}
-                variant={variant}
-                style={{ paddingBottom: '5px', paddingTop: '5px', textAlign: 'left' }}
-            >
-                <Alert.Heading
-                    style={{ margin: '0px', alignItems: 'baseline' }}
-                    className="row"
-                >
-                    <div className="col" style={{ padding: '0' }}>
-                        {rule.warning ? <b>Warning: </b> : <b>Error: </b>}
-                        {rule.title}
-                    </div>
-                </Alert.Heading>
-                {body}
-            </Alert>
-        )
-    }
+          <Alert
+            key={rule.key}
+            variant={variant}
+            style={{ paddingBottom: '5px', paddingTop: '5px', textAlign: 'left' }}
+          >
+            <Alert.Heading style={{ margin: '0px', alignItems: 'baseline' }} className="row">
+              <div className="col" style={{ padding: '0' }}>
+                {rule.warning ? <b>Warning: </b> : <b>Error: </b>}
+                {rule.title}
+              </div>
+            </Alert.Heading>
+            {body}
+            {csvValues ? csvValues.length > 0 && (
+              <ul className="grid-list">
+                {csvValues.map((csv, index) => (
+                  <li key={index}>{csv}</li>
+                )) }
+              </ul>
+            ): null}
+          </Alert>
+        );
+      };      
 
     return (
         <div style={{ padding: '10px', flex:1, paddingLeft: 0 }}>

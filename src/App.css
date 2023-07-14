@@ -194,6 +194,19 @@ html {
   background-color: var(--color-tru-error-bg);
 }
 
+ .grid-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  column-gap: 30px;
+  margin: 5px 0 5px 0;
+}
+
+.grid-list li {
+  overflow-wrap: break-word;
+  padding-right: 5px;
+  margin: 2px 0 2px 0;
+}
+
 .progress {
   --bs-progress-bar-bg: var(--color-tru-teal) !important;
 }
