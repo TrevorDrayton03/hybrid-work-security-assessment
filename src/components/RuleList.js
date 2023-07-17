@@ -110,7 +110,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
     }
 
     return (
-        <div style={{ padding: '10px', flex:1, paddingLeft: 0 }}>
+        <div style={{ padding: '5px 10px 10px 10px', flex:1, paddingLeft: 0 }}>
             {isNotFetching(appStatus) && Object.values(ruleList).map((rule) => { // error panel
                 return (
                     isAnError(rule) ? 
@@ -130,7 +130,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
                      : null
                 )
             })}
-            <div id="footers" style={{margin:0, padding:'50px 0 0 0'}}>
+            <div id="footers" style={{margin:0, padding:'20px 0 0 0'}}>
                 {isNotFetching(appStatus) && ruleList.some(rule => isUnsuccessful(rule)) && // error footer
                     (
                         <div>
