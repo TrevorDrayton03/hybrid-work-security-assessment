@@ -457,6 +457,9 @@ function App() {
   // needs to account for warnings
   // warnings are soft security checks
   // 
+  /**
+   * Side effect that determines if a singular endpath is possible.
+   */
   useEffect(() => {
     if(ruleList.length !== 0 && appStatus !== 'retry') {
       let tempCurrentRule = ruleList[0]

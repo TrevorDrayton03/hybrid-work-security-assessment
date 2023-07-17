@@ -64,7 +64,7 @@
     "port": 4004,
     "title": "Sufficient Amount of RAM",
     "passText": "Success",
-    "failText": "Your computer must have atleast 8GB of RAM.",
+    "failText": "Your computer must have atleast 8GB of RAM. Without 8GB of RAM, you may experience issues using TRU's platform that cannot be resolved by TRU's IT department.",
     "passRule": "end",
     "failRule": "end",
     "maxTries": 5,

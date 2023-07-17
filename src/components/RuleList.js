@@ -91,6 +91,24 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
         );
       };      
 
+    const Summary = ({}) => {
+        return (
+            <div style ={{padding:0, margin:0}}>
+                <p style={{marginBottom: 0}}>
+                    Security Check Summary:<br/>
+                    <ul>
+                        <li>
+                            Passed: {passed}
+                        </li>
+                        <li>
+                            Failed: {errors}
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        )
+    }
+
     return (
         <div style={{ padding: '10px', flex:1, paddingLeft: 0 }}>
             {isNotFetching(appStatus) && Object.values(ruleList).map((rule) => { // error panel
@@ -116,7 +134,8 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
                 {isNotFetching(appStatus) && ruleList.some(rule => isUnsuccessful(rule)) && // error footer
                     (
                         <div>
-                            You passed {passed}/{total} security check(s). &nbsp;
+                            {/* You passed {passed}/{total} security check(s). &nbsp; */}
+                            {/* <Summary /> */}
                             <CopyUUID />
                             <p>
                                 If you require assistance, please contact&nbsp;  
@@ -136,7 +155,8 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
                 {appStatus === 'completed' && !ruleList.some(rule => isUnsuccessful(rule)) && // complete footer
                     (
                         <div>
-                            You passed {passed}/{total} security check(s). &nbsp;
+                            {/* You passed {passed}/{total} security check(s). &nbsp; */}
+                            {/* <Summary /> */}
                             <CopyUUID />
                             <p>  
                                 <a
