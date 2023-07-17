@@ -72,6 +72,7 @@ html {
   --color-tru-error-bg: #ffbfbf;
   --color-tru-bluebg: #003e51;
   --color-tru-panel-paragraph: #333;
+  --color-skeleton-loading: #DDDBDD;
 }
 
 .alert {
@@ -213,6 +214,61 @@ html {
 /* .spinner-border {
   color: var(--color-tru-blue) !important;
 } */
+
+.skeleton-button {
+  width: 250px;
+  height: 49px;
+  background-color: var(--color-skeleton-loading);
+  cursor: pointer;
+  margin: 20px 20px 45px 0px;
+}
+
+.skeleton-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-loading::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0.5) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 2s infinite;
+  content: '';
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+
+.skeleton-text1 {
+  /* width: 400px; */
+  width: 100%;
+  height: 19px;
+  background-color: var(--color-skeleton-loading);
+  margin: 0 0 16px 0;
+}
+.skeleton-text2 {
+  /* width: 700px; */
+  width: 100%;
+  height: 48px;
+  background-color: var(--color-skeleton-loading);
+}
 
 .spinner-border-sm {
   --bs-spinner-width: 1.25rem !important;

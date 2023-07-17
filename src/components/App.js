@@ -91,6 +91,7 @@ function App() {
   const [uuid, setUuid] = useState(null)
   const [action, setAction] = useState(null)
   const [endPathLength, setEndPathLength] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   /**
    * OnComponentDidMount Side Effect (called once after rendering)
@@ -106,6 +107,7 @@ function App() {
         setRules(config)
         setCurrentRule(Object.values(config).find(rule => rule.key === firstRule))
         setTryDelay(Object.values(config).find(rule => rule.key === delay)?.milliseconds)
+        setIsLoading(false)
       })
       .catch(error => {
         console.error('Error:', error)
@@ -483,32 +485,43 @@ function App() {
         <h1>
             Hybrid Work-from-Home Security Assessment
         </h1>
-        <ControlButton
-          appStatus={appStatus}
-          start={handleStart}
-          retry={handleRetry}
-          continu={handleContinue}
-          hasUnsuccessfulRules={ruleList.some(rule => rule.response !== 200)}
-        />
-        {(appStatus === "running" || appStatus === "retry") &&
-          <ProgressIndicator
-            key={currentRule.key}
-            progressPercentage={progressPercentage}
-            currentRule={currentRule}
-            currentRetryRule={currentRetryRule}
-          />
+        {
+        isLoading ?
+          <div className="skeleton-loading">
+            <div className="skeleton-button"></div>
+            <div className="skeleton-text1"></div>
+            <div className="skeleton-text2"></div>
+          </div>
+          : 
+          <>
+            <ControlButton
+              appStatus={appStatus}
+              start={handleStart}
+              retry={handleRetry}
+              continu={handleContinue}
+              hasUnsuccessfulRules={ruleList.some(rule => rule.response !== 200)}
+            />
+            {(appStatus === "running" || appStatus === "retry") &&
+              <ProgressIndicator
+                key={currentRule.key}
+                progressPercentage={progressPercentage}
+                currentRule={currentRule}
+                currentRetryRule={currentRetryRule}
+              />
+            }
+            <FeedbackMessage
+              appStatus={appStatus}
+              ruleList={ruleList}
+              endPathLength={endPathLength}
+            />
+            <RuleList
+              ruleList={ruleList}
+              appStatus={appStatus}
+              uuid={uuid}
+              copy={handleCopy}
+            />
+          </>
         }
-        <FeedbackMessage
-          appStatus={appStatus}
-          ruleList={ruleList}
-          endPathLength={endPathLength}
-        />
-        <RuleList
-          ruleList={ruleList}
-          appStatus={appStatus}
-          uuid={uuid}
-          copy={handleCopy}
-        />
       </div>
     </div>
   )

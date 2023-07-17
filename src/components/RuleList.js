@@ -29,7 +29,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
     }
 
     const isUnsuccessful = (rule) => {
-        return (rule.responseStatus > 299 || rule.responseStatus === null && rule.failRule === "end") 
+        return ((rule.responseStatus > 299 || rule.responseStatus === null) && rule.failRule === "end") 
     }
 
     const isNotFetching = (appStatus) => {
@@ -93,7 +93,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
         );
       };      
 
-    const Summary = ({}) => {
+    const Summary = () => {
         return (
             <div style ={{padding:0, margin:0}}>
                 <p style={{marginBottom: 0}}>
