@@ -220,7 +220,7 @@ html {
   height: 49px;
   background-color: var(--color-skeleton-loading);
   cursor: pointer;
-  margin: 20px 20px 45px 0px;
+  margin: 25px 20px 45px 0px;
 }
 
 .skeleton-loading {
