@@ -15,10 +15,10 @@ import React, { useState } from "react"
 const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
     const [isCopied, setIsCopied] = useState(false)
 
-    let failed = ruleList.filter(rule => rule.responseStatus !== 200).length
+    let failed = ruleList.filter(rule => rule.responseStatus !== 200 && rule.failRule === "end").length
     let passed = ruleList.filter(rule => rule.responseStatus === 200).length
-    let warnings = ruleList.filter(rule => rule.responseStatus !== 200 && rule.warning === true).length
-    let errors = ruleList.filter(rule => rule.responseStatus !== 200 && rule.warning !== true).length
+    let warnings = ruleList.filter(rule => rule.responseStatus !== 200 && rule.warning === true && rule.failRule === "end").length
+    let errors = ruleList.filter(rule => rule.responseStatus !== 200 && rule.warning !== true && rule.failRule === "end").length
     let total = passed + errors // warnings are not counted in the total
 
     const handleClick = () => {
@@ -29,7 +29,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
     }
 
     const isUnsuccessful = (rule) => {
-        return (rule.responseStatus > 299 || rule.responseStatus === null) 
+        return (rule.responseStatus > 299 || rule.responseStatus === null && rule.failRule === "end") 
     }
 
     const isNotFetching = (appStatus) => {
@@ -47,10 +47,12 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
     const CopyUUID = () => {
         return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-                Your reference number is:&nbsp;<b>{uuid}</b>&nbsp;
+                {/* Your reference number is:&nbsp;<b>{uuid}</b>&nbsp;&nbsp;&nbsp;&nbsp; */}
+                Your reference number is:&nbsp;{uuid}&nbsp;&nbsp;&nbsp;&nbsp;
+
                 <Button
                     variant="secondary"
-                    style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                    style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}
                     onClick={() => { copy(); handleClick(); }}
                 >
                     {isCopied ? 'Copied!' : <RiFileCopy2Line style={{alignSelf:'center'}} size={27} />}
@@ -59,7 +61,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
         )
     }
 
-    const Panel = ({ rule, variant, body }) => {
+    const Panel = ({ rule, variant, body, success }) => {
         const csvValues = body.includes(':')
         ? body.split(':')[1].trim().split(', ').sort()
         : null;
@@ -71,12 +73,12 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
           <Alert
             key={rule.key}
             variant={variant}
-            style={{ paddingBottom: '5px', paddingTop: '5px', textAlign: 'left' }}
+            style={{ padding: '5px 0 5px 0', marginBottom: '7px', textAlign: 'left' }}
           >
             <Alert.Heading style={{ margin: '0px', alignItems: 'baseline' }} className="row">
               <div className="col" style={{ padding: '0' }}>
-                {rule.warning ? <b>Warning: </b> : <b>Error: </b>}
-                {rule.title}
+                {success ? null : rule.warning ? <b>Warning: </b> : <b>Error: </b>}
+                {success ? <b>{rule.title}</b> : rule.title}
               </div>
             </Alert.Heading>
             {body}
@@ -114,19 +116,19 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
             {isNotFetching(appStatus) && Object.values(ruleList).map((rule) => { // error panel
                 return (
                     isAnError(rule) ? 
-                        <Panel rule={rule} variant='danger' body={rule.failText} />
+                        <Panel rule={rule} variant='danger' body={rule.failText} success={false} />
                      : null
                 )
             })}
             {appStatus === 'completed' && !ruleList.some(rule => isAnError(rule)) && // complete panel
                 ( 
-                    <Panel rule={{title:"Success"}} variant='primary' body="You can connect to Thompson Rivers University's network." />       
+                    <Panel rule={{title:"Success"}} variant='primary' body="You passed the assessment and can connect to Thompson Rivers University's network." success={true}/>       
                 )
             }
             {isNotFetching(appStatus) && Object.values(ruleList).map((rule) => { // warning panel
                 return (
                     isAWarning(rule) ? 
-                        <Panel rule={rule} variant='warning' body={rule.failText} />
+                        <Panel rule={rule} variant='warning' body={rule.failText} success={false}/>
                      : null
                 )
             })}

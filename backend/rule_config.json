@@ -6,9 +6,9 @@
     "passText": "Success",
     "failText": "You must be connected to the Global Protect VPN.",
     "passRule": "GP2",
-    "failRule": "end",
+    "failRule": "GP4",
     "maxTries": 5,
-    "pauseOnFail": true,
+    "continueOption": false,
     "warning": false
   },
   "GP2": {
@@ -20,7 +20,7 @@
     "passRule": "GP3",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": true,
+    "continueOption": true,
     "warning": false
   },
   "GP3": {
@@ -32,19 +32,19 @@
     "passRule": "GP4",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": true,
+    "continueOption": true,
     "warning": false
   },
   "GP4": {
     "key": "GP4",
-    "port": 4004,
+    "port": 4003,
     "title": "Antivirus Approval",
     "passText": "Success",
     "failText": "Your antivirus must be on the following list of approved antiviruses: Bitdefender (2022), Kaspersky (2023), Norton (2021), McAfee (2022), Avast (2021), AVG (2022), Trend Micro (2023), ESET (2022), Sophos (2021), Malwarebytes (2022), Panda Security (2023), Comodo (2022), F-Secure (2021), G Data (2022), Webroot (2023), BullGuard (2022), VIPRE (2021), ZoneAlarm (2022), TotalAV (2023), Cylance (2022), Avira (2021), Adaware (2022), ClamAV (2023), Emsisoft (2021), Fortinet (2022), Quick Heal (2023), Seqrite (2022), AhnLab (2021), Tencent (2022), Qihoo 360 (2023), Kingsoft (2022), Rising Antivirus (2021), Symantec (2022)",
     "passRule": "GP5",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": true,
+    "continueOption": true,
     "warning": false
   },
   "GP5": {
@@ -56,7 +56,7 @@
     "passRule": "GP6",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": true,
+    "continueOption": true,
     "warning": true
   },
   "GP6": {
@@ -68,7 +68,7 @@
     "passRule": "end",
     "failRule": "end",
     "maxTries": 5,
-    "pauseOnFail": false,
+    "continueOption": false,
     "warning": true
   },
   "End": {

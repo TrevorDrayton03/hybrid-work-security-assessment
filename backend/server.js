@@ -35,7 +35,7 @@ const safeFailRules = rulesArray.map(({ failRule }) => failRule)
 const safePassTexts = rulesArray.map(({ passText }) => passText)
 const safePassRules = rulesArray.map(({ passRule }) => passRule)
 const safeMaxTries = rulesArray.map(({ maxTries }) => maxTries)
-const safePauseOnFail = rulesArray.map(({ pauseOnFail }) => pauseOnFail)
+const safeContinueOption = rulesArray.map(({ continueOption }) => continueOption)
 const safeWarning = rulesArray.map(({ warning }) => warning)
 
 const isPostDataTampered = (req, res, next) => {
@@ -54,7 +54,7 @@ const isPostDataTampered = (req, res, next) => {
       safePassRules.some((safePassRule) => safePassRule === item.passRule) &&
       safeKeys.some((safeKey) => safeKey === item.key) &&
       safeMaxTries.some((safeMaxTries) => safeMaxTries === item.maxTries) &&
-      safePauseOnFail.some((safePauseOnFail) => safePauseOnFail === item.pauseOnFail) &&
+      safeContinueOption.some((safeContinueOption) => safeContinueOption === item.continueOption) &&
       safeWarning.some((safeWarning) => safeWarning === item.warning) &&
     ((safeHttpResponses).test(item.responseStatus) || item.responseStatus === null) // null due to current way of testing for failures
     );

@@ -140,7 +140,7 @@ function App() {
     setAppStatus('retry')
     setProgressPercentage(0)
     setTries(firstTry)
-    let retryRules = Object.values(ruleList).filter(rule => rule.responseStatus !== 200)
+    let retryRules = Object.values(ruleList).filter(rule => rule.responseStatus !== 200 && rule.failRule === "end")
     let updatedRetryRules = [...retryRules].reverse().map((rule, index, array) => {
       if (index < array.length - 1) {
         return {
@@ -222,7 +222,7 @@ function App() {
   
     if (isRuleEnd(currentRule)) {
       result = handleEndResultAndAppStatus(rList);
-    } else if (currentRule.pauseOnFail === true) {
+    } else if (currentRule.continueOption === true) {
       setAppStatus("paused")
       result = "incomplete"
     } else {
@@ -296,7 +296,7 @@ function App() {
       
       if (isRetryRuleEnd(currentRetryRule) && isRuleEnd(rList[0])) {
         result = handleEndResultAndAppStatus(rList);
-      } else if (currentRetryRule.pauseOnFail === true) {
+      } else if (currentRetryRule.continueOption === true) {
         setAppStatus("paused")
         result = "incomplete"
       } else {
@@ -454,9 +454,6 @@ function App() {
     }
   }, [currentRetryRule, appStatus])
 
-  // needs to account for warnings
-  // warnings are soft security checks
-  // 
   /**
    * Side effect that determines if a singular endpath is possible.
    */
