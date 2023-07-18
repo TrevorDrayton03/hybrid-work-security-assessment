@@ -146,13 +146,25 @@ html {
   margin: 30px 0 0 0;
 }
 
-.btn {
+.btn:not(.dropdown-toggle-split) {
   border-radius: 0 !important;
   font-size: 1.125rem !important;
   color: white !important;
   width: 250px;
   margin: 5px 15px 5px 0px;
   padding: 10px 0 10px 0 !important;
+}
+
+.dropdown-toggle-split {
+  border-radius: 0 !important;
+  font-size: 1.125rem !important;
+  color: white !important;
+  width: 30px;
+  height: 49px;
+  margin: 0;
+  padding: 0 !important;
+  align-self: center;
+  align-items: center;
 }
 
 .btn:active,

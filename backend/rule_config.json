@@ -1,25 +1,25 @@
 {
   "GP1": {
     "key": "FirstRule",
-    "port": 4003,
+    "port": 4004,
     "title": "Global Protect Connection",
     "failText": "You must be connected to the Global Protect VPN.",
     "passRule": "GP2",
-    "failRule": "GP4",
+    "failRule": "end",
     "maxTries": 5,
-    "continueOption": false,
+    "continueOption": true,
     "warning": false
   },
   "GP2": {
     "key": "GP2",
-    "port": 4002,
+    "port": 4004,
     "title": "Valid Operating System",
     "failText": "You must use Windows or Mac operating system.",
     "passRule": "GP3",
     "failRule": "end",
     "maxTries": 5,
     "continueOption": true,
-    "warning": false
+    "warning": true
   },
   "GP3": {
     "key": "GP3",
@@ -52,7 +52,7 @@
     "failRule": "end",
     "maxTries": 5,
     "continueOption": true,
-    "warning": true
+    "warning": false
   },
   "GP6": {
     "key": "GP6",

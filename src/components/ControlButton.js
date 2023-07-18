@@ -1,4 +1,6 @@
 import Button from 'react-bootstrap/Button'
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Dropdown from 'react-bootstrap/Dropdown';
 
 /**
  * Displays the control button(s) based on the application status.
@@ -7,7 +9,7 @@ import Button from 'react-bootstrap/Button'
  * @param {function} retry - The function to retry failed checks.
  * @param {function} continu - The function to continue the application when it's paused on a rule.
  */
-const ControlButton = ({ appStatus, start, retry, continu, hasUnsuccessfulRules }) => {
+const ControlButton = ({ appStatus, start, retry, continu, hasUnsuccessfulRules, hasRulesAndErrors }) => {
     let buttonContent
     const restartText = "Restart From Beginning" 
     const retryText = "Retry Failed Check(s)"
@@ -28,9 +30,16 @@ const ControlButton = ({ appStatus, start, retry, continu, hasUnsuccessfulRules 
                     <Button variant="primary" onClick={() => start('restart')}>
                         {restartText}
                     </Button>
-                    <Button variant="primary2" onClick={retry}>
-                        {retryText}
-                    </Button>
+                    <Dropdown as={ButtonGroup} drop="up">
+                        <Button variant="primary2" onClick={retry} style={hasRulesAndErrors ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
+                        {hasRulesAndErrors ? 
+                        <>
+                        <Dropdown.Toggle split variant="primary2" style={{marginRight:15}}/>
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={retry}>Errors</Dropdown.Item>
+                            <Dropdown.Item onClick={retry}>Warnings</Dropdown.Item>
+                        </Dropdown.Menu></> : null}
+                    </Dropdown>
                 </div>
             )
             break
@@ -40,9 +49,18 @@ const ControlButton = ({ appStatus, start, retry, continu, hasUnsuccessfulRules 
                     <Button variant="primary" onClick={() => start('restart')}>
                         {restartText}
                     </Button>
-                    { hasUnsuccessfulRules && <Button variant="primary2" onClick={retry}>
-                        {retryText}
-                    </Button>}
+                    { hasUnsuccessfulRules && 
+                    <Dropdown as={ButtonGroup} drop="up">
+                    <Button variant="primary2" onClick={retry} style={hasRulesAndErrors ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
+                    {hasRulesAndErrors ? 
+                    <>
+                    <Dropdown.Toggle split variant="primary2" style={{marginRight:15}}/>
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={retry}>Errors</Dropdown.Item>
+                        <Dropdown.Item onClick={retry}>Warnings</Dropdown.Item>
+                    </Dropdown.Menu></> : null}
+                </Dropdown>
+                    }
                 </div>
             )
             break
@@ -52,12 +70,19 @@ const ControlButton = ({ appStatus, start, retry, continu, hasUnsuccessfulRules 
                     <Button variant="primary" onClick={() => start('restart')}>
                         {restartText}
                     </Button>
-                    <Button variant="primary2" onClick={retry}>
-                        {retryText}
-                    </Button>
-                    {<Button variant="primary3" onClick={continu}>
+                    <Dropdown as={ButtonGroup} drop="up">
+                        <Button variant="primary2" onClick={retry} style={hasRulesAndErrors ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
+                        {hasRulesAndErrors ? 
+                        <>
+                        <Dropdown.Toggle split variant="primary2" style={{marginRight:15}}/>
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={retry}>Errors</Dropdown.Item>
+                            <Dropdown.Item onClick={retry}>Warnings</Dropdown.Item>
+                        </Dropdown.Menu></> : null}
+                    </Dropdown>
+                    <Button variant="primary3" onClick={continu}>
                         {continueText}
-                    </Button>}
+                    </Button> 
                 </div>
             )
             break
