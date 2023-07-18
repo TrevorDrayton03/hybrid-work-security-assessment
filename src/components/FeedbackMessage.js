@@ -18,7 +18,7 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
         <div style={{ paddingBottom: appStatus === 'completed' || appStatus === 'paused' ? 0 : '15px' }}>
             {appStatus === "idle" && (
                 <div>
-                    <p>
+                    <p style={{marginBottom:5}}>
                         <em>
                             Press the start button to begin your assessment.
                         </em>
@@ -33,7 +33,7 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
             )}
             {appStatus === "error" && (
                 <div>
-                    <p>
+                    <p style={{marginBottom:5}}>
                         <em>
                             You must resolve the error to continue the assessment.
                         </em>
@@ -46,7 +46,7 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
             {appStatus === "completed" && (
                 <div>
                     {errors > 0 && 
-                    <p>
+                    <p style={{marginBottom:5}}>
                         <em>
                             You must resolve the {errorText} to connect to the TRU network.
                         </em>
@@ -60,7 +60,7 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
             {/* if it's paused it means we have the option to continue past this rule */}
             {appStatus === "paused" && (
                 <div>
-                    <p>
+                    <p style={{marginBottom:5}}>
                         <em>
                             You may continue the assessment by pressing the "Continue To Next Check" button.
                         </em>

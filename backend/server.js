@@ -32,7 +32,6 @@ const safePorts = rulesArray.map(({ port }) => port)
 const safeTitles = rulesArray.map(({ title }) => title)
 const safeFailTexts = rulesArray.map(({ failText }) => failText)
 const safeFailRules = rulesArray.map(({ failRule }) => failRule)
-const safePassTexts = rulesArray.map(({ passText }) => passText)
 const safePassRules = rulesArray.map(({ passRule }) => passRule)
 const safeMaxTries = rulesArray.map(({ maxTries }) => maxTries)
 const safeContinueOption = rulesArray.map(({ continueOption }) => continueOption)
@@ -50,7 +49,6 @@ const isPostDataTampered = (req, res, next) => {
       safeTitles.some((safeTitle) => safeTitle === item.title) &&
       safeFailTexts.some((safeFailText) => safeFailText === item.failText) &&
       safeFailRules.some((safeFailRule) => safeFailRule === item.failRule) &&
-      safePassTexts.some((safePassText) => safePassText === item.passText) &&
       safePassRules.some((safePassRule) => safePassRule === item.passRule) &&
       safeKeys.some((safeKey) => safeKey === item.key) &&
       safeMaxTries.some((safeMaxTries) => safeMaxTries === item.maxTries) &&
