@@ -31,13 +31,13 @@ const ControlButton = ({ appStatus, start, retry, continu, hasUnsuccessfulRules,
                         {restartText}
                     </Button>
                     <Dropdown as={ButtonGroup} drop="up">
-                        <Button variant="primary2" onClick={retry} style={hasRulesAndErrors ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
+                        <Button variant="primary2" onClick={() => retry(null)} style={hasRulesAndErrors ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
                         {hasRulesAndErrors ? 
                         <>
                         <Dropdown.Toggle split variant="primary2" style={{marginRight:15}}/>
                         <Dropdown.Menu>
-                            <Dropdown.Item onClick={retry}>Errors</Dropdown.Item>
-                            <Dropdown.Item onClick={retry}>Warnings</Dropdown.Item>
+                            <Dropdown.Item onClick={() => retry("error")}>Errors</Dropdown.Item>
+                            <Dropdown.Item onClick={() => retry("warning")}>Warnings</Dropdown.Item>
                         </Dropdown.Menu></> : null}
                     </Dropdown>
                 </div>
@@ -51,13 +51,13 @@ const ControlButton = ({ appStatus, start, retry, continu, hasUnsuccessfulRules,
                     </Button>
                     { hasUnsuccessfulRules && 
                     <Dropdown as={ButtonGroup} drop="up">
-                    <Button variant="primary2" onClick={retry} style={hasRulesAndErrors ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
+                    <Button variant="primary2" onClick={() => retry(null)} style={hasRulesAndErrors ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
                     {hasRulesAndErrors ? 
                     <>
                     <Dropdown.Toggle split variant="primary2" style={{marginRight:15}}/>
                     <Dropdown.Menu>
-                        <Dropdown.Item onClick={retry}>Errors</Dropdown.Item>
-                        <Dropdown.Item onClick={retry}>Warnings</Dropdown.Item>
+                        <Dropdown.Item onClick={() => retry("error")}>Errors</Dropdown.Item>
+                        <Dropdown.Item onClick={() => retry("warning")}>Warnings</Dropdown.Item>
                     </Dropdown.Menu></> : null}
                 </Dropdown>
                     }
@@ -71,13 +71,13 @@ const ControlButton = ({ appStatus, start, retry, continu, hasUnsuccessfulRules,
                         {restartText}
                     </Button>
                     <Dropdown as={ButtonGroup} drop="up">
-                        <Button variant="primary2" onClick={retry} style={hasRulesAndErrors ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
+                        <Button variant="primary2" onClick={() => retry(null)} style={hasRulesAndErrors ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
                         {hasRulesAndErrors ? 
                         <>
                         <Dropdown.Toggle split variant="primary2" style={{marginRight:15}}/>
                         <Dropdown.Menu>
-                            <Dropdown.Item onClick={retry}>Errors</Dropdown.Item>
-                            <Dropdown.Item onClick={retry}>Warnings</Dropdown.Item>
+                            <Dropdown.Item onClick={() => retry("error")}>Errors</Dropdown.Item>
+                            <Dropdown.Item onClick={() => retry("warning")}>Warnings</Dropdown.Item>
                         </Dropdown.Menu></> : null}
                     </Dropdown>
                     <Button variant="primary3" onClick={continu}>

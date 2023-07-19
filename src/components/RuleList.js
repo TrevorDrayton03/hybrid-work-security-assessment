@@ -47,7 +47,6 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
     const CopyUUID = () => {
         return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-                {/* Your reference number is:&nbsp;<b>{uuid}</b>&nbsp;&nbsp;&nbsp;&nbsp; */}
                 Your reference number is:&nbsp;{uuid}&nbsp;&nbsp;&nbsp;&nbsp;
 
                 <Button

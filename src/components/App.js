@@ -137,26 +137,33 @@ function App() {
    * Handles the retry button click event.
    * 
    */
-  const handleRetry = async () => {
+  const handleRetry = async (type) => {
     setAction('retry')
     setAppStatus('retry')
     setProgressPercentage(0)
     setTries(firstTry)
-    let retryRules = Object.values(ruleList).filter(rule => rule.responseStatus !== 200 && rule.failRule === "end")
+    let retryRules
+    if (!type){
+      retryRules = Object.values(ruleList).filter(rule => rule.responseStatus !== 200 && rule.failRule === "end")
+    } else if (type === "warning") {
+      retryRules = Object.values(ruleList).filter(rule => rule.responseStatus !== 200 && rule.failRule === "end" && rule.warning === true)
+    } else {
+      retryRules = Object.values(ruleList).filter(rule => rule.responseStatus !== 200 && rule.failRule === "end" && rule.warning === false)
+    }
     let updatedRetryRules = [...retryRules].reverse().map((rule, index, array) => {
       if (index < array.length - 1) {
         return {
           ...rule,
           nextRule: array[index + 1].key
-        };
+        }
       } else {
         return {
           ...rule,
           nextRule: null
-        };
+        }
       }
-    });
-    setRetryRules(updatedRetryRules);
+    })
+    setRetryRules(updatedRetryRules)
     setCurrentRetryRule(updatedRetryRules[0])
   }
 
