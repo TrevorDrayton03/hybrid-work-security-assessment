@@ -38,6 +38,8 @@ const ControlButton = ({ appStatus, start, retry, continu, hasUnsuccessfulRules,
                         <Dropdown.Menu>
                             <Dropdown.Item onClick={() => retry("error")}>Errors</Dropdown.Item>
                             <Dropdown.Item onClick={() => retry("warning")}>Warnings</Dropdown.Item>
+                            <Dropdown.Divider />
+                            <Dropdown.Item onClick={() => retry(null)}>All</Dropdown.Item>
                         </Dropdown.Menu></> : null}
                     </Dropdown>
                 </div>
@@ -58,6 +60,8 @@ const ControlButton = ({ appStatus, start, retry, continu, hasUnsuccessfulRules,
                     <Dropdown.Menu>
                         <Dropdown.Item onClick={() => retry("error")}>Errors</Dropdown.Item>
                         <Dropdown.Item onClick={() => retry("warning")}>Warnings</Dropdown.Item>
+                        <Dropdown.Divider />
+                        <Dropdown.Item onClick={() => retry(null)}>All</Dropdown.Item>
                     </Dropdown.Menu></> : null}
                 </Dropdown>
                     }
@@ -78,6 +82,8 @@ const ControlButton = ({ appStatus, start, retry, continu, hasUnsuccessfulRules,
                         <Dropdown.Menu>
                             <Dropdown.Item onClick={() => retry("error")}>Errors</Dropdown.Item>
                             <Dropdown.Item onClick={() => retry("warning")}>Warnings</Dropdown.Item>
+                            <Dropdown.Divider />
+                            <Dropdown.Item onClick={() => retry(null)}>All</Dropdown.Item>
                         </Dropdown.Menu></> : null}
                     </Dropdown>
                     <Button variant="primary3" onClick={continu}>
