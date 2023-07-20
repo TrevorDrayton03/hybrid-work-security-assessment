@@ -35,6 +35,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
 
     /**
      * Used to determine if a rule is a failed security check.
+     * 
      * @param {object} rule - The rule object.
      * @returns {boolean} - True if the rule is a failed security check.
      */
@@ -59,7 +60,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
      * @returns {boolean} - True if the failed security check is an error.
      */
     const isAnError = (rule) => {
-        return (isUnsuccessful(rule) && rule.failRule.toLowerCase() === "end" && rule.warning === false)
+        return (isUnsuccessful(rule) && rule.warning === false)
     }
 
     /**
@@ -69,7 +70,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
      * @returns {boolean} - True if the failed security check is a warning.
      */
     const isAWarning = (rule) => {
-        return (isUnsuccessful(rule) && rule.failRule.toLowerCase() === "end" && rule.warning === true)
+        return (isUnsuccessful(rule) && rule.warning === true)
     }
 
     /**

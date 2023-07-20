@@ -564,8 +564,7 @@ function App() {
               start={handleStart}
               retry={handleRetry}
               continu={handleContinue}
-              hasUnsuccessfulRules={ruleList.some(rule => rule.response !== 200)}
-              hasErrorAndWarning={ruleList.some(rule=> rule.response !== 200 && rule.warning === true) && ruleList.some(rule=> rule.response !== 200 && rule.warning === false)}
+              ruleList={ruleList}
             />
             {(appStatus === "running" || appStatus === "retry") &&
               <ProgressIndicator
