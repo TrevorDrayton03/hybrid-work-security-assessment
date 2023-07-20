@@ -17,6 +17,7 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
+// Create a connection to the database
 const pool = mariadb.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -25,6 +26,7 @@ const pool = mariadb.createPool({
     connectionLimit: process.env.DB_CONNECTION_LIMIT
 })
 
+// Read the rules configuration file and store the values in separate arrays
 const rules = JSON.parse(fs.readFileSync(ruleConfigPath, 'utf8'))
 const rulesArray = Object.values(rules)
 const safeKeys = rulesArray.map(({ key }) => key)
@@ -37,12 +39,14 @@ const safeMaxTries = rulesArray.map(({ maxTries }) => maxTries)
 const safeContinueOption = rulesArray.map(({ continueOption }) => continueOption)
 const safeWarning = rulesArray.map(({ warning }) => warning)
 
+// Middleware function to check if post data has been tampered with
 const isPostDataTampered = (req, res, next) => {
   const { uid, sequence, action, result } = req.body
   const safeHttpResponses = /^[1-5]\d{2}$/
   const safeUUIDLength = 36
-  const safeUUIDPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  const safeUUIDPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
+  // Check if all sequence properties match the safe values defined earlier
   const sequenceIsSafe = Object.values(sequence).every((item) => {
     return (
       safePorts.some((safePort) => safePort === item.port) &&
@@ -55,9 +59,10 @@ const isPostDataTampered = (req, res, next) => {
       safeContinueOption.some((safeContinueOption) => safeContinueOption === item.continueOption) &&
       safeWarning.some((safeWarning) => safeWarning === item.warning) &&
     ((safeHttpResponses).test(item.responseStatus) || item.responseStatus === null) // null due to current way of testing for failures
-    );
-  });
+    )
+  })
 
+  // Check if action and result properties are valid
   const actionAndResultAreSafe = () => {
     return (
         (action === "restart" || action === "retry" || action === "start" || action === "continue") &&
@@ -66,34 +71,38 @@ const isPostDataTampered = (req, res, next) => {
     )
 }
 
+  // Check if the UUID is valid
   const uuidIsSafe = () => {
-    return safeUUIDPattern.test(uid) && uid.length === safeUUIDLength;
+    return safeUUIDPattern.test(uid) && uid.length === safeUUIDLength
   }
 
+  // Call the sanitization checks, and return a 405 status code (which cancels the request) if any of them return false
   if (!sequenceIsSafe || !actionAndResultAreSafe() || !uuidIsSafe()) {
-    return res.status(405).json({ message: 'Data has been tampered with, ceasing request.' });
+    return res.status(405).json({ message: 'Data has been tampered with, ceasing request.' })
   }
-    next();
-};
+    next()
+}
 
+// Handle POST request to '/api/data'
 app.post('/api/data', isPostDataTampered, async (req, res) => {
     const { uid, sequence, action, result } = req.body
-    const sequenceJson = JSON.stringify(sequence);
-    let timestamp = new Date();
+    const sequenceJson = JSON.stringify(sequence)
+    let timestamp = new Date()
     try {
         conn = await pool.getConnection()
         const queryResult  = await conn.query('INSERT INTO test_table3 (uuid, sequence, ip, action, result, timestamp, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?)', [uid, sequenceJson, req.ip, action, result, timestamp, req.headers['user-agent']])
         console.log(queryResult)
-        res.status(200).json({ message: 'Data inserted successfully' });
+        res.status(200).json({ message: 'Data inserted successfully' })
     } catch (err) {
         // throw err
         console.log(err)
-        res.status(500).json({ message: 'Error inserting data' });
+        res.status(500).json({ message: 'Error inserting data' })
     } finally {
         if (conn) return conn.end()
     }
 })
 
+// Handle GET request to '/api/rules'
 app.get('/api/rules', (req, res) => {
     try {
         const data = fs.readFileSync(ruleConfigPath, 'utf8')
@@ -104,6 +113,7 @@ app.get('/api/rules', (req, res) => {
     }
 })
 
+// Serve the React app on all other routes
 app.get('*', (req, res) => {
     res.sendFile(path.join(buildPath, 'index.html'))
 })
@@ -112,6 +122,7 @@ app.get('*', (req, res) => {
 //     console.log(`Server is running on port ${port}`)
 // })
 
+// Start the server
 http.listen(port, () => {
     console.log(`Server is running on port ${port}`)
 })

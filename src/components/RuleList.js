@@ -4,13 +4,13 @@ import { RiFileCopy2Line } from "react-icons/ri"
 import React, { useState } from "react"
 
 /**
- * The panel component.
- *
- * Maintains a list of each rule that has been processed. 
- * One panel is visible when the current rule fails and failRule is 'end' or if the process completes successfully. 
+ * The panel component to display warnings, errors, and the success panels.
+ * Below the aforementioned panels, there are footers displayed based on appstatus.
+ * 
  * @param {object} ruleList - The array of assessed rules.
  * @param {string} appStatus - The application status.
  * @param {string} uuid - The UUID.
+ * @param {function} copy - The copy UUID function.
  */
 const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
     const [isCopied, setIsCopied] = useState(false)
@@ -21,38 +21,70 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
     let errors = ruleList.filter(rule => rule.responseStatus !== 200 && rule.warning !== true && rule.failRule === "end").length
     let total = passed + errors // warnings are not counted in the total
 
+    /**
+     * Calls the copy UUID function and sets the isCopied state to true.
+     * Used to give the user a response to let them know when the UUID has been copied.
+     */
     const handleClick = () => {
+      copy()
       setIsCopied(true)
       setTimeout(() => {
         setIsCopied(false)
       }, 2000)
     }
 
+    /**
+     * Used to determine if a rule is a failed security check.
+     * @param {object} rule - The rule object.
+     * @returns {boolean} - True if the rule is a failed security check.
+     */
     const isUnsuccessful = (rule) => {
         return ((rule.responseStatus > 299 || rule.responseStatus === null) && rule.failRule === "end") 
     }
 
+    /**
+     * Used to determine if the application is not assessing any rules.
+     * 
+     * @param {string} appStatus - The application status.
+     * @returns {boolean} - True if the application is not assessing any rules.
+     */
     const isNotFetching = (appStatus) => {
         return (appStatus !== "running" && appStatus !== "retry")
     }
 
+    /**
+     * Used to determine if a failed security check is an error.
+     * 
+     * @param {object} rule - The rule object.
+     * @returns {boolean} - True if the failed security check is an error.
+     */
     const isAnError = (rule) => {
         return (isUnsuccessful(rule) && rule.failRule.toLowerCase() === "end" && rule.warning === false)
     }
 
+    /**
+     * Used to determine if a failed security check is a warning.
+     * 
+     * @param {object} rule - The rule object.
+     * @returns {boolean} - True if the failed security check is a warning.
+     */
     const isAWarning = (rule) => {
         return (isUnsuccessful(rule) && rule.failRule.toLowerCase() === "end" && rule.warning === true)
     }
 
+    /**
+     * A subcomponent that displays the UUID and copy UUID button.
+     * 
+     * @returns {object} - The CopyUUID component [JSX object]. 
+     */
     const CopyUUID = () => {
         return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 Your reference number is:&nbsp;{uuid}&nbsp;&nbsp;&nbsp;&nbsp;
-
                 <Button
                     variant="secondary"
                     style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}
-                    onClick={() => { copy(); handleClick(); }}
+                    onClick={() => handleClick()}
                 >
                     {isCopied ? 'Copied!' : <RiFileCopy2Line style={{alignSelf:'center'}} size={27} />}
                 </Button>
@@ -60,6 +92,15 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
         )
     }
 
+    /**
+     * A subcomponent that displays the rule list.
+     * 
+     * @param {object} rule - The rule object.
+     * @param {string} variant - The alert variant [primary, warning, danger].
+     * @param {string} body - The body text of the alert.
+     * @param {boolean} success - A boolean that is used to trigger the success panel.
+     * @returns {object} - The RuleList component [JSX object].
+     */
     const Panel = ({ rule, variant, body, success }) => {
         const csvValues = body.includes(':')
         ? body.split(':')[1].trim().split(', ').sort()
@@ -92,6 +133,12 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
         );
       };      
 
+    /**
+     * Meant to utilize the endPathLength and/or show a more overall summary that includes total passed rules out of endlengthpath rules.
+     * Not finished or used.
+     * 
+     * @returns {object} - The Summary component [JSX object]. 
+     */
     const Summary = () => {
         return (
             <div style ={{padding:0, margin:0}}>

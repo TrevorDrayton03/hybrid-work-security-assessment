@@ -3,13 +3,15 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
 
 /**
- * Displays the control button(s) based on the application status.
+ * Displays the start, restart, retry, and continue buttons based on the application status.
  * @param {string} appStatus - The application status.
  * @param {function} start - The function to start the application from the firstRule.
  * @param {function} retry - The function to retry failed checks.
- * @param {function} continu - The function to continue the application when it's paused on a rule.
+ * @param {function} continu - The function to continue the application when it's paused on a rule (continue is a keyword).
+ * @param {boolean} hasUnsuccessfulRules - The boolean to determine if there are any unsuccessful rules.
+ * @param {boolean} hasErrorAndWarning - The boolean to determine if there are both error(s) and warning(s).
  */
-const ControlButton = ({ appStatus, start, retry, continu, hasUnsuccessfulRules, hasRulesAndErrors }) => {
+const ControlButton = ({ appStatus, start, retry, continu, hasUnsuccessfulRules, hasErrorAndWarning }) => {
     let buttonContent
     const restartText = "Restart From Beginning" 
     const retryText = "Retry Failed Check(s)"
@@ -31,8 +33,8 @@ const ControlButton = ({ appStatus, start, retry, continu, hasUnsuccessfulRules,
                         {restartText}
                     </Button>
                     <Dropdown as={ButtonGroup} drop="up">
-                        <Button variant="primary2" onClick={() => retry(null)} style={hasRulesAndErrors ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
-                        {hasRulesAndErrors ? 
+                        <Button variant="primary2" onClick={() => retry(null)} style={hasErrorAndWarning ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
+                        {hasErrorAndWarning ? 
                         <>
                         <Dropdown.Toggle split variant="primary2" style={{marginRight:15}}/>
                         <Dropdown.Menu>
@@ -53,8 +55,8 @@ const ControlButton = ({ appStatus, start, retry, continu, hasUnsuccessfulRules,
                     </Button>
                     { hasUnsuccessfulRules && 
                     <Dropdown as={ButtonGroup} drop="up">
-                    <Button variant="primary2" onClick={() => retry(null)} style={hasRulesAndErrors ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
-                    {hasRulesAndErrors ? 
+                    <Button variant="primary2" onClick={() => retry(null)} style={hasErrorAndWarning ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
+                    {hasErrorAndWarning ? 
                     <>
                     <Dropdown.Toggle split variant="primary2" style={{marginRight:15}}/>
                     <Dropdown.Menu>
@@ -75,8 +77,8 @@ const ControlButton = ({ appStatus, start, retry, continu, hasUnsuccessfulRules,
                         {restartText}
                     </Button>
                     <Dropdown as={ButtonGroup} drop="up">
-                        <Button variant="primary2" onClick={() => retry(null)} style={hasRulesAndErrors ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
-                        {hasRulesAndErrors ? 
+                        <Button variant="primary2" onClick={() => retry(null)} style={hasErrorAndWarning ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
+                        {hasErrorAndWarning ? 
                         <>
                         <Dropdown.Toggle split variant="primary2" style={{marginRight:15}}/>
                         <Dropdown.Menu>

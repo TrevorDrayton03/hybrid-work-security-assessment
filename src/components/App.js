@@ -2,44 +2,48 @@
  * Hybrid Work-from-Home Security Assessment
  *
  * This application assesses security requirements of staff devices to ensure they meet the necessary criteria for safely connecting remotely 
- * to TRU's network as part of the hybrid Work-from-Home program. It was initialized using create-react-app.
+ * to TRU's network as part of the hybrid Work-from-Home program. It accomplishes this task by making fetch requests to TRU's servers that host HIPS rules.
+ * These rules assess the user's device and return a response status based on the assessment. These are the same rules that Global Protect is
+ * automatically checking on its own interval to ensure the user's device is compliant with TRU's security requirements, and will prevent users from staying
+ * connected if it detects a security issue. This application is intended to be used as a tool to help users identify and resolve security issues before
+ * connecting to TRU's network, or in the event they get kicked off the network by Global Protect.
  *
  * Main Component
  * 
  * This component represents the main entry point of the web app.
- * It serves as the container for the entire application and handles
- * the overall layout and function.
+ * It serves as the container for the entire application and handles the overall layout and function.
  * 
  * Features:
- * - Fetches the rules_config.json file from the server and stores it in state.
- * - Automatically send the data of each assessment to a database for logging.
- * - Real-time updates to the rules_config.json file are reflected in the app.
- * - Progress bar to show the user how far along they are in each individual security check.
- * - Feedback message to inform the user based on the status of the application.
- * - Control buttons to allow the user to start and restart the security check assessment and retry the last failed security check.
- * - A spinner to indicate when the application is busy.
- * - Responsive design for mobile, tablet, and desktop.
- * - Cross-browser compatibility.
- * - Error handling for failed mandatory security checks.
- * - Complies to ES6 standards.
+ * - Fetches the rules_config.json file from the server and stores it in the application state for rule evaluation.
+ * - Sends the data of each assessment result to a database for logging and tracking.
+ * - Provides a progress bar to visualize the user's progress through each individual security check.
+ * - Displays feedback messages based on the status of the application to keep users informed about the progress and results of the security checks.
+ * - Offers control buttons to allow the user to start, restart, retry (warnings, errors, or all) the security check assessment and retry the last failed security check.
+ * - Shows a spinner during rule evaluations to indicate that the application is running even if the progress indicator is not moving.
+ * - Incorporates a responsive design to ensure usability on various screen sizes including mobile, tablet, and desktop.
+ * - Ensures cross-browser compatibility for broad accessibility.
+ * - Learnable and easy to use with a simple and intuitive user interface.
+ * - Complies with ES6 standards for code readability, maintainability, and modern features.
+ * - Robust error handling
  * 
  * Libraries/Dependencies:
  * Node.js: JavaScript runtime environment.
  * React: JavaScript library for building user interfaces.
- * Bootstrap: Popular CSS framework for responsive and mobile-first web development.
+ * Bootstrap & React-Bootstrap: Popular CSS framework for responsive and mobile-first web development.
  * MariaDB: Database management system for storing the data of the security check assessments.
  * Express: Web application framework for building server side applications in Node.js.
  * react-scripts: Configuration and scripts for running a React application in development and production environments.
  * uuid: Library for generating unique identifiers (UUIDs) for each security check assessment.
  * whatwg-fetch: Polyfill that provides a global fetch function for making web requests in browsers that do not support the native Fetch API.
+ * react-icons: Library of icons for React applications, used for the copy UUID button.
  * 
  * Author: Trevor Drayton
- * Version: 1.0.0
- * Last Updated: May 31, 2023
+ * Version: 1.1.0
+ * Last Updated: Jul 19, 2023
  * 
  * Thompson Rivers University
- * Department: Information Security
- * Contact: draytont10@mytru.ca or trevorpdrayton@gmail.com
+ * Department: IT Information Security
+ * Contact: trevorpdrayton@gmail.com or linkedin.com/in/trevor-drayton/
  */
 
 import logo from '../logo.png'
@@ -57,9 +61,10 @@ function App() {
   /**
    * Constants
    * 
-   * firstTry is the initialization of the fetch loop
-   * firstRule is the key value that determines which rule in the rule_config.json file the fetch loop begins with
-   * baseUrl is the server url for the HIPS requests
+   * firstTry is the initialization value of the loops
+   * firstRule is the key property value that determines which rule in the rule_config.json file the fetch loop begins with
+   * delay is the time in milliseconds that the fetch loop waits before sending another request, which is read from the rule_config.json file
+   * baseUrl is the server url for the HIPS requests read from the .env file
    */
   const firstTry = 0
   const firstRule = "FirstRule"
@@ -69,14 +74,20 @@ function App() {
   /**
    * State Variables
    * 
-   * appStatus refers to whether the entire app is running, idle, completed, or error (which is completed with a failed mandatory security check)
-   * responseStatus refers to the http response status code; it gets appended to rules added to the ruleList
-   * rules is the rules_config.json data
-   * currentRule refers to the rule currently undergoing security assessment (the current rule in the flow chart / sequence of rules)
-   * tries refers to the count for the number of fetch requests for the current rule, which increments until each rule's maxTries
-   * progressPercentage refers to the value that's used for the progress bar component (ProgressIndicator.js)
-   * uuid is the unique identifier for the current sequence to show, to be passed to RuleList to be shown on the front end
-   * action is for the purpose of logging 
+   * appStatus is the primary state of the app [idle, running, completed, error, paused]
+   * responseStatus refers to the http response status code; it gets appended to rules in the ruleList
+   * rules is the data from rules_config.json
+   * currentRule refers to the rule currently being assessed
+   * ruleList is an array of rules that have been assessed, logged in the database as 'sequence' and used to show the user their results
+   * retryRules is an array of rules that have been filtered from the ruleList to be retried
+   * currentRetryRule refers to the rule currently undergoing the retry assessment
+   * tries keeps count of the number of fetch requests for the current rule
+   * tryDelay is the time in milliseconds that the fetch loop waits before sending another request, which is read from the rule_config.json file
+   * progressPercentage refers to the value that's used for the progress bar component [ProgressIndicator.js]
+   * uuid is the unique identifier for the current sequence, referencing the sequence in the database
+   * action is for the purpose of logging the user event [start, restart, retry, continue]
+   * endPathLength is the length of the path from the current rule to an end rule. It requires a final, singular path to be available from the current rule.
+   * isLoading is true if rules are fetching in the initial page load, false if rules are fetched
    */
   const [appStatus, setAppStatus] = useState('idle')
   const [responseStatus, setResponseStatus] = useState(null)
@@ -86,7 +97,7 @@ function App() {
   const [retryRules, setRetryRules] = useState(null)
   const [currentRetryRule, setCurrentRetryRule] = useState(null)
   const [tries, setTries] = useState(firstTry)
-  const [tryDelay, setTryDelay] = useState(firstTry)
+  const [tryDelay, setTryDelay] = useState(0)
   const [progressPercentage, setProgressPercentage] = useState(0)
   const [uuid, setUuid] = useState(null)
   const [action, setAction] = useState(null)
@@ -94,11 +105,10 @@ function App() {
   const [isLoading, setIsLoading] = useState(true)
 
   /**
-   * OnComponentDidMount Side Effect (called once after rendering)
+   * OnComponentDidMount Side Effect (called on initial page load)
    * 
    * This side effect fetches the rules_config.json file and store the config data in the rules state.
-   * 
-   * @param {function} fetch - fetches the rules_config.json file from the server
+   * It initializes the application's state.
    */
   useEffect(() => { 
     fetch("/api/rules")
@@ -112,15 +122,15 @@ function App() {
       .catch(error => {
         console.error('Error:', error)
       })
-  }, []);
+  }, [])
 
   /**
    * Handles the start and restart button onClick events.
    *
    * This function sets the application status to 'running' and resets the app state if it is not already running.
-   * It also gathers the action from the button that was clicked for logging.
+   * It also receives the action from the button that was clicked for logging purposes.
    * 
-   * @param {string} action - the action that was clicked (start, restart, or retry)
+   * @param {string} action - the user event
    */
   const handleStart = (action) => {
     setAction(action)
@@ -134,8 +144,15 @@ function App() {
   }
 
   /**
-   * Handles the retry button click event.
+   * Handles the retry button click event. It sets the application status to 'retry', 
+   * resets the progress percentage and tries, and prepares the rules to be retried 
+   * based on the which type of rules the user wants to retry. Default is all failed rules 
+   * when the user preses the retry button.
    * 
+   * Once a filtered array is created, the items are linked together with a nextRule before
+   * it gets fed into the retry mechanism
+   * 
+   * @param {string} type - the type of rules to be reassessed [null (will do all failed rules), warning, error]
    */
   const handleRetry = async (type) => {
     setAction('retry')
@@ -143,7 +160,7 @@ function App() {
     setProgressPercentage(0)
     setTries(firstTry)
     let retryRules
-    if (!type){
+    if (!type) {
       retryRules = Object.values(ruleList).filter(rule => rule.responseStatus !== 200 && rule.failRule === "end")
     } else if (type === "warning") {
       retryRules = Object.values(ruleList).filter(rule => rule.responseStatus !== 200 && rule.failRule === "end" && rule.warning === true)
@@ -182,10 +199,9 @@ function App() {
   }
 
   /**
-   * Used to set the state of the app for the next security check (aka rule); called in handleRuleChange 
-   * and sets the next security check using the rule passed as an argument.
+   * Used to set the state of the app for the next rule; utilized in handleRuleChange.
    * 
-   * @param {string} nextRule - the key value of the next rule to be evaluated
+   * @param {string} nextRule - the key property value
    */
   const changeToRule = (nextRule) => {
     setCurrentRule(Object.values(rules).find(rule => rule.key === nextRule))
@@ -196,11 +212,9 @@ function App() {
   }
 
   /**
-   * This asynchronous function is called when a rule change occurs.
-   * 
-   * It evaluates the current rule and response status to determine the next actions, 
-   * contains a short timeout to help the UI run smoother, and
-   * appends the response status and uuid to the current rule before adding them to the rule array.
+   * Encapsulates the logic required to change the current rule to either the pass rule, fail rule, or end rule,
+   * and update the rule list with the results of the current rule's assessment.
+   * Called when progress of the currentRule reaches 100%.
    */
   const handleRuleChange = async () => {
     await new Promise((resolve) => setTimeout(resolve, 500))
@@ -210,19 +224,41 @@ function App() {
     } else if (isFailRule(currentRule)) {
       changeToRule(currentRule.failRule)
     } else {
-      handleNoRuleChange(currentRule, ruleList);
+      handleNoRuleChange(currentRule, ruleList)
     }
     setRuleList(prevArray => [currentRule, ...prevArray])
   }
   
+  /**
+   * Determines if the current rule is a pass rule. A pass rule is one where the 
+   * response status for the rule is within the 200-299 range, indicating success, 
+   * and the passRule field of the rule isn't "end", meaning there's another rule to follow.
+   * 
+   * @param {object} currentRule - the current rule being evaluated
+   * @returns {boolean} - true if the current rule is a pass rule, false otherwise
+   */
   const isPassRule = (currentRule) => {
-    return currentRule.passRule.toLowerCase() !== "end" && (currentRule.responseStatus >= 200 && currentRule.responseStatus <= 299);
+    return currentRule.passRule.toLowerCase() !== "end" && (currentRule.responseStatus >= 200 && currentRule.responseStatus <= 299)
   }
   
+  /**
+   * Determines if the current rule is a fail rule. A fail rule is one where the 
+   * response status for the rule is above 299 or null, indicating failure, 
+   * and the failRule field of the rule isn't "end", meaning there's another rule to follow.
+   * 
+   * @param {object} currentRule - the current rule being evaluated
+   * @returns {boolean} - true if the current rule is a fail rule, false otherwise
+   */
   const isFailRule = (currentRule) => {
-    return currentRule.failRule.toLowerCase() !== "end" && (currentRule.responseStatus > 299 || currentRule.responseStatus === null);
+    return currentRule.failRule.toLowerCase() !== "end" && (currentRule.responseStatus > 299 || currentRule.responseStatus === null)
   }
   
+  /**
+   * Handles scenarios where no rule change occurs, determining the final state and logging.
+   * 
+   * @param {object} currentRule - the current rule being evaluated
+   * @param {array} ruleList - the list of rules that have been evaluated so far
+   */
   const handleNoRuleChange = async (currentRule, ruleList) => {
     let rList = [currentRule, ...ruleList] // synchronous solution for posting immediately
     let id = uuidv4()
@@ -230,7 +266,7 @@ function App() {
     let result
   
     if (isRuleEnd(currentRule)) {
-      result = handleEndResultAndAppStatus(rList);
+      result = handleEndResultAndAppStatus(rList)
     } else if (currentRule.continueOption === true) {
       setAppStatus("paused")
       result = "incomplete"
@@ -258,15 +294,38 @@ function App() {
     }
   }
   
+  /**
+   * Determines if the current rule is an end rule. An end rule is one where both 
+   * passRule and failRule fields of the rule are "end", indicating there's no more rule to follow.
+   * 
+   * @param {object} currentRule - the current rule being evaluated
+   * @returns {boolean} - true if the current rule is the end rule, false otherwise
+   */
   const isRuleEnd = (currentRule) => {
-    return currentRule.passRule.toLowerCase() === "end" && currentRule.failRule.toLowerCase() === "end";
+    return currentRule.passRule.toLowerCase() === "end" && currentRule.failRule.toLowerCase() === "end"
   }
+
+  /**
+   * Determines if the current retry rule in the retry process is the last retry rule. The last
+   * retry rule is the one where the nextRule field of the rule is null.
+   * 
+   * @param {object} currentRetryRule - the current retry rule in the retry process
+   * @returns {boolean} - true if the current retry rule in the retry process is the last retry rule, false otherwise
+   */
   const isRetryRuleEnd = (currentRetryRule) => {
     return currentRetryRule.nextRule === null
   }
   
+  /**
+   * Used in both the standard process and the retry process.
+   * 
+   * Evaluates the rule list to determine the end result and change the app state to completed.
+   * 
+   * @param {array} rList - the list of rules that have been evaluated
+   * @returns {string} - the end result of the assessment
+   */
   const handleEndResultAndAppStatus = (rList) => {
-    let result;
+    let result
     if (rList.every(rule => rule.responseStatus === 200)) { 
       setAppStatus("completed")
       result = "completed successfully"
@@ -277,15 +336,20 @@ function App() {
       setAppStatus("completed")
       result = "completed unsuccessfully"
     }
-    return result;
+    return result
   }
   
+  /**
+   * Handles the change of rule in the retry process. It sets the number of tries and progress percentage to 
+   * initial values, finds the next rule to retry, and sets it as the current retry rule.
+   * Sends a final POST request to the server with the updated rule list and the end result.
+   */
   const handleRetryRuleChange = async () => {
     await new Promise((resolve) => setTimeout(resolve, 500))
     if(!isRetryRuleEnd(currentRetryRule)) {
       setTries(firstTry)
       setProgressPercentage(0)
-      let nextRetryRule = Object.values(retryRules).find(rule => rule.key === currentRetryRule.nextRule);
+      let nextRetryRule = Object.values(retryRules).find(rule => rule.key === currentRetryRule.nextRule)
       setCurrentRetryRule(nextRetryRule)
     } else if (isRetryRuleEnd(currentRetryRule)) {
       let result
@@ -304,7 +368,7 @@ function App() {
       setRuleList(rList)
       
       if (isRetryRuleEnd(currentRetryRule) && isRuleEnd(rList[0])) {
-        result = handleEndResultAndAppStatus(rList);
+        result = handleEndResultAndAppStatus(rList)
       } else if (currentRetryRule.continueOption === true) {
         setAppStatus("paused")
         result = "incomplete"
@@ -335,9 +399,7 @@ function App() {
   }
 
   /**
-   * Handle copy I.D. number onClick event.
-   * 
-   * This function is used to copy the uuid that is generated when a mandatory security check is not passed.
+   * Handle copy UUID onClick event.
    */
   const handleCopy = () => {
     navigator.clipboard.writeText(uuid)
@@ -365,10 +427,7 @@ function App() {
   }, [tries])
 
   /**
-   * Side effects related to progress reaching 100%.
-   * 
-   * This effect hook is triggered when there are changes in the 'progressPercentage' state.
-   * It calls handleRuleChange when progress percentage reaches 100%.
+   * It calls handleRuleChange or handleRetryRuleChange when progress percentage reaches 100%.
    */
   useEffect(() => {
     if (progressPercentage >= 100 && appStatus === "running") {
@@ -380,11 +439,9 @@ function App() {
   }, [progressPercentage])
 
   /**
-   * Side effects that manage the fetch requests.
-   * 
-   * It immediately executes an asynchronous function that handles rule processing only if app status is 'running'.
-   * It performs multiple checks and fetches data based on different conditions.
-   * It sets the number of tries, breaks the fetch loop if necessary, and sets the progress percentage to 100.
+   * Side effect hooked into currentRule and appStatus that executes the standard rule assessment process.
+   * Fetches for maxTry amount of times, identifies the responseStatus on the first try, and ends the current rule's assessment if
+   * the responseStatus changes after the first try or maxTries amount of fetches have been made.
    */
   useEffect(() => {
     let currentTries = tries
@@ -392,7 +449,6 @@ function App() {
     let response = null
     if (appStatus === 'running') {
       (async () => {
-        // this loop is looking for changes in the response status
         while (currentTries < currentRule.maxTries && !shouldBreak) {
           await new Promise((resolve) => setTimeout(resolve, tryDelay))
           try {
@@ -423,6 +479,9 @@ function App() {
     }
   }, [currentRule, appStatus])
 
+  /**
+   * Side effect hooked into currentRetryRule and appStatus that executes the retry rule assessment process.
+   */
   useEffect(() => {
     let currentTries = tries
     let shouldBreak = false
@@ -431,24 +490,23 @@ function App() {
     if (appStatus === "retry") {
       (async () => {
         while (currentTries < currentRetryRule.maxTries && !shouldBreak) {
-          await new Promise((resolve) => setTimeout(resolve, tryDelay)) // has to be here
+          await new Promise((resolve) => setTimeout(resolve, tryDelay)) // has to be up here
           try {
             response = await fetch(baseUrl + currentRetryRule.port)
             let status = response.status
             if (currentRetryRule.responseStatus !== status) {
-              setProgressPercentage(100);
-              shouldBreak = true;
+              setProgressPercentage(100)
+              shouldBreak = true
               setRetryRules(prevRetryRules => {
-                let updatedRetryRules = [...prevRetryRules];
-                console.log(typeof updatedRetryRules)
-                let index = updatedRetryRules.findIndex(rule => rule.key === currentRetryRule.key);
+                let updatedRetryRules = [...prevRetryRules]
+                let index = updatedRetryRules.findIndex(rule => rule.key === currentRetryRule.key)
                 if (index !== -1) {
                   updatedRetryRules[index] = {
                     ...updatedRetryRules[index],
                     responseStatus: status
                   }
                 }
-                return updatedRetryRules;
+                return updatedRetryRules
               })
             }    
           } catch (error) {
@@ -464,7 +522,7 @@ function App() {
   }, [currentRetryRule, appStatus])
 
   /**
-   * Side effect that determines if a singular endpath is possible.
+   * Side effect that determines if a singular endpath is possible. If there is one, sets the end path length.
    */
   useEffect(() => {
     if(ruleList.length !== 0 && appStatus !== 'retry') {
@@ -507,7 +565,7 @@ function App() {
               retry={handleRetry}
               continu={handleContinue}
               hasUnsuccessfulRules={ruleList.some(rule => rule.response !== 200)}
-              hasRulesAndErrors={ruleList.some(rule=> rule.response !== 200 && rule.warning === true) && ruleList.some(rule=> rule.response !== 200 && rule.warning === false)}
+              hasErrorAndWarning={ruleList.some(rule=> rule.response !== 200 && rule.warning === true) && ruleList.some(rule=> rule.response !== 200 && rule.warning === false)}
             />
             {(appStatus === "running" || appStatus === "retry") &&
               <ProgressIndicator

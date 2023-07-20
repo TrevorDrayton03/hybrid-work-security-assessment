@@ -1,8 +1,10 @@
 import React from "react"
 
 /**
- * Displays a feedback message based on the application status.
+ * Displays a feedback message based on the application status. Guides and informs the user.
  * @param {string} appStatus - The application status.
+ * @param {array} ruleList - The list of assessed rules.
+ * @param {number} endPathLength - The length of the end path, if it exists.
  */
 const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
     let failed = ruleList.filter(rule => rule.responseStatus !== 200 && rule.failRule === "end").length

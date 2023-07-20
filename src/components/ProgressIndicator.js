@@ -17,7 +17,6 @@ const ProgressIndicator = ({ progressPercentage, currentRule, currentRetryRule }
             <ProgressBar
                 // animated
                 now={progressPercentage}
-                // key={currentRule.key}
                 style={{ height: '25px', borderRadius: '0' }}
             />
         </div>
