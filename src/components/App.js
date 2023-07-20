@@ -208,7 +208,7 @@ function App() {
     setTries(firstTry)
     setResponseStatus(null)
     setProgressPercentage(0)
-    handleStart(action)
+    // handleStart(action)
   }
 
   /**
