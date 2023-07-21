@@ -1,6 +1,7 @@
 import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
+import { isUnsuccessful, isAnError, isAWarning, hasUnsuccessfulRules, hasErrorAndWarning } from '../helpers/helpers'
 
 /**
  * Displays the start, restart, retry, and continue buttons based on the application status.
@@ -8,8 +9,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
  * @param {function} start - The function to start the application from the firstRule.
  * @param {function} retry - The function to retry failed checks.
  * @param {function} continu - The function to continue the application when it's paused on a rule (continue is a keyword).
- * @param {boolean} hasUnsuccessfulRules - The boolean to determine if there are any unsuccessful rules.
- * @param {boolean} hasErrorAndWarning - The boolean to determine if there are both error(s) and warning(s).
+ * @param {object} ruleList - The list of assessed rules.
  */
 const ControlButton = ({ appStatus, start, retry, continu, ruleList }) => {
     let buttonContent
@@ -17,45 +17,6 @@ const ControlButton = ({ appStatus, start, retry, continu, ruleList }) => {
     const retryText = "Retry Failed Check(s)"
     const startText = "Start"
     const continueText = "Continue To Next Check"
-
-    /**
-     * Used to determine if a rule is a failed security check.
-     * 
-     * @param {object} rule - The rule object.
-     * @returns {boolean} - True if the rule is a failed security check.
-     */
-    const isUnsuccessful = (rule) => {
-        return ((rule.responseStatus > 299 || rule.responseStatus === null) && rule.failRule === "end") 
-    }
-
-    /**
-     * Used to determine if a failed security check is an error.
-     * 
-     * @param {object} rule - The rule object.
-     * @returns {boolean} - True if the failed security check is an error.
-     */
-    const isAnError = (rule) => {
-        return (isUnsuccessful(rule) && rule.warning === false)
-    }
-    
-    /**
-     * Used to determine if a failed security check is a warning.
-     * 
-     * @param {object} rule - The rule object.
-     * @returns {boolean} - True if the failed security check is a warning.
-     */
-    const isAWarning = (rule) => {
-        return (isUnsuccessful(rule) && rule.warning === true)
-    }
-
-    const hasUnsuccessfulRules = () => {
-        return ruleList.some(rule => isUnsuccessful(rule))
-    }
-
-    const hasErrorAndWarning = () => {
-        return (ruleList.some(rule => isAnError(rule)) && ruleList.some(rule => isAWarning(rule)))
-    }
-
 
     switch (appStatus) {
         case 'idle':
@@ -72,8 +33,8 @@ const ControlButton = ({ appStatus, start, retry, continu, ruleList }) => {
                         {restartText}
                     </Button>
                     <Dropdown as={ButtonGroup} drop="up">
-                        <Button variant="primary2" onClick={() => retry(null)} style={hasErrorAndWarning() ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
-                        {hasErrorAndWarning() ? 
+                        <Button variant="primary2" onClick={() => retry(null)} style={hasErrorAndWarning(ruleList) ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
+                        {hasErrorAndWarning(ruleList) ? 
                         <>
                         <Dropdown.Toggle split variant="primary2" style={{marginRight:15}}/>
                         <Dropdown.Menu>
@@ -92,10 +53,10 @@ const ControlButton = ({ appStatus, start, retry, continu, ruleList }) => {
                     <Button variant="primary" onClick={() => start('restart')}>
                         {restartText}
                     </Button>
-                    { hasUnsuccessfulRules() && 
+                    { hasUnsuccessfulRules(ruleList) && 
                     <Dropdown as={ButtonGroup} drop="up">
-                    <Button variant="primary2" onClick={() => retry(null)} style={hasErrorAndWarning() ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
-                    {hasErrorAndWarning() ? 
+                    <Button variant="primary2" onClick={() => retry(null)} style={hasErrorAndWarning(ruleList) ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
+                    {hasErrorAndWarning(ruleList) ? 
                     <>
                     <Dropdown.Toggle split variant="primary2" style={{marginRight:15}}/>
                     <Dropdown.Menu>
@@ -116,8 +77,8 @@ const ControlButton = ({ appStatus, start, retry, continu, ruleList }) => {
                         {restartText}
                     </Button>
                     <Dropdown as={ButtonGroup} drop="up">
-                        <Button variant="primary2" onClick={() => retry(null)} style={hasErrorAndWarning() ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
-                        {hasErrorAndWarning() ? 
+                        <Button variant="primary2" onClick={() => retry(null)} style={hasErrorAndWarning(ruleList) ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
+                        {hasErrorAndWarning(ruleList) ? 
                         <>
                         <Dropdown.Toggle split variant="primary2" style={{marginRight:15}}/>
                         <Dropdown.Menu>

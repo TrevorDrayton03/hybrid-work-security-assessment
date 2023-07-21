@@ -77,3 +77,23 @@ export const warningsCount = (ruleList) =>  {
 export const errorsCount = (ruleList) =>  {
   return ruleList.filter(rule => rule.responseStatus !== 200 && rule.warning !== true && rule.failRule === "end").length
 }
+
+/**
+ * Used to determine if there are any unsuccessful rules in the assessed rules.
+ * 
+ * @param {object} ruleList - The list of assessed rules.
+ * @returns {boolean}
+ */
+export const hasUnsuccessfulRules = (ruleList) => {
+  return ruleList.some(rule => isUnsuccessful(rule))
+}
+
+/**
+ * Used to determine if there are both errors and warnings in the assessed rules.
+ * 
+ * @param {object} ruleList - The list of assessed rules.
+ * @returns {boolean}
+ */
+export const hasErrorAndWarning = (ruleList) => {
+  return (ruleList.some(rule => isAnError(rule)) && ruleList.some(rule => isAWarning(rule)))
+}
