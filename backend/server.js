@@ -39,7 +39,9 @@ const safeMaxTries = rulesArray.map(({ maxTries }) => maxTries)
 const safeContinueOption = rulesArray.map(({ continueOption }) => continueOption)
 const safeWarning = rulesArray.map(({ warning }) => warning)
 
-// Middleware function to check if post data has been tampered with
+/**
+ * Middleware to check if post data has been tampered with
+ */
 const isPostDataTampered = (req, res, next) => {
   const { uid, sequence, action, result } = req.body
   const safeHttpResponses = /^[1-5]\d{2}$/
@@ -83,7 +85,10 @@ const isPostDataTampered = (req, res, next) => {
     next()
 }
 
-// Handle POST request to '/api/data'
+/**
+ * Handle POST request to '/api/data'
+ * Inserts the data into the database.
+ */
 app.post('/api/data', isPostDataTampered, async (req, res) => {
     const { uid, sequence, action, result } = req.body
     const sequenceJson = JSON.stringify(sequence)
@@ -102,7 +107,10 @@ app.post('/api/data', isPostDataTampered, async (req, res) => {
     }
 })
 
-// Handle GET request to '/api/rules'
+/**
+ * Handle GET request to '/api/rules'
+ * Sends the rules configuration file to the client.
+ */ 
 app.get('/api/rules', (req, res) => {
     try {
         const data = fs.readFileSync(ruleConfigPath, 'utf8')

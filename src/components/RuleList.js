@@ -2,6 +2,7 @@ import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
 import { RiFileCopy2Line } from "react-icons/ri"
 import React, { useState } from "react"
+import { isNotFetching, isUnsuccessful, isAnError, isAWarning, failedCount, passedCount, warningsCount, errorsCount } from '../helpers/helpers'
 
 /**
  * The panel component to display warnings, errors, and the success panels.
@@ -15,11 +16,11 @@ import React, { useState } from "react"
 const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
     const [isCopied, setIsCopied] = useState(false)
 
-    let failed = ruleList.filter(rule => rule.responseStatus !== 200 && rule.failRule === "end").length
-    let passed = ruleList.filter(rule => rule.responseStatus === 200).length
-    let warnings = ruleList.filter(rule => rule.responseStatus !== 200 && rule.warning === true && rule.failRule === "end").length
-    let errors = ruleList.filter(rule => rule.responseStatus !== 200 && rule.warning !== true && rule.failRule === "end").length
-    let total = passed + errors // warnings are not counted in the total
+    let failed = failedCount(ruleList)
+    let passed = passedCount(ruleList)
+    let warnings = warningsCount(ruleList)
+    let errors = errorsCount(ruleList)
+    let total = passedCount + errorsCount // warnings are not counted in the total
 
     /**
      * Calls the copy UUID function and sets the isCopied state to true.
@@ -31,46 +32,6 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
       setTimeout(() => {
         setIsCopied(false)
       }, 2000)
-    }
-
-    /**
-     * Used to determine if a rule is a failed security check.
-     * 
-     * @param {object} rule - The rule object.
-     * @returns {boolean} - True if the rule is a failed security check.
-     */
-    const isUnsuccessful = (rule) => {
-        return ((rule.responseStatus > 299 || rule.responseStatus === null) && rule.failRule === "end") 
-    }
-
-    /**
-     * Used to determine if the application is not assessing any rules.
-     * 
-     * @param {string} appStatus - The application status.
-     * @returns {boolean} - True if the application is not assessing any rules.
-     */
-    const isNotFetching = (appStatus) => {
-        return (appStatus !== "running" && appStatus !== "retry")
-    }
-
-    /**
-     * Used to determine if a failed security check is an error.
-     * 
-     * @param {object} rule - The rule object.
-     * @returns {boolean} - True if the failed security check is an error.
-     */
-    const isAnError = (rule) => {
-        return (isUnsuccessful(rule) && rule.warning === false)
-    }
-
-    /**
-     * Used to determine if a failed security check is a warning.
-     * 
-     * @param {object} rule - The rule object.
-     * @returns {boolean} - True if the failed security check is a warning.
-     */
-    const isAWarning = (rule) => {
-        return (isUnsuccessful(rule) && rule.warning === true)
     }
 
     /**
