@@ -1,7 +1,7 @@
 import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
-import { isUnsuccessful, isAnError, isAWarning, hasUnsuccessfulRules, hasErrorAndWarning } from '../helpers/helpers'
+import { hasUnsuccessfulRules, hasErrorAndWarning } from '../helpers/helpers'
 
 /**
  * Displays the start, restart, retry, and continue buttons based on the application status.

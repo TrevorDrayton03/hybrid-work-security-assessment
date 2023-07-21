@@ -1,4 +1,5 @@
 import React from "react"
+import { failedCount, passedCount, warningsCount, errorsCount } from '../helpers/helpers'
 
 /**
  * Displays a feedback message based on the application status. Guides and informs the user.
@@ -7,10 +8,10 @@ import React from "react"
  * @param {number} endPathLength - The length of the end path, if it exists.
  */
 const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
-    let failed = ruleList.filter(rule => rule.responseStatus !== 200 && rule.failRule === "end").length
-    let passed = ruleList.filter(rule => rule.responseStatus === 200).length
-    let warnings = ruleList.filter(rule => rule.responseStatus !== 200 && rule.warning === true && rule.failRule === "end").length
-    let errors = ruleList.filter(rule => rule.responseStatus !== 200 && rule.warning !== true && rule.failRule === "end").length
+    let failed = failedCount(ruleList)
+    let passed = passedCount(ruleList)
+    let warnings = warningsCount(ruleList)
+    let errors = errorsCount(ruleList)
     let total = passed + errors // warnings are not counted in the total
 
     let errorText = errors === 1 ? "error" : "errors"
@@ -59,7 +60,6 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
                     </p>
                 </div>
             )}
-            {/* if it's paused it means we have the option to continue past this rule */}
             {appStatus === "paused" && (
                 <div>
                     <p style={{marginBottom:5}}>

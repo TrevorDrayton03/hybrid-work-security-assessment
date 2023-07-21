@@ -55,6 +55,7 @@ import FeedbackMessage from './FeedbackMessage'
 import RuleList from './RuleList'
 import { v4 as uuidv4 } from 'uuid'
 import 'whatwg-fetch'
+import { isPassRule, isFailRule, isRuleEnd, isRetryRuleEnd, isSecurityCheck, isUnsuccessful, isAWarning, isAnError } from '../helpers/helpers'
 
 function App() {
 
@@ -161,11 +162,11 @@ function App() {
     setTries(firstTry)
     let retryRules
     if (!type) {
-      retryRules = Object.values(ruleList).filter(rule => rule.responseStatus !== 200 && rule.failRule === "end")
+      retryRules = Object.values(ruleList).filter(rule => isUnsuccessful(rule))
     } else if (type === "warning") {
-      retryRules = Object.values(ruleList).filter(rule => rule.responseStatus !== 200 && rule.failRule === "end" && rule.warning === true)
+      retryRules = Object.values(ruleList).filter(rule => isAWarning(rule))
     } else {
-      retryRules = Object.values(ruleList).filter(rule => rule.responseStatus !== 200 && rule.failRule === "end" && rule.warning === false)
+      retryRules = Object.values(ruleList).filter(rule => isAnError(rule))
     }
     let updatedRetryRules = [...retryRules].reverse().map((rule, index, array) => {
       if (index < array.length - 1) {
@@ -208,7 +209,6 @@ function App() {
     setTries(firstTry)
     setResponseStatus(null)
     setProgressPercentage(0)
-    // handleStart(action)
   }
 
   /**
@@ -227,30 +227,6 @@ function App() {
       handleNoRuleChange(currentRule, ruleList)
     }
     setRuleList(prevArray => [currentRule, ...prevArray])
-  }
-  
-  /**
-   * Determines if the current rule is a pass rule. A pass rule is one where the 
-   * response status for the rule is within the 200-299 range, indicating success, 
-   * and the passRule field of the rule isn't "end", meaning there's another rule to follow.
-   * 
-   * @param {object} currentRule - the current rule being evaluated
-   * @returns {boolean} - true if the current rule is a pass rule, false otherwise
-   */
-  const isPassRule = (currentRule) => {
-    return currentRule.passRule.toLowerCase() !== "end" && (currentRule.responseStatus >= 200 && currentRule.responseStatus <= 299)
-  }
-  
-  /**
-   * Determines if the current rule is a fail rule. A fail rule is one where the 
-   * response status for the rule is above 299 or null, indicating failure, 
-   * and the failRule field of the rule isn't "end", meaning there's another rule to follow.
-   * 
-   * @param {object} currentRule - the current rule being evaluated
-   * @returns {boolean} - true if the current rule is a fail rule, false otherwise
-   */
-  const isFailRule = (currentRule) => {
-    return currentRule.failRule.toLowerCase() !== "end" && (currentRule.responseStatus > 299 || currentRule.responseStatus === null)
   }
   
   /**
@@ -292,28 +268,6 @@ function App() {
     } else {
       console.log('Failed to post data')
     }
-  }
-  
-  /**
-   * Determines if the current rule is an end rule. An end rule is one where both 
-   * passRule and failRule fields of the rule are "end", indicating there's no more rule to follow.
-   * 
-   * @param {object} currentRule - the current rule being evaluated
-   * @returns {boolean} - true if the current rule is the end rule, false otherwise
-   */
-  const isRuleEnd = (currentRule) => {
-    return currentRule.passRule.toLowerCase() === "end" && currentRule.failRule.toLowerCase() === "end"
-  }
-
-  /**
-   * Determines if the current retry rule in the retry process is the last retry rule. The last
-   * retry rule is the one where the nextRule field of the rule is null.
-   * 
-   * @param {object} currentRetryRule - the current retry rule in the retry process
-   * @returns {boolean} - true if the current retry rule in the retry process is the last retry rule, false otherwise
-   */
-  const isRetryRuleEnd = (currentRetryRule) => {
-    return currentRetryRule.nextRule === null
   }
   
   /**
@@ -528,7 +482,7 @@ function App() {
     if(ruleList.length !== 0 && appStatus !== 'retry') {
       let tempCurrentRule = ruleList[0]
       let count = 0
-        while (tempCurrentRule.passRule.toLowerCase() !== "end" && tempCurrentRule.failRule.toLowerCase() === "end") {
+        while (isSecurityCheck(tempCurrentRule)) {
           tempCurrentRule = rules[tempCurrentRule.passRule]
           count++
           if (isRuleEnd(tempCurrentRule)) {

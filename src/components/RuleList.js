@@ -20,7 +20,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
     let passed = passedCount(ruleList)
     let warnings = warningsCount(ruleList)
     let errors = errorsCount(ruleList)
-    let total = passedCount + errorsCount // warnings are not counted in the total
+    let total = passed + errors // warnings are not counted in the total
 
     /**
      * Calls the copy UUID function and sets the isCopied state to true.
@@ -144,7 +144,6 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
                 {isNotFetching(appStatus) && ruleList.some(rule => isUnsuccessful(rule)) && // error footer
                     (
                         <div>
-                            {/* You passed {passed}/{total} security check(s). &nbsp; */}
                             {/* <Summary /> */}
                             <CopyUUID />
                             <p>
@@ -165,7 +164,6 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
                 {appStatus === 'completed' && !ruleList.some(rule => isUnsuccessful(rule)) && // complete footer
                     (
                         <div>
-                            {/* You passed {passed}/{total} security check(s). &nbsp; */}
                             {/* <Summary /> */}
                             <CopyUUID />
                             <p>  
