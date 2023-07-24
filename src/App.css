@@ -65,7 +65,7 @@ html {
   --color-tru-yellow: #ffcd00;
   --color-tru-cloud: #fff5de;
   --color-ol-green: #00b18f;
-  --color-teal-bg: #00b0b9;
+  --color-teal-bg: #373838;
   --color-tru-orange: #f88f23;
   --color-tru-callout-bg: #fff3bf;
   --color-tru-regular-bg: #E0F6F7;
@@ -80,6 +80,7 @@ html {
   padding: 1.15em !important;
   border-radius: 0 !important;
   width:100% !important;
+  padding: 10px !important;
 }
 
 .alert-danger {
@@ -147,8 +148,9 @@ html {
 }
 
 .btn {
-  border-radius: 0 !important;
-  font-size: 1.125rem !important;
+  border-radius: 100px !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
   color: white !important;
   width: 250px;
   margin: 5px 15px 5px 0px;
@@ -156,11 +158,12 @@ html {
 }
 
 .dropdown-toggle-split {
-  border-radius: 0 !important;
-  font-size: 1.125rem !important;
+  border-radius: 0 100px 100px 0 !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
   color: white !important;
   width: 30px;
-  height: 49px;
+  height: 43px;
   margin: 0;
   padding: 0 !important;
   align-self: center;
@@ -174,11 +177,17 @@ html {
 }
 
 .btn:hover {
-  filter: brightness(125%);
+  filter: brightness(115%);
   transition: none !important;
 }
 
 .btn-primary {
+  background-color: var(--color-tru-teal) !important;
+  border-color: var(--color-tru-teal) !important;
+}
+
+.btn-primary-split {
+  border-radius: 100px 0 0 100px !important;
   background-color: var(--color-tru-teal) !important;
   border-color: var(--color-tru-teal) !important;
 }
@@ -189,17 +198,19 @@ html {
 }
 
 .btn-primary3 {
-  background-color: var(--color-ol-green) !important;
-  border-color: var(--color-ol-green) !important;
-}
-
-.btn-secondary {
-  width: 110px;
-  padding: 10px 25px 10px 25px !important;
-  margin: 0 !important;
   color: var(--color-tru-blue) !important;
   background-color: var(--color-tru-yellow) !important;
   border-color: var(--color-tru-yellow) !important;
+}
+
+.btn-secondary {
+  width: 50px;
+  /* padding: 10px 25px 10px 25px !important; */
+  padding: 0 !important;
+  margin: 0 !important;
+  color: var(--color-tru-blue) !important;
+  background-color: white !important;
+  border-color: white !important;
 }
 
 .errors {
@@ -232,7 +243,8 @@ html {
   height: 49px;
   background-color: var(--color-skeleton-loading);
   cursor: pointer;
-  margin: 25px 20px 45px 0px;
+  margin: 25px 20px 25px 0px;
+  border-radius: 100px;
 }
 
 .skeleton-loading {

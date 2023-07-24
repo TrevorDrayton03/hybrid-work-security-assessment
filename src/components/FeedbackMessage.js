@@ -12,22 +12,23 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
     let passed = passedCount(ruleList)
     let warnings = warningsCount(ruleList)
     let errors = errorsCount(ruleList)
-    let total = passed + errors // warnings are not counted in the total
+    let total = passed + errors + warnings 
 
     let errorText = errors === 1 ? "error" : "errors"
     let warningText = warnings === 1 ? "warning" : "warnings"
+    let isAre = errors === 1 ? "is" : "are"
 
     return (
         <div style={{ paddingBottom: appStatus === 'completed' || appStatus === 'paused' ? 0 : '15px' }}>
             {appStatus === "idle" && (
                 <div>
-                    <p style={{marginBottom:5}}>
+                    {/* <p style={{marginBottom:5}}>
                         <em>
                             Press the start button to begin your assessment.
                         </em>
-                    </p>
+                    </p> */}
                     <p style={{marginBottom:0}}>
-                        This application will assess your computer's security settings against Thompson River University's network security requirements. &nbsp;
+                        This tool assesses your computer against Thompson River University's network security requirements. &nbsp;
                     </p>
                 </div>
             )}
@@ -36,40 +37,42 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
             )}
             {appStatus === "error" && (
                 <div>
+                    <p style={{marginBottom:0, fontSize:22}}>
+                        You did not pass the security checks listed below.
+                    </p>
                     <p style={{marginBottom:5}}>
                         <em>
-                            You must resolve the error to continue the assessment.
+                            You must resolve the <span className="errors">{errorText}</span>, which {isAre} preventing further security checks from being assessed.
                         </em>
                     </p> 
-                    <p style={{marginBottom:0}}>
-                        You did not pass the security check(s) listed below.
-                    </p>
                 </div>
             )}
             {appStatus === "completed" && (
                 <div>
+                    <p style={{ marginBottom: 0, fontSize:22 }}>
+                    {/* Your assessment is <b>complete</b> with {errors > 0 ? <span className="errors">{errors} {errorText}</span> : errors + " " + errorText} and {warnings > 0 ? <span className="warnings">{warnings} {warningText}</span> : warnings + " " + warningText}. */}
+                        Your assessment is <b>complete</b> with {errors + ' ' + errorText} and {warnings + ' ' + warningText}, with a total of {total} security checks assessed.
+                    </p>
                     {errors > 0 && 
                     <p style={{marginBottom:5}}>
                         <em>
-                            You must resolve the {errorText} to connect to the TRU network.
+                            {/* You must resolve the {errorText} to connect to the TRU network. */}
+                            You must resolve the <span className="errors">{errorText}</span> to connect to the TRU network.
                         </em>
                     </p>
                     }
-                    <p style={{ marginBottom: 0 }}>
-                    Your assessment is <b>complete</b> with {errors > 0 ? <span className="errors">{errors} {errorText}</span> : errors + " " + errorText} and {warnings > 0 ? <span className="warnings">{warnings} {warningText}</span> : warnings + " " + warningText}.
-                    </p>
                 </div>
             )}
             {appStatus === "paused" && (
                 <div>
+                    <p style={{marginBottom:0, fontSize:22 }}>
+                        {/* messages for warning = true and false */}
+                        You did not pass the security checks listed below.
+                    </p>
                     <p style={{marginBottom:5}}>
                         <em>
-                            You may continue the assessment by pressing the "Continue To Next Check" button.
+                            Continue the assessment by pressing the Continue button.
                         </em>
-                    </p>
-                    <p style={{marginBottom:0}}>
-                        {/* messages for warning = true and false */}
-                        You did not pass the security check(s) listed below.
                     </p>
                 </div>
             )}

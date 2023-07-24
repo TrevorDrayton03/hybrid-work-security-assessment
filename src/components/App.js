@@ -509,7 +509,7 @@ function App() {
           <div className="skeleton-loading">
             <div className="skeleton-button"></div>
             <div className="skeleton-text1"></div>
-            <div className="skeleton-text2"></div>
+            {/* <div className="skeleton-text2"></div> */}
           </div>
           : 
           <>

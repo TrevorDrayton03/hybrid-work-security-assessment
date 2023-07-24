@@ -14,9 +14,9 @@ import { hasUnsuccessfulRules, hasErrorAndWarning } from '../helpers/helpers'
 const ControlButton = ({ appStatus, start, retry, continu, ruleList }) => {
     let buttonContent
     const restartText = "Restart From Beginning" 
-    const retryText = "Retry Failed Check(s)"
+    const retryText = "Retry Failed Checks"
     const startText = "Start"
-    const continueText = "Continue To Next Check"
+    const continueText = "Continue"
 
     switch (appStatus) {
         case 'idle':
@@ -33,10 +33,10 @@ const ControlButton = ({ appStatus, start, retry, continu, ruleList }) => {
                         {restartText}
                     </Button>
                     <Dropdown as={ButtonGroup} drop="up">
-                        <Button variant="primary2" onClick={() => retry(null)} style={hasErrorAndWarning(ruleList) ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
+                        <Button variant={hasErrorAndWarning(ruleList) ? "primary-split" : "primary"} onClick={() => retry(null)} style={hasErrorAndWarning(ruleList) ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
                         {hasErrorAndWarning(ruleList) ? 
                         <>
-                        <Dropdown.Toggle split variant="primary2" style={{marginRight:15}}/>
+                        <Dropdown.Toggle split variant="primary" style={{marginRight:15}}/>
                         <Dropdown.Menu>
                             <Dropdown.Item onClick={() => retry("error")}>Errors</Dropdown.Item>
                             <Dropdown.Item onClick={() => retry("warning")}>Warnings</Dropdown.Item>
@@ -55,10 +55,10 @@ const ControlButton = ({ appStatus, start, retry, continu, ruleList }) => {
                     </Button>
                     { hasUnsuccessfulRules(ruleList) && 
                     <Dropdown as={ButtonGroup} drop="up">
-                    <Button variant="primary2" onClick={() => retry(null)} style={hasErrorAndWarning(ruleList) ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
+                    <Button variant={hasErrorAndWarning(ruleList) ? "primary-split" : "primary"} onClick={() => retry(null)} style={hasErrorAndWarning(ruleList) ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
                     {hasErrorAndWarning(ruleList) ? 
                     <>
-                    <Dropdown.Toggle split variant="primary2" style={{marginRight:15}}/>
+                    <Dropdown.Toggle split variant="primary" style={{marginRight:15}}/>
                     <Dropdown.Menu>
                         <Dropdown.Item onClick={() => retry("error")}>Errors</Dropdown.Item>
                         <Dropdown.Item onClick={() => retry("warning")}>Warnings</Dropdown.Item>
@@ -77,10 +77,10 @@ const ControlButton = ({ appStatus, start, retry, continu, ruleList }) => {
                         {restartText}
                     </Button>
                     <Dropdown as={ButtonGroup} drop="up">
-                        <Button variant="primary2" onClick={() => retry(null)} style={hasErrorAndWarning(ruleList) ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
+                        <Button variant={hasErrorAndWarning(ruleList) ? "primary-split" : "primary"} onClick={() => retry(null)} style={hasErrorAndWarning(ruleList) ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
                         {hasErrorAndWarning(ruleList) ? 
                         <>
-                        <Dropdown.Toggle split variant="primary2" style={{marginRight:15}}/>
+                        <Dropdown.Toggle split variant="primary" style={{marginRight:15}}/>
                         <Dropdown.Menu>
                             <Dropdown.Item onClick={() => retry("error")}>Errors</Dropdown.Item>
                             <Dropdown.Item onClick={() => retry("warning")}>Warnings</Dropdown.Item>
@@ -99,7 +99,7 @@ const ControlButton = ({ appStatus, start, retry, continu, ruleList }) => {
     }
 
     return (
-        <div style={appStatus !== 'running' && appStatus !== 'retry' ? { padding: '20px 20px 40px 0px'} : { padding: '5px 10px 5px 0px'}}>
+        <div style={appStatus !== 'running' && appStatus !== 'retry' ? { padding: '20px 20px 20px 0px'} : { padding: '5px 10px 5px 0px'}}>
             {buttonContent}
         </div>
     )
