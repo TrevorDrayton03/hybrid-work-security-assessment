@@ -32,7 +32,7 @@ const ControlButton = ({ appStatus, start, retry, continu, ruleList }) => {
                     <Button variant="primary" onClick={() => start('restart')}>
                         {restartText}
                     </Button>
-                    <Dropdown as={ButtonGroup} drop="up">
+                    <Dropdown as={ButtonGroup} drop="down">
                         <Button variant={hasErrorAndWarning(ruleList) ? "primary-split" : "primary"} onClick={() => retry(null)} style={hasErrorAndWarning(ruleList) ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
                         {hasErrorAndWarning(ruleList) ? 
                         <>
@@ -54,7 +54,7 @@ const ControlButton = ({ appStatus, start, retry, continu, ruleList }) => {
                         {restartText}
                     </Button>
                     { hasUnsuccessfulRules(ruleList) && 
-                    <Dropdown as={ButtonGroup} drop="up">
+                    <Dropdown as={ButtonGroup} drop="down">
                     <Button variant={hasErrorAndWarning(ruleList) ? "primary-split" : "primary"} onClick={() => retry(null)} style={hasErrorAndWarning(ruleList) ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
                     {hasErrorAndWarning(ruleList) ? 
                     <>
@@ -76,7 +76,7 @@ const ControlButton = ({ appStatus, start, retry, continu, ruleList }) => {
                     <Button variant="primary" onClick={() => start('restart')}>
                         {restartText}
                     </Button>
-                    <Dropdown as={ButtonGroup} drop="up">
+                    <Dropdown as={ButtonGroup} drop="down">
                         <Button variant={hasErrorAndWarning(ruleList) ? "primary-split" : "primary"} onClick={() => retry(null)} style={hasErrorAndWarning(ruleList) ? {marginRight:0} : {marginRight:15}}>{retryText}</Button>
                         {hasErrorAndWarning(ruleList) ? 
                         <>

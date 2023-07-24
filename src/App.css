@@ -157,23 +157,17 @@ html {
   padding: 10px 0 10px 0 !important;
 }
 
-.dropdown-toggle-split {
-  border-radius: 0 100px 100px 0 !important;
-  font-size: 14px !important;
-  font-weight: 800 !important;
-  color: white !important;
-  width: 30px;
-  height: 43px;
-  margin: 0;
-  padding: 0 !important;
-  align-self: center;
-  align-items: center;
-}
-
-.btn:active,
-.btn:focus {
+.btn:focus,
+.btn:active:focus,
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,
+.btn.active.focus,
+.btn:not(:disabled):not(.disabled):active,
+.btn:not(:disabled):not(.disabled).active,
+.show > .btn.dropdown-toggle {
   outline: none !important;
-  box-shadow: none;
+  box-shadow: none !important;
 }
 
 .btn:hover {
@@ -206,11 +200,25 @@ html {
 .btn-secondary {
   width: 50px;
   /* padding: 10px 25px 10px 25px !important; */
+  height: 21px;
   padding: 0 !important;
   margin: 0 !important;
   color: var(--color-tru-blue) !important;
   background-color: white !important;
   border-color: white !important;
+}
+
+.dropdown-toggle-split {
+  border-radius: 0 100px 100px 0 !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  color: white !important;
+  width: 30px;
+  height: 43px;
+  margin: 0;
+  padding: 0 !important;
+  align-self: center;
+  align-items: center;
 }
 
 .errors {
