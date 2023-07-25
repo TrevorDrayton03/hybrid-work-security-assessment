@@ -96,7 +96,7 @@ app.post('/api/data', isPostDataTampered, async (req, res) => {
     try {
         conn = await pool.getConnection()
         const queryResult  = await conn.query('INSERT INTO test_table3 (uuid, sequence, ip, action, result, timestamp, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?)', [uid, sequenceJson, req.ip, action, result, timestamp, req.headers['user-agent']])
-        console.log(queryResult)
+        // console.log(queryResult)
         res.status(200).json({ message: 'Data inserted successfully' })
     } catch (err) {
         // throw err

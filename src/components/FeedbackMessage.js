@@ -51,7 +51,7 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
                 <div>
                     <p style={{ marginBottom: 0, fontSize:22 }}>
                     {/* Your assessment is <b>complete</b> with {errors > 0 ? <span className="errors">{errors} {errorText}</span> : errors + " " + errorText} and {warnings > 0 ? <span className="warnings">{warnings} {warningText}</span> : warnings + " " + warningText}. */}
-                        Your assessment is <b>complete</b> with {errors + ' ' + errorText} and {warnings + ' ' + warningText}, with a total of {total} security checks assessed.
+                        Assessment is completed with {errors + ' ' + errorText} and {warnings + ' ' + warningText}, and a total of {total} security checks assessed.
                     </p>
                     {errors > 0 && 
                     <p style={{marginBottom:5}}>
@@ -69,11 +69,11 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
                         {/* messages for warning = true and false */}
                         You did not pass the security checks listed below.
                     </p>
-                    <p style={{marginBottom:5}}>
+                    {/* <p style={{marginBottom:5}}>
                         <em>
                             Continue the assessment by pressing the Continue button.
                         </em>
-                    </p>
+                    </p> */}
                 </div>
             )}
         </div>

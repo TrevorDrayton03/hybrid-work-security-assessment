@@ -123,7 +123,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
         <div style={{ padding: '5px 10px 10px 0', flex:1,}}>
             <div style={{ padding: 0, flex:1, marginLeft: '35px' }}>
 
-            {isNotFetching(appStatus) && Object.values(ruleList).map((rule) => { // error panel
+            {Object.values(ruleList).map((rule) => { // error panel
                 return (
                     isAnError(rule) ? 
                         <Panel rule={rule} variant='danger' body={rule.failText} success={false} />
@@ -135,7 +135,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
                     <Panel rule={{title:"Success"}} variant='primary' body="You passed the assessment and can connect to Thompson Rivers University's network." success={true}/>       
                 )
             }
-            {isNotFetching(appStatus) && Object.values(ruleList).map((rule) => { // warning panel
+            {Object.values(ruleList).map((rule) => { // warning panel
                 return (
                     isAWarning(rule) ? 
                         <Panel rule={rule} variant='warning' body={rule.failText} success={false}/>
@@ -144,7 +144,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
             })}
             </div>
             <div id="footers" style={{margin:0, padding:'20px 0 0 0'}}>
-                {isNotFetching(appStatus) && ruleList.some(rule => isUnsuccessful(rule)) && // error footer
+                {ruleList.some(rule => isUnsuccessful(rule)) && // error footer
                     (
                         <div>
                             {/* <Summary /> */}

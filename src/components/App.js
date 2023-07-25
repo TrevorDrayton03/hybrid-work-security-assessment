@@ -168,7 +168,7 @@ function App() {
     } else {
       retryRules = Object.values(ruleList).filter(rule => isAnError(rule))
     }
-    let updatedRetryRules = [...retryRules].reverse().map((rule, index, array) => {
+    let filteredRetryRules = [...retryRules].reverse().map((rule, index, array) => {
       if (index < array.length - 1) {
         return {
           ...rule,
@@ -181,8 +181,8 @@ function App() {
         }
       }
     })
-    setRetryRules(updatedRetryRules)
-    setCurrentRetryRule(updatedRetryRules[0])
+    setRetryRules(filteredRetryRules)
+    setCurrentRetryRule(filteredRetryRules[0])
   }
 
   /**
