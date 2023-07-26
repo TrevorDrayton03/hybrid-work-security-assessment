@@ -57,7 +57,7 @@ import 'whatwg-fetch'
 import { isRuleEnd, isRetryRuleEnd, isSecurityCheck, isUnsuccessful, isAWarning, isAnError } from '../helpers/helpers'
 import useFetchRulesConfig from '../custom_hooks/useFetchRulesConfig.js'
 import useStartAndRestart from '../custom_hooks/useStartAndRestart.js'
-import { v4 as uuidv4 } from 'uuid'
+import useRetryLogic from '../custom_hooks/useRetryLogic.js'
 
 function App() {
 
@@ -75,41 +75,27 @@ function App() {
   /**
    * State Variables
    * 
-   * appStatus is the primary state of the app [idle, running, completed, error, paused]
-   * responseStatus refers to the http response status code; it gets appended to rules in the ruleList
-   * rules is the data from rules_config.json
-   * currentRule refers to the rule currently being assessed
-   * ruleList is an array of rules that have been assessed, logged in the database as 'sequence' and used to show the user their results
    * retryRules is an array of rules that have been filtered from the ruleList to be retried
    * currentRetryRule refers to the rule currently undergoing the retry assessment
-   * tries keeps count of the number of fetch requests for the current rule
-   * tryDelay is the time in milliseconds that the fetch loop waits before sending another request, which is read from the rule_config.json file
-   * progressPercentage refers to the value that's used for the progress bar component [ProgressIndicator.js]
-   * uuid is the unique identifier for the current sequence, referencing the sequence in the database
-   * action is for the purpose of logging the user event [start, restart, retry, continue]
    * endPathLength is the length of the path from the current rule to an end rule. It requires a final, singular path to be available from the current rule.
-   * isLoading is true if rules are fetching in the initial page load, false if rules are fetched
    */
-  // const [appStatus, setAppStatus] = useState('idle')
-  // const [responseStatus, setResponseStatus] = useState(null)
-  // const [currentRule, setCurrentRule] = useState(null)
-  // const [ruleList, setRuleList] = useState([])
-  const [retryRules, setRetryRules] = useState(null)
-  const [currentRetryRule, setCurrentRetryRule] = useState(null)
-  // const [tries, setTries] = useState(0)
-  const [tryDelay, setTryDelay] = useState(0)
-  // const [progressPercentage, setProgressPercentage] = useState(0)
-  // const [uuid, setUuid] = useState(null)
-  // const [action, setAction] = useState(null)
+  // const [retryRules, setRetryRules] = useState(null)
+  // const [currentRetryRule, setCurrentRetryRule] = useState(null)
   const [endPathLength, setEndPathLength] = useState(null)
 
-  const { isLoading, rules } = useFetchRulesConfig();
+  const {
+    isLoading,
+    rules, 
+    currentRule, 
+    setCurrentRule, 
+    tryDelay, 
+  } = useFetchRulesConfig(firstRule, delay)
+
   const {
     action,
     appStatus,
     progressPercentage,
     ruleList,
-    currentRule,
     tries,
     responseStatus,
     uuid,
@@ -120,72 +106,19 @@ function App() {
     setAppStatus,
     setProgressPercentage,
     setRuleList,
-    setCurrentRule,
     setTries,
     setResponseStatus,
     setUuid,
-  } = useStartAndRestart(firstRule, rules);
+  } = useStartAndRestart(firstRule, rules, currentRule, setCurrentRule)
 
-  /**
-   * Handles the start and restart button onClick events.
-   *
-   * This function sets the application status to 'running' and resets the app state if it is not already running.
-   * It also receives the action from the button that was clicked for logging purposes.
-   * 
-   * @param {string} action - the user event
-   */
-  // const handleStart = useCallback((action) => {
-  //   setAction(action)
-  //   setAppStatus('running')
-  //   if (appStatus !== 'running') {
-  //     setProgressPercentage(0)
-  //     setRuleList([])
-  //     setCurrentRule(Object.values(rules).find(rule => rule.key === firstRule))
-  //     setTries(0)
-  //   }
-  // },[appStatus, rules])
-
-  /**
-   * Handles the retry button click event. It sets the application status to 'retry', 
-   * resets the progress percentage and tries, and prepares the rules to be retried 
-   * based on the which type of rules the user wants to retry. Default is all failed rules 
-   * when the user preses the retry button.
-   * 
-   * Once a filtered array is created, the items are linked together with a nextRule before
-   * it gets fed into the retry mechanism
-   * 
-   * @param {string} type - the type of rules to be reassessed [null (will do all failed rules), warning, error]
-   */
-  const handleRetry = useCallback(async (type) => {
-    setAction('retry')
-    setAppStatus('retry')
-    setProgressPercentage(0)
-    setTries(0)
-    let retryRules
-    if (!type) {
-      retryRules = Object.values(ruleList).filter(rule => isUnsuccessful(rule))
-    } else if (type === "warning") {
-      retryRules = Object.values(ruleList).filter(rule => isAWarning(rule))
-    } else {
-      retryRules = Object.values(ruleList).filter(rule => isAnError(rule))
-    }
-    let filteredRetryRules = [...retryRules].reverse().map((rule, index, array) => {
-      if (index < array.length - 1) {
-        return {
-          ...rule,
-          nextRule: array[index + 1].key
-        }
-      } else {
-        return {
-          ...rule,
-          nextRule: null
-        }
-      }
-    })
-    setRetryRules(filteredRetryRules)
-    setCurrentRetryRule(filteredRetryRules[0])
-  },[ruleList])
-
+  const {
+    retryRules,
+    currentRetryRule,
+    handleRetry,
+    handleRetryRuleChange,
+    setRetryRules,
+  } = useRetryLogic(handleEndResultAndAppStatus, setAppStatus, setProgressPercentage, setTries, ruleList, setRuleList, setUuid, action, setAction);
+  
   /**
    * Handles the continue button click event.
    * 
@@ -199,159 +132,7 @@ function App() {
     setProgressPercentage(0)
     setTries(0)
   },[rules, currentRule])
-
-  /**
-   * Used to set the state of the app for the next rule; utilized in handleRuleChange.
-   * 
-   * @param {string} nextRule - the key property value
-   */
-  // const changeToRule = useCallback((nextRule) => {
-  //   setCurrentRule(Object.values(rules).find(rule => rule.key === nextRule))
-  //   setTries(0)
-  //   setResponseStatus(null)
-  //   setProgressPercentage(0)
-  // },[rules])
-
-  /**
-   * Encapsulates the logic required to change the current rule to either the pass rule, fail rule, or end rule,
-   * and update the rule list with the results of the current rule's assessment.
-   * Called when progress of the currentRule reaches 100%.
-   */
-  // const handleRuleChange = useCallback(async () => {
-  //   await new Promise((resolve) => setTimeout(resolve, 500))
-  //   currentRule.responseStatus = responseStatus
-  //   if (isPassRule(currentRule)) {
-  //     changeToRule(currentRule.passRule)
-  //   } else if (isFailRule(currentRule)) {
-  //     changeToRule(currentRule.failRule)
-  //   } else {
-  //     handleNoRuleChange(currentRule, ruleList)
-  //   }
-  //   setRuleList(prevArray => [currentRule, ...prevArray])
-  // },[currentRule, responseStatus, ruleList])
   
-  /**
-   * Handles scenarios where no rule change occurs, determining the final state and logging.
-   * 
-   * @param {object} currentRule - the current rule being evaluated
-   * @param {array} ruleList - the list of rules that have been evaluated so far
-   */
-  // const handleNoRuleChange = useCallback(async (currentRule, ruleList) => {
-  //   let rList = [currentRule, ...ruleList] // synchronous solution for posting immediately
-  //   let id = uuidv4()
-  //   setUuid(id)
-  //   let result
-  
-  //   if (isRuleEnd(currentRule)) {
-  //     result = handleEndResultAndAppStatus(rList)
-  //   } else if (currentRule.continueOption === true) {
-  //     setAppStatus("paused")
-  //     result = "incomplete"
-  //   } else {
-  //     setAppStatus("error")
-  //     result = "incomplete"
-  //   }
-  
-  //   const response = await fetch('/api/data', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       uid: id,
-  //       sequence: rList,
-  //       action: action,
-  //       result: result
-  //     }),
-  //   })
-  //   if (response.ok) {
-  //     console.log('Data posted successfully')
-  //   } else {
-  //     console.log('Failed to post data')
-  //   }
-  // },[action])
-  
-  /**
-   * Used in both the standard process and the retry process.
-   * 
-   * Evaluates the rule list to determine the end result and change the app state to completed.
-   * 
-   * @param {array} rList - the list of rules that have been evaluated
-   * @returns {string} - the end result of the assessment
-   */
-  // const handleEndResultAndAppStatus = useCallback((rList) => {
-  //   let result
-  //   if (rList.every(rule => rule.responseStatus === 200)) { 
-  //     setAppStatus("completed")
-  //     result = "completed successfully"
-  //   } else if (rList.filter(rule => rule.responseStatus !== 200).every(rule => rule.warning === true)) { 
-  //     setAppStatus("completed")
-  //     result = "completed successfully with warning(s)"
-  //   } else { 
-  //     setAppStatus("completed")
-  //     result = "completed unsuccessfully"
-  //   }
-  //   return result
-  // },[])
-  
-  /**
-   * Handles the change of rule in the retry process. It sets the number of tries and progress percentage to 
-   * initial values, finds the next rule to retry, and sets it as the current retry rule.
-   * Sends a final POST request to the server with the updated rule list and the end result.
-   */
-  const handleRetryRuleChange = useCallback(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500))
-    if(!isRetryRuleEnd(currentRetryRule)) {
-      setTries(0)
-      setProgressPercentage(0)
-      let nextRetryRule = Object.values(retryRules).find(rule => rule.key === currentRetryRule.nextRule)
-      setCurrentRetryRule(nextRetryRule)
-    } else if (isRetryRuleEnd(currentRetryRule)) {
-      let result
-      let id = uuidv4()
-      setUuid(id)
-      let rList = [...ruleList]
-
-      rList = rList.map(rule => {
-        let retryRule = retryRules.find(r => r.key === rule.key)
-        if (retryRule && rule.responseStatus !== retryRule.responseStatus) {
-          rule.responseStatus = retryRule.responseStatus
-        }
-        return rule
-      })
-
-      setRuleList(rList)
-      
-      if (isRetryRuleEnd(currentRetryRule) && isRuleEnd(rList[0])) {
-        result = handleEndResultAndAppStatus(rList)
-      } else if (currentRetryRule.continueOption === true) {
-        setAppStatus("paused")
-        result = "incomplete"
-      } else {
-        setAppStatus("error")
-        result = "incomplete"
-      }
-
-      const response = await fetch('/api/data', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          uid: id,
-          sequence: rList,
-          action: action,
-          result: result
-        }),
-      })
-      if (response.ok) {
-        console.log('Data posted successfully')
-      } else {
-        console.log('Failed to post data')
-      }
-      setCurrentRetryRule(null)
-    }
-  },[currentRetryRule, retryRules, ruleList, action])
 
   /**
    * Handle copy UUID onClick event.
