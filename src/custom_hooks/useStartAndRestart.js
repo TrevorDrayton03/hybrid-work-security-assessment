@@ -2,6 +2,44 @@ import { useState, useCallback } from 'react'
 import { isPassRule, isFailRule, isRuleEnd } from '../helpers/helpers'
 import { v4 as uuidv4 } from 'uuid'
 
+/**
+ * Custom Hook: useStartAndRestart
+ * 
+ * Description:
+ * This custom hook manages the state and logic for starting, restarting, and processing rules in the web application.
+ * It uses React hooks, such as useState and useCallback, to manage various state variables and functions.
+ * The hook encapsulates the application status, response status, progress percentage, rule list, tries count,
+ * action type, unique identifier (UUID), and handles various user actions for rule assessment.
+ * It also handles the logic to change the current rule, update the rule list, and determine the end result of the assessment.
+ * The hook is designed to work with other custom hooks, such as useFetchRulesConfig and useRetryLogic, to provide
+ * a comprehensive rule assessment and processing mechanism.
+ * 
+ * Parameters:
+ * @param {string} firstRule - The key property value of the first rule to start the assessment.
+ * @param {object} rules - The object containing rules configuration data fetched from the server.
+ * @param {object} currentRule - The current rule being processed from the fetched rules data.
+ * @param {function} setCurrentRule - The function to set the currentRule state.
+ * 
+ * Return Values:
+ * The hook returns an object containing various state variables and functions related to rule assessment and processing.
+ * - action: The action type [start, restart, retry, continue] indicating user events.
+ * - appStatus: The current status of the application [idle, running, completed, error, paused].
+ * - progressPercentage: The progress percentage for the current rule processing.
+ * - ruleList: An array of rules that have been assessed and logged in the database as 'sequence.'
+ * - tries: The number of fetch attempts for the current rule.
+ * - responseStatus: The HTTP response status code for the current rule.
+ * - uuid: The unique identifier (UUID) for the current sequence, referencing the sequence in the database.
+ * - handleStart: A function to handle the start and restart button onClick events.
+ * - handleRuleChange: A function to change the current rule and update the rule list with the results of rule assessment.
+ * - handleEndResultAndAppStatus: A function to evaluate the rule list and determine the end result and change the app status to completed.
+ * - setAction: A function to set the action state.
+ * - setAppStatus: A function to set the appStatus state.
+ * - setProgressPercentage: A function to set the progressPercentage state.
+ * - setRuleList: A function to set the ruleList state.
+ * - setTries: A function to set the tries state.
+ * - setResponseStatus: A function to set the responseStatus state.
+ * - setUuid: A function to set the uuid state.
+ */
 function useStartAndRestart(firstRule, rules, currentRule, setCurrentRule) {
 
 /**

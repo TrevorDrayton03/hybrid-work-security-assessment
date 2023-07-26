@@ -3,6 +3,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { hasUnsuccessfulRules, hasErrorAndWarning } from '../helpers/helpers'
 
+
 /**
  * Displays the start, restart, retry, and continue buttons based on the application status.
  * @param {string} appStatus - The application status.
@@ -17,6 +18,7 @@ const ControlButton = ({ appStatus, start, retry, continu, ruleList }) => {
     const retryText = "Retry Failed Checks"
     const startText = "Start"
     const continueText = "Continue"
+
 
     switch (appStatus) {
         case 'idle':
@@ -98,6 +100,7 @@ const ControlButton = ({ appStatus, start, retry, continu, ruleList }) => {
             buttonContent = null
     }
 
+    
     return (
         <div style={appStatus !== 'running' && appStatus !== 'retry' ? { padding: '20px 20px 20px 0px'} : { visibility: 'none'}}>
             {buttonContent}

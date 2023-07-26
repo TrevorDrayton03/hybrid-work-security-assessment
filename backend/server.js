@@ -17,6 +17,7 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
+
 // Create a connection to the database
 const pool = mariadb.createPool({
     host: process.env.DB_HOST,
@@ -25,6 +26,7 @@ const pool = mariadb.createPool({
     database: process.env.DB_DATABASE,
     connectionLimit: process.env.DB_CONNECTION_LIMIT
 })
+
 
 // Read the rules configuration file and store the values in separate arrays
 const rules = JSON.parse(fs.readFileSync(ruleConfigPath, 'utf8'))
@@ -39,6 +41,7 @@ const safeMaxTries = rulesArray.map(({ maxTries }) => maxTries)
 const safeContinueOption = rulesArray.map(({ continueOption }) => continueOption)
 const safeWarning = rulesArray.map(({ warning }) => warning)
 
+
 /**
  * Middleware to check if post data has been tampered with
  */
@@ -47,6 +50,7 @@ const isPostDataTampered = (req, res, next) => {
   const safeHttpResponses = /^[1-5]\d{2}$/
   const safeUUIDLength = 36
   const safeUUIDPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+
 
   // Check if all sequence properties match the safe values defined earlier
   const sequenceIsSafe = Object.values(sequence).every((item) => {
@@ -64,6 +68,7 @@ const isPostDataTampered = (req, res, next) => {
     )
   })
 
+
   // Check if action and result properties are valid
   const actionAndResultAreSafe = () => {
     return (
@@ -73,10 +78,12 @@ const isPostDataTampered = (req, res, next) => {
     )
 }
 
+
   // Check if the UUID is valid
   const uuidIsSafe = () => {
     return safeUUIDPattern.test(uid) && uid.length === safeUUIDLength
   }
+
 
   // Call the sanitization checks, and return a 405 status code (which cancels the request) if any of them return false
   if (!sequenceIsSafe || !actionAndResultAreSafe() || !uuidIsSafe()) {
@@ -84,6 +91,7 @@ const isPostDataTampered = (req, res, next) => {
   }
     next()
 }
+
 
 /**
  * Handle POST request to '/api/data'
@@ -107,6 +115,7 @@ app.post('/api/data', isPostDataTampered, async (req, res) => {
     }
 })
 
+
 /**
  * Handle GET request to '/api/rules'
  * Sends the rules configuration file to the client.
@@ -121,14 +130,17 @@ app.get('/api/rules', (req, res) => {
     }
 })
 
+
 // Serve the React app on all other routes
 app.get('*', (req, res) => {
     res.sendFile(path.join(buildPath, 'index.html'))
 })
 
+
 // app.listen(port, () => {
 //     console.log(`Server is running on port ${port}`)
 // })
+
 
 // Start the server
 http.listen(port, () => {

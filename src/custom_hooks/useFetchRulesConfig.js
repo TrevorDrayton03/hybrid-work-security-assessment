@@ -1,10 +1,26 @@
 import { useState, useEffect } from 'react'
 
 /**
- * OnComponentDidMount Side Effect (called on initial page load)
+ * Custom Hook: useFetchRulesConfig
  * 
- * This side effect fetches the rules_config.json file and store the config data in the rules state
- * and lets the app know when the data has been loaded.
+ * Description:
+ * This custom hook fetches the rules_config.json file and stores the configuration data in the rules state.
+ * It also sets the currentRule and tryDelay states based on the firstRule and delay provided.
+ * The hook works as an initialization effect to fetch rules data on the initial page load.
+ * It uses React hooks, such as useState and useEffect, to manage state variables and perform side effects.
+ * The hook sets the isLoading state to true during data fetching and false once the rules are fetched.
+ * 
+ * Parameters:
+ * @param {string} firstRule - The key property value of the first rule to set as the currentRule.
+ * @param {string} delay - The key property value of the rule containing the tryDelay configuration (in milliseconds).
+ * 
+ * Return Values:
+ * The hook returns an object containing state variables and functions related to rules data fetching and handling.
+ * - isLoading: A boolean flag indicating whether the rules are currently fetching (true) or fetched (false).
+ * - rules: The rules configuration data fetched from the rules_config.json file.
+ * - currentRule: The rule currently being assessed (based on the firstRule provided).
+ * - setCurrentRule: A function to set the currentRule state in the parent component.
+ * - tryDelay: The time in milliseconds that the fetch loop waits before sending another request (based on the delay provided).
  */
 const useFetchRulesConfig = (firstRule, delay) => {
 
@@ -20,7 +36,6 @@ const useFetchRulesConfig = (firstRule, delay) => {
   const [rules, setRules] = useState({})
   const [tryDelay, setTryDelay] = useState(0)
   const [currentRule, setCurrentRule] = useState(null)
-
 
   useEffect(() => {
     fetch("/api/rules")

@@ -37,30 +37,36 @@
  * whatwg-fetch: Polyfill that provides a global fetch function for making web requests in browsers that do not support the native Fetch API.
  * react-icons: Library of icons for React applications, used for the copy UUID button.
  * 
+ * Web Vital Statistics (on average on my virtual machine in my development environment):
+ * FCP (First Contentful Paint): 800ms to 1200ms
+ * TTFB (Time to First Byte): 100ms to 300ms
+ * FID (First Input Delay): 10ms to 100ms
+ * 
  * Author: Trevor Drayton
- * Version: 1.1.0
- * Last Updated: Jul 19, 2023
+ * Version: 1.1.1
+ * Last Updated: Jul 26, 2023
  * 
  * Thompson Rivers University
- * Department: IT Information Security
+ * Department: Information Technology Services Information Security
  * Contact: trevorpdrayton@gmail.com or linkedin.com/in/trevor-drayton/
  */
 
 import logo from '../logo.png'
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useEffect, useCallback } from "react"
 import '../App.css'
 import ProgressIndicator from './ProgressIndicator'
 import ControlButton from './ControlButton'
 import FeedbackMessage from './FeedbackMessage'
 import RuleList from './RuleList'
 import 'whatwg-fetch'
-import { isRuleEnd, isRetryRuleEnd, isSecurityCheck, isUnsuccessful, isAWarning, isAnError } from '../helpers/helpers'
 import useFetchRulesConfig from '../custom_hooks/useFetchRulesConfig.js'
 import useStartAndRestart from '../custom_hooks/useStartAndRestart.js'
 import useRetryLogic from '../custom_hooks/useRetryLogic.js'
+import useStandardRuleAssessment from '../custom_hooks/useStandardRuleAssessment.js'
+import useRetryRuleAssessment from '../custom_hooks/useRetryRuleAssessment.js'
+import useEndPathLength from '../custom_hooks/useEndPathLength.js'
 
 function App() {
-
   /**
    * Constants
    * 
@@ -72,53 +78,87 @@ function App() {
   const delay = "tryDelay"
   const baseUrl = process.env.REACT_APP_HIPS_BASE_URL
 
-  /**
-   * State Variables
-   * 
-   * retryRules is an array of rules that have been filtered from the ruleList to be retried
-   * currentRetryRule refers to the rule currently undergoing the retry assessment
-   * endPathLength is the length of the path from the current rule to an end rule. It requires a final, singular path to be available from the current rule.
-   */
-  // const [retryRules, setRetryRules] = useState(null)
-  // const [currentRetryRule, setCurrentRetryRule] = useState(null)
-  const [endPathLength, setEndPathLength] = useState(null)
-
+  // useFetchRulesConfig: Custom hook to fetch rules configuration data from the server and manage loading state.
   const {
-    isLoading,
-    rules, 
-    currentRule, 
-    setCurrentRule, 
-    tryDelay, 
+    isLoading,                     // Boolean indicating if the rules configuration data is currently being fetched.
+    rules,                         // Object containing the fetched rules configuration data.
+    currentRule,                   // Current rule being processed from the fetched rules data.
+    setCurrentRule,                // Function to set the currentRule state.
+    tryDelay,                      // Delay time (in milliseconds) between attempts when processing rules.
   } = useFetchRulesConfig(firstRule, delay)
 
+
+  // useStartAndRestart: Custom hook to manage the state and logic for starting, restarting, and processing rules.
   const {
-    action,
-    appStatus,
-    progressPercentage,
-    ruleList,
-    tries,
-    responseStatus,
-    uuid,
-    handleStart,
-    handleRuleChange,
-    handleEndResultAndAppStatus,
-    setAction,
-    setAppStatus,
-    setProgressPercentage,
-    setRuleList,
-    setTries,
-    setResponseStatus,
-    setUuid,
+    action,                        // Action type [start, restart, retry, continue] for logging purposes.
+    appStatus,                     // Current status of the application [idle, running, completed, error, paused].
+    progressPercentage,            // Progress percentage for the current rule processing.
+    ruleList,                      // Array of rules that have been assessed and logged in the database.
+    tries,                         // Number of fetch attempts for the current rule.
+    responseStatus,                // HTTP response status code for the current rule.
+    uuid,                          // Unique identifier for the current sequence referencing the sequence in the database.
+    handleStart,                   // Function to handle the start and restart button onClick events.
+    handleRuleChange,              // Function to change the current rule and update the rule list with the results of rule assessment.
+    handleEndResultAndAppStatus,   // Function to evaluate the rule list, determine the end result, set the action state for logging, and change the app status to completed.
+    setAction,                     // Function to set the action state.
+    setAppStatus,                  // Function to set the appStatus state.
+    setProgressPercentage,         // Function to set the progressPercentage state.
+    setRuleList,                   // Function to set the ruleList state.
+    setTries,                      // Function to set the tries state.
+    setResponseStatus,             // Function to set the responseStatus state.
+    setUuid,                       // Function to set the uuid state.
   } = useStartAndRestart(firstRule, rules, currentRule, setCurrentRule)
 
+
+  // useRetryLogic: Custom hook to manage state and logic for handling retry rules.
   const {
-    retryRules,
+    currentRetryRule,              // Current retry rule being processed.
+    handleRetry,                   // Function to handle retry for unsuccessful rules.
+    handleRetryRuleChange,         // Function to handle retry rule change and update retry rules state.
+    setRetryRules,                 // Function to set the retryRules state.
+  } = useRetryLogic(
+    handleEndResultAndAppStatus,
+    setAppStatus,
+    setProgressPercentage,
+    setTries,
+    ruleList,
+    setRuleList,
+    setUuid,
+    action,
+    setAction
+  )
+
+
+  // useEndPathLength: Custom hook to calculate the length of the end path based on processed rule list.
+  const endPathLength = useEndPathLength(ruleList, rules, appStatus)
+
+
+  // useStandardRuleAssessment: Custom hook to assess rules, when the user starts or restarts, based on the current rule and application status.
+  useStandardRuleAssessment(
+    currentRule,
+    appStatus,
+    tryDelay,
+    tries,
+    setTries,
+    setResponseStatus,
+    baseUrl,
+    setProgressPercentage
+  )
+
+
+  // useRetryRuleAssessment: Custom hook to assess retry rules, when the user restarts, based on currentRetryRule and application status.
+  useRetryRuleAssessment(
     currentRetryRule,
-    handleRetry,
-    handleRetryRuleChange,
     setRetryRules,
-  } = useRetryLogic(handleEndResultAndAppStatus, setAppStatus, setProgressPercentage, setTries, ruleList, setRuleList, setUuid, action, setAction);
-  
+    appStatus,
+    tryDelay,
+    tries,
+    setTries,
+    baseUrl,
+    setProgressPercentage
+  )
+
+
   /**
    * Handles the continue button click event.
    * 
@@ -144,12 +184,14 @@ function App() {
       })
   },[uuid])
 
+
   /**
    * A useful side effect for debugging.
    */
   useEffect(() => {
     console.log(appStatus, responseStatus, currentRule, tries, ruleList, action)
   }, [appStatus, responseStatus, currentRule, tries, ruleList, action])
+
 
   /**
    * Side effect that manages the progress bar percentage.
@@ -161,6 +203,7 @@ function App() {
       setProgressPercentage(Math.floor((tries / currentRule.maxTries) * 100))
     }
   }, [tries])
+
 
   /**
    * It calls handleRuleChange or handleRetryRuleChange when progress percentage reaches 100%.
@@ -174,108 +217,6 @@ function App() {
     }
   }, [progressPercentage])
 
-  /**
-   * Side effect hooked into currentRule and appStatus that executes the standard rule assessment process.
-   * Fetches for maxTry amount of times, identifies the responseStatus on the first try, and ends the current rule's assessment if
-   * the responseStatus changes after the first try or maxTries amount of fetches have been made.
-   */
-  useEffect(() => {
-    let currentTries = tries
-    let shouldBreak = false
-    let response = null
-    if (appStatus === 'running') {
-      (async () => {
-        while (currentTries < currentRule.maxTries && !shouldBreak) {
-          await new Promise((resolve) => setTimeout(resolve, tryDelay))
-          try {
-            response = await fetch(baseUrl + currentRule.port)
-            let status = response.status
-            if (currentTries === 0) {
-              setResponseStatus(status)
-            } else {
-              setResponseStatus(prevStatus => {
-                if (status !== prevStatus) {
-                  shouldBreak = true
-                  setProgressPercentage(100)
-                  return status
-                } else {
-                  return prevStatus
-                }
-              })
-            }
-          } catch (error) {
-            console.log(error)
-          }
-          if (!shouldBreak) {
-            currentTries++
-            setTries(currentTries)
-          }
-        }
-      })()
-    }
-  }, [currentRule, appStatus])
-
-  /**
-   * Side effect hooked into currentRetryRule and appStatus that executes the retry rule assessment process.
-   */
-  useEffect(() => {
-    let currentTries = tries
-    let shouldBreak = false
-    let response = null
-
-    if (appStatus === "retry") {
-      (async () => {
-        while (currentTries < currentRetryRule.maxTries && !shouldBreak) {
-          await new Promise((resolve) => setTimeout(resolve, tryDelay)) // has to be up here
-          try {
-            response = await fetch(baseUrl + currentRetryRule.port)
-            let status = response.status
-            if (currentRetryRule.responseStatus !== status) {
-              setProgressPercentage(100)
-              shouldBreak = true
-              setRetryRules(prevRetryRules => {
-                let updatedRetryRules = [...prevRetryRules]
-                let index = updatedRetryRules.findIndex(rule => rule.key === currentRetryRule.key)
-                if (index !== -1) {
-                  updatedRetryRules[index] = {
-                    ...updatedRetryRules[index],
-                    responseStatus: status
-                  }
-                }
-                return updatedRetryRules
-              })
-            }    
-          } catch (error) {
-            console.log(error)
-          }
-          if (!shouldBreak) {
-            currentTries++
-            setTries(currentTries)
-          }
-        }
-      })()
-    }
-  }, [currentRetryRule, appStatus])
-
-  /**
-   * Side effect that determines if a singular endpath is possible. If there is one, sets the end path length.
-   */
-  useEffect(() => {
-    if(ruleList.length !== 0 && appStatus !== 'retry') {
-      let tempCurrentRule = ruleList[0]
-      let count = 0
-        while (isSecurityCheck(tempCurrentRule)) {
-          tempCurrentRule = rules[tempCurrentRule.passRule]
-          count++
-          if (isRuleEnd(tempCurrentRule)) {
-            setEndPathLength(ruleList.length + count)
-            break
-          } else {
-            setEndPathLength(null)
-        }
-      }
-    }
-  }, [ruleList])
 
   return (
     <div className="App-container">

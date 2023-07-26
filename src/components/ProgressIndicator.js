@@ -2,6 +2,7 @@ import React from "react"
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import { Spinner } from "react-bootstrap"
 
+
 /**
  * Displays the progress indicator for the current rule.
  * @param {number} progressPercentage - The progress percentage.

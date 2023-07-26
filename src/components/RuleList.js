@@ -4,6 +4,7 @@ import { RiFileCopy2Line } from "react-icons/ri"
 import React, { useState, useCallback } from "react"
 import { isNotFetching, isUnsuccessful, isAnError, isAWarning, failedCount, passedCount, warningsCount, errorsCount } from '../helpers/helpers'
 
+
 /**
  * The panel component to display warnings, errors, and the success panels.
  * Below the aforementioned panels, there are footers displayed based on appstatus.
@@ -22,6 +23,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
     let errors = errorsCount(ruleList)
     let total = passed + errors // warnings are not counted in the total
 
+
     /**
      * Calls the copy UUID function and sets the isCopied state to true.
      * Used to give the user a response to let them know when the UUID has been copied.
@@ -33,6 +35,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
         setIsCopied(false)
       }, 2000)
     },[copy])
+
 
     /**
      * A subcomponent that displays the UUID and copy UUID button.
@@ -53,6 +56,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
             </div>
         )
     }
+
 
     /**
      * A subcomponent that displays the rule list.
@@ -95,6 +99,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
         );
       };      
 
+
     /**
      * Meant to utilize the endPathLength and/or show a more overall summary that includes total passed rules out of endlengthpath rules.
      * Not finished or used.
@@ -119,29 +124,29 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
         )
     }
 
+
     return (
         <div style={{ padding: '5px 10px 10px 0', flex:1,}}>
             <div style={{ padding: 0, flex:1, marginLeft: '35px' }}>
-
-            {Object.values(ruleList).map((rule) => { // error panel
-                return (
-                    isAnError(rule) ? 
-                        <Panel rule={rule} variant='danger' body={rule.failText} success={false} />
-                     : null
-                )
-            })}
-            {appStatus === 'completed' && !ruleList.some(rule => isAnError(rule)) && // complete panel
-                ( 
-                    <Panel rule={{title:"Success"}} variant='primary' body="You passed the assessment and can connect to Thompson Rivers University's network." success={true}/>       
-                )
-            }
-            {Object.values(ruleList).map((rule) => { // warning panel
-                return (
-                    isAWarning(rule) ? 
-                        <Panel rule={rule} variant='warning' body={rule.failText} success={false}/>
-                     : null
-                )
-            })}
+                {Object.values(ruleList).map((rule) => { // error panel
+                    return (
+                        isAnError(rule) ? 
+                            <Panel rule={rule} variant='danger' body={rule.failText} success={false} />
+                        : null
+                    )
+                })}
+                {appStatus === 'completed' && !ruleList.some(rule => isAnError(rule)) && // complete panel
+                    ( 
+                        <Panel rule={{title:"Success"}} variant='primary' body="You passed the assessment and can connect to Thompson Rivers University's network." success={true}/>       
+                    )
+                }
+                {Object.values(ruleList).map((rule) => { // warning panel
+                    return (
+                        isAWarning(rule) ? 
+                            <Panel rule={rule} variant='warning' body={rule.failText} success={false}/>
+                        : null
+                    )
+                })}
             </div>
             <div id="footers" style={{margin:0, padding:'20px 0 0 0'}}>
                 {ruleList.some(rule => isUnsuccessful(rule)) && // error footer
@@ -184,7 +189,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
                     )
                 }
             </div>
-        </div >
+        </div>
     )
 }
 

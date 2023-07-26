@@ -1,6 +1,7 @@
 import React from "react"
 import { failedCount, passedCount, warningsCount, errorsCount } from '../helpers/helpers'
 
+
 /**
  * Displays a feedback message based on the application status. Guides and informs the user.
  * @param {string} appStatus - The application status.
@@ -13,10 +14,10 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
     let warnings = warningsCount(ruleList)
     let errors = errorsCount(ruleList)
     let total = passed + errors + warnings 
-
     let errorText = errors === 1 ? "error" : "errors"
     let warningText = warnings === 1 ? "warning" : "warnings"
     let isAre = errors === 1 ? "is" : "are"
+
 
     return (
         <div style={{ paddingBottom: appStatus === 'completed' || appStatus === 'paused' ? 0 : '15px' }}>
