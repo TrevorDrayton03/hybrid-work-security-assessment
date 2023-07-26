@@ -1,7 +1,7 @@
 import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
 import { RiFileCopy2Line } from "react-icons/ri"
-import React, { useState } from "react"
+import React, { useState, useCallback } from "react"
 import { isNotFetching, isUnsuccessful, isAnError, isAWarning, failedCount, passedCount, warningsCount, errorsCount } from '../helpers/helpers'
 
 /**
@@ -26,13 +26,13 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
      * Calls the copy UUID function and sets the isCopied state to true.
      * Used to give the user a response to let them know when the UUID has been copied.
      */
-    const handleClick = () => {
+    const handleClick = useCallback(() => {
       copy()
       setIsCopied(true)
       setTimeout(() => {
         setIsCopied(false)
       }, 2000)
-    }
+    },[copy])
 
     /**
      * A subcomponent that displays the UUID and copy UUID button.

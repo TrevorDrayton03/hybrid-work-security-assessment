@@ -47,7 +47,7 @@
  */
 
 import logo from '../logo.png'
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import '../App.css'
 import ProgressIndicator from './ProgressIndicator'
 import ControlButton from './ControlButton'
@@ -133,7 +133,7 @@ function App() {
    * 
    * @param {string} action - the user event
    */
-  const handleStart = (action) => {
+  const handleStart = useCallback((action) => {
     setAction(action)
     setAppStatus('running')
     if (appStatus !== 'running') {
@@ -142,7 +142,7 @@ function App() {
       setCurrentRule(Object.values(rules).find(rule => rule.key === firstRule))
       setTries(firstTry)
     }
-  }
+  },[appStatus, rules])
 
   /**
    * Handles the retry button click event. It sets the application status to 'retry', 
@@ -155,7 +155,7 @@ function App() {
    * 
    * @param {string} type - the type of rules to be reassessed [null (will do all failed rules), warning, error]
    */
-  const handleRetry = async (type) => {
+  const handleRetry = useCallback(async (type) => {
     setAction('retry')
     setAppStatus('retry')
     setProgressPercentage(0)
@@ -183,7 +183,7 @@ function App() {
     })
     setRetryRules(filteredRetryRules)
     setCurrentRetryRule(filteredRetryRules[0])
-  }
+  },[ruleList])
 
   /**
    * Handles the continue button click event.
@@ -191,32 +191,32 @@ function App() {
    * This function updates the application status to 'running', sets the current rule to the next rule in the sequence,
    * resets the progress percentage, and sets the number of tries to the initial value.
    */
-  const handleContinue = () => {
+  const handleContinue = useCallback(() => {
     setAction('continue')
     setAppStatus('running')
     setCurrentRule(Object.values(rules).find(rule => rule.key === currentRule.passRule))
     setProgressPercentage(0)
     setTries(firstTry)
-  }
+  },[rules, currentRule])
 
   /**
    * Used to set the state of the app for the next rule; utilized in handleRuleChange.
    * 
    * @param {string} nextRule - the key property value
    */
-  const changeToRule = (nextRule) => {
+  const changeToRule = useCallback((nextRule) => {
     setCurrentRule(Object.values(rules).find(rule => rule.key === nextRule))
     setTries(firstTry)
     setResponseStatus(null)
     setProgressPercentage(0)
-  }
+  },[rules])
 
   /**
    * Encapsulates the logic required to change the current rule to either the pass rule, fail rule, or end rule,
    * and update the rule list with the results of the current rule's assessment.
    * Called when progress of the currentRule reaches 100%.
    */
-  const handleRuleChange = async () => {
+  const handleRuleChange = useCallback(async () => {
     await new Promise((resolve) => setTimeout(resolve, 500))
     currentRule.responseStatus = responseStatus
     if (isPassRule(currentRule)) {
@@ -227,7 +227,7 @@ function App() {
       handleNoRuleChange(currentRule, ruleList)
     }
     setRuleList(prevArray => [currentRule, ...prevArray])
-  }
+  },[currentRule, responseStatus, ruleList])
   
   /**
    * Handles scenarios where no rule change occurs, determining the final state and logging.
@@ -235,7 +235,7 @@ function App() {
    * @param {object} currentRule - the current rule being evaluated
    * @param {array} ruleList - the list of rules that have been evaluated so far
    */
-  const handleNoRuleChange = async (currentRule, ruleList) => {
+  const handleNoRuleChange = useCallback(async (currentRule, ruleList) => {
     let rList = [currentRule, ...ruleList] // synchronous solution for posting immediately
     let id = uuidv4()
     setUuid(id)
@@ -268,7 +268,7 @@ function App() {
     } else {
       console.log('Failed to post data')
     }
-  }
+  },[action])
   
   /**
    * Used in both the standard process and the retry process.
@@ -278,7 +278,7 @@ function App() {
    * @param {array} rList - the list of rules that have been evaluated
    * @returns {string} - the end result of the assessment
    */
-  const handleEndResultAndAppStatus = (rList) => {
+  const handleEndResultAndAppStatus = useCallback((rList) => {
     let result
     if (rList.every(rule => rule.responseStatus === 200)) { 
       setAppStatus("completed")
@@ -291,14 +291,14 @@ function App() {
       result = "completed unsuccessfully"
     }
     return result
-  }
+  },[])
   
   /**
    * Handles the change of rule in the retry process. It sets the number of tries and progress percentage to 
    * initial values, finds the next rule to retry, and sets it as the current retry rule.
    * Sends a final POST request to the server with the updated rule list and the end result.
    */
-  const handleRetryRuleChange = async () => {
+  const handleRetryRuleChange = useCallback(async () => {
     await new Promise((resolve) => setTimeout(resolve, 500))
     if(!isRetryRuleEnd(currentRetryRule)) {
       setTries(firstTry)
@@ -350,17 +350,17 @@ function App() {
       }
       setCurrentRetryRule(null)
     }
-  }
+  },[currentRetryRule, retryRules, ruleList, action])
 
   /**
    * Handle copy UUID onClick event.
    */
-  const handleCopy = () => {
+  const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(uuid)
       .catch((error) => {
         console.error('Failed to copy text:', error)
       })
-  }
+  },[uuid])
 
   /**
    * A useful side effect for debugging.
