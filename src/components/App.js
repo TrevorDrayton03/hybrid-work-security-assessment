@@ -53,21 +53,21 @@ import ProgressIndicator from './ProgressIndicator'
 import ControlButton from './ControlButton'
 import FeedbackMessage from './FeedbackMessage'
 import RuleList from './RuleList'
-import { v4 as uuidv4 } from 'uuid'
 import 'whatwg-fetch'
-import { isPassRule, isFailRule, isRuleEnd, isRetryRuleEnd, isSecurityCheck, isUnsuccessful, isAWarning, isAnError } from '../helpers/helpers'
+import { isRuleEnd, isRetryRuleEnd, isSecurityCheck, isUnsuccessful, isAWarning, isAnError } from '../helpers/helpers'
+import useFetchRulesConfig from '../custom_hooks/useFetchRulesConfig.js'
+import useStartAndRestart from '../custom_hooks/useStartAndRestart.js'
+import { v4 as uuidv4 } from 'uuid'
 
 function App() {
 
   /**
    * Constants
    * 
-   * firstTry is the initialization value of the loops
    * firstRule is the key property value that determines which rule in the rule_config.json file the fetch loop begins with
    * delay is the time in milliseconds that the fetch loop waits before sending another request, which is read from the rule_config.json file
    * baseUrl is the server url for the HIPS requests read from the .env file
    */
-  const firstTry = 0
   const firstRule = "FirstRule"
   const delay = "tryDelay"
   const baseUrl = process.env.REACT_APP_HIPS_BASE_URL
@@ -90,40 +90,41 @@ function App() {
    * endPathLength is the length of the path from the current rule to an end rule. It requires a final, singular path to be available from the current rule.
    * isLoading is true if rules are fetching in the initial page load, false if rules are fetched
    */
-  const [appStatus, setAppStatus] = useState('idle')
-  const [responseStatus, setResponseStatus] = useState(null)
-  const [rules, setRules] = useState({})
-  const [currentRule, setCurrentRule] = useState(null)
-  const [ruleList, setRuleList] = useState([])
+  // const [appStatus, setAppStatus] = useState('idle')
+  // const [responseStatus, setResponseStatus] = useState(null)
+  // const [currentRule, setCurrentRule] = useState(null)
+  // const [ruleList, setRuleList] = useState([])
   const [retryRules, setRetryRules] = useState(null)
   const [currentRetryRule, setCurrentRetryRule] = useState(null)
-  const [tries, setTries] = useState(firstTry)
+  // const [tries, setTries] = useState(0)
   const [tryDelay, setTryDelay] = useState(0)
-  const [progressPercentage, setProgressPercentage] = useState(0)
-  const [uuid, setUuid] = useState(null)
-  const [action, setAction] = useState(null)
+  // const [progressPercentage, setProgressPercentage] = useState(0)
+  // const [uuid, setUuid] = useState(null)
+  // const [action, setAction] = useState(null)
   const [endPathLength, setEndPathLength] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
 
-  /**
-   * OnComponentDidMount Side Effect (called on initial page load)
-   * 
-   * This side effect fetches the rules_config.json file and store the config data in the rules state.
-   * It initializes the application's state.
-   */
-  useEffect(() => { 
-    fetch("/api/rules")
-      .then(response => response.json())
-      .then(config => {
-        setRules(config)
-        setCurrentRule(Object.values(config).find(rule => rule.key === firstRule))
-        setTryDelay(Object.values(config).find(rule => rule.key === delay)?.milliseconds)
-        setIsLoading(false)
-      })
-      .catch(error => {
-        console.error('Error:', error)
-      })
-  }, [])
+  const { isLoading, rules } = useFetchRulesConfig();
+  const {
+    action,
+    appStatus,
+    progressPercentage,
+    ruleList,
+    currentRule,
+    tries,
+    responseStatus,
+    uuid,
+    handleStart,
+    handleRuleChange,
+    handleEndResultAndAppStatus,
+    setAction,
+    setAppStatus,
+    setProgressPercentage,
+    setRuleList,
+    setCurrentRule,
+    setTries,
+    setResponseStatus,
+    setUuid,
+  } = useStartAndRestart(firstRule, rules);
 
   /**
    * Handles the start and restart button onClick events.
@@ -133,16 +134,16 @@ function App() {
    * 
    * @param {string} action - the user event
    */
-  const handleStart = useCallback((action) => {
-    setAction(action)
-    setAppStatus('running')
-    if (appStatus !== 'running') {
-      setProgressPercentage(0)
-      setRuleList([])
-      setCurrentRule(Object.values(rules).find(rule => rule.key === firstRule))
-      setTries(firstTry)
-    }
-  },[appStatus, rules])
+  // const handleStart = useCallback((action) => {
+  //   setAction(action)
+  //   setAppStatus('running')
+  //   if (appStatus !== 'running') {
+  //     setProgressPercentage(0)
+  //     setRuleList([])
+  //     setCurrentRule(Object.values(rules).find(rule => rule.key === firstRule))
+  //     setTries(0)
+  //   }
+  // },[appStatus, rules])
 
   /**
    * Handles the retry button click event. It sets the application status to 'retry', 
@@ -159,7 +160,7 @@ function App() {
     setAction('retry')
     setAppStatus('retry')
     setProgressPercentage(0)
-    setTries(firstTry)
+    setTries(0)
     let retryRules
     if (!type) {
       retryRules = Object.values(ruleList).filter(rule => isUnsuccessful(rule))
@@ -196,7 +197,7 @@ function App() {
     setAppStatus('running')
     setCurrentRule(Object.values(rules).find(rule => rule.key === currentRule.passRule))
     setProgressPercentage(0)
-    setTries(firstTry)
+    setTries(0)
   },[rules, currentRule])
 
   /**
@@ -204,30 +205,30 @@ function App() {
    * 
    * @param {string} nextRule - the key property value
    */
-  const changeToRule = useCallback((nextRule) => {
-    setCurrentRule(Object.values(rules).find(rule => rule.key === nextRule))
-    setTries(firstTry)
-    setResponseStatus(null)
-    setProgressPercentage(0)
-  },[rules])
+  // const changeToRule = useCallback((nextRule) => {
+  //   setCurrentRule(Object.values(rules).find(rule => rule.key === nextRule))
+  //   setTries(0)
+  //   setResponseStatus(null)
+  //   setProgressPercentage(0)
+  // },[rules])
 
   /**
    * Encapsulates the logic required to change the current rule to either the pass rule, fail rule, or end rule,
    * and update the rule list with the results of the current rule's assessment.
    * Called when progress of the currentRule reaches 100%.
    */
-  const handleRuleChange = useCallback(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500))
-    currentRule.responseStatus = responseStatus
-    if (isPassRule(currentRule)) {
-      changeToRule(currentRule.passRule)
-    } else if (isFailRule(currentRule)) {
-      changeToRule(currentRule.failRule)
-    } else {
-      handleNoRuleChange(currentRule, ruleList)
-    }
-    setRuleList(prevArray => [currentRule, ...prevArray])
-  },[currentRule, responseStatus, ruleList])
+  // const handleRuleChange = useCallback(async () => {
+  //   await new Promise((resolve) => setTimeout(resolve, 500))
+  //   currentRule.responseStatus = responseStatus
+  //   if (isPassRule(currentRule)) {
+  //     changeToRule(currentRule.passRule)
+  //   } else if (isFailRule(currentRule)) {
+  //     changeToRule(currentRule.failRule)
+  //   } else {
+  //     handleNoRuleChange(currentRule, ruleList)
+  //   }
+  //   setRuleList(prevArray => [currentRule, ...prevArray])
+  // },[currentRule, responseStatus, ruleList])
   
   /**
    * Handles scenarios where no rule change occurs, determining the final state and logging.
@@ -235,40 +236,40 @@ function App() {
    * @param {object} currentRule - the current rule being evaluated
    * @param {array} ruleList - the list of rules that have been evaluated so far
    */
-  const handleNoRuleChange = useCallback(async (currentRule, ruleList) => {
-    let rList = [currentRule, ...ruleList] // synchronous solution for posting immediately
-    let id = uuidv4()
-    setUuid(id)
-    let result
+  // const handleNoRuleChange = useCallback(async (currentRule, ruleList) => {
+  //   let rList = [currentRule, ...ruleList] // synchronous solution for posting immediately
+  //   let id = uuidv4()
+  //   setUuid(id)
+  //   let result
   
-    if (isRuleEnd(currentRule)) {
-      result = handleEndResultAndAppStatus(rList)
-    } else if (currentRule.continueOption === true) {
-      setAppStatus("paused")
-      result = "incomplete"
-    } else {
-      setAppStatus("error")
-      result = "incomplete"
-    }
+  //   if (isRuleEnd(currentRule)) {
+  //     result = handleEndResultAndAppStatus(rList)
+  //   } else if (currentRule.continueOption === true) {
+  //     setAppStatus("paused")
+  //     result = "incomplete"
+  //   } else {
+  //     setAppStatus("error")
+  //     result = "incomplete"
+  //   }
   
-    const response = await fetch('/api/data', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        uid: id,
-        sequence: rList,
-        action: action,
-        result: result
-      }),
-    })
-    if (response.ok) {
-      console.log('Data posted successfully')
-    } else {
-      console.log('Failed to post data')
-    }
-  },[action])
+  //   const response = await fetch('/api/data', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       uid: id,
+  //       sequence: rList,
+  //       action: action,
+  //       result: result
+  //     }),
+  //   })
+  //   if (response.ok) {
+  //     console.log('Data posted successfully')
+  //   } else {
+  //     console.log('Failed to post data')
+  //   }
+  // },[action])
   
   /**
    * Used in both the standard process and the retry process.
@@ -278,20 +279,20 @@ function App() {
    * @param {array} rList - the list of rules that have been evaluated
    * @returns {string} - the end result of the assessment
    */
-  const handleEndResultAndAppStatus = useCallback((rList) => {
-    let result
-    if (rList.every(rule => rule.responseStatus === 200)) { 
-      setAppStatus("completed")
-      result = "completed successfully"
-    } else if (rList.filter(rule => rule.responseStatus !== 200).every(rule => rule.warning === true)) { 
-      setAppStatus("completed")
-      result = "completed successfully with warning(s)"
-    } else { 
-      setAppStatus("completed")
-      result = "completed unsuccessfully"
-    }
-    return result
-  },[])
+  // const handleEndResultAndAppStatus = useCallback((rList) => {
+  //   let result
+  //   if (rList.every(rule => rule.responseStatus === 200)) { 
+  //     setAppStatus("completed")
+  //     result = "completed successfully"
+  //   } else if (rList.filter(rule => rule.responseStatus !== 200).every(rule => rule.warning === true)) { 
+  //     setAppStatus("completed")
+  //     result = "completed successfully with warning(s)"
+  //   } else { 
+  //     setAppStatus("completed")
+  //     result = "completed unsuccessfully"
+  //   }
+  //   return result
+  // },[])
   
   /**
    * Handles the change of rule in the retry process. It sets the number of tries and progress percentage to 
@@ -301,7 +302,7 @@ function App() {
   const handleRetryRuleChange = useCallback(async () => {
     await new Promise((resolve) => setTimeout(resolve, 500))
     if(!isRetryRuleEnd(currentRetryRule)) {
-      setTries(firstTry)
+      setTries(0)
       setProgressPercentage(0)
       let nextRetryRule = Object.values(retryRules).find(rule => rule.key === currentRetryRule.nextRule)
       setCurrentRetryRule(nextRetryRule)
@@ -408,7 +409,7 @@ function App() {
           try {
             response = await fetch(baseUrl + currentRule.port)
             let status = response.status
-            if (currentTries === firstTry) {
+            if (currentTries === 0) {
               setResponseStatus(status)
             } else {
               setResponseStatus(prevStatus => {
