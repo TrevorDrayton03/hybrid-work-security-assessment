@@ -2,29 +2,20 @@
  * Hybrid Work-from-Home Security Assessment
  *
  * This application assesses security requirements of staff devices to ensure they meet the necessary criteria for safely connecting remotely 
- * to TRU's network as part of the hybrid Work-from-Home program. It accomplishes this task by making fetch requests to TRU's servers that host HIPS rules.
- * These rules assess the user's device and return a response status based on the assessment. These are the same rules that Global Protect is
- * automatically checking on its own interval to ensure the user's device is compliant with TRU's security requirements, and will prevent users from staying
- * connected if it detects a security issue. This application is intended to be used as a tool to help users identify and resolve security issues before
- * connecting to TRU's network, or in the event they get kicked off the network by Global Protect.
+ * to TRU's network. It accomplishes this task by making fetch requests to TRU's servers that host HIPS rules.
+ * The HIPS rules assess the user's device and return a response status based on the result of the assessment. These are the same rules that Global Protect is
+ * automatically checking on its own interval to ensure the user's device is compliant with TRU's security requirements. This application is a tool to help 
+ * users identify and resolve security issues that arise when connecting to TRU's network through the Global Protect VPN.
  *
- * Main Component
- * 
- * This component represents the main entry point of the web app.
- * It serves as the container for the entire application and handles the overall layout and function.
- * 
  * Features:
  * - Fetches the rules_config.json file from the server and stores it in the application state for rule evaluation.
  * - Sends the data of each assessment result to a database for logging and tracking.
- * - Provides a progress bar to visualize the user's progress through each individual security check.
- * - Displays feedback messages based on the status of the application to keep users informed about the progress and results of the security checks.
- * - Offers control buttons to allow the user to start, restart, retry (warnings, errors, or all) the security check assessment and retry the last failed security check.
- * - Shows a spinner during rule evaluations to indicate that the application is running even if the progress indicator is not moving.
  * - Incorporates a responsive design to ensure usability on various screen sizes including mobile, tablet, and desktop.
  * - Ensures cross-browser compatibility for broad accessibility.
- * - Learnable and easy to use with a simple and intuitive user interface.
+ * - Learnable and easy to use with an intuitive user interface.
  * - Complies with ES6 standards for code readability, maintainability, and modern features.
- * - Robust error handling
+ * - Robust error handling.
+ * - The code is well documented, modular, cohesive, testable, and reusable. 
  * 
  * Libraries/Dependencies:
  * Node.js: JavaScript runtime environment.
@@ -37,7 +28,7 @@
  * whatwg-fetch: Polyfill that provides a global fetch function for making web requests in browsers that do not support the native Fetch API.
  * react-icons: Library of icons for React applications, used for the copy UUID button.
  * 
- * Web Vital Statistics (on average on my virtual machine in my development environment):
+ * Web Vital Statistics (on my virtual machine in my development environment):
  * FCP (First Contentful Paint): 800ms to 1200ms
  * TTFB (Time to First Byte): 100ms to 300ms
  * FID (First Input Delay): 10ms to 100ms
@@ -60,7 +51,7 @@ import FeedbackMessage from './FeedbackMessage'
 import RuleList from './RuleList'
 import 'whatwg-fetch'
 import useFetchRulesConfig from '../custom_hooks/useFetchRulesConfig.js'
-import useStartAndRestart from '../custom_hooks/useStartAndRestart.js'
+import useStartAndRestartLogic from '../custom_hooks/useStartAndRestartLogic.js'
 import useRetryLogic from '../custom_hooks/useRetryLogic.js'
 import useStandardRuleAssessment from '../custom_hooks/useStandardRuleAssessment.js'
 import useRetryRuleAssessment from '../custom_hooks/useRetryRuleAssessment.js'
@@ -83,12 +74,12 @@ function App() {
     isLoading,                     // Boolean indicating if the rules configuration data is currently being fetched.
     rules,                         // Object containing the fetched rules configuration data.
     currentRule,                   // Current rule being processed from the fetched rules data.
-    setCurrentRule,                // Function to set the currentRule state.
+    setCurrentRule,                // Asynchronous function to set the currentRule state.
     tryDelay,                      // Delay time (in milliseconds) between attempts when processing rules.
   } = useFetchRulesConfig(firstRule, delay)
 
 
-  // useStartAndRestart: Custom hook to manage the state and logic for starting, restarting, and processing rules.
+  // useStartAndRestartLogic: Custom hook to manage the state and logic for starting, restarting, and processing rules.
   const {
     action,                        // Action type [start, restart, retry, continue] for logging purposes.
     appStatus,                     // Current status of the application [idle, running, completed, error, paused].
@@ -100,14 +91,14 @@ function App() {
     handleStart,                   // Function to handle the start and restart button onClick events.
     handleRuleChange,              // Function to change the current rule and update the rule list with the results of rule assessment.
     handleEndResultAndAppStatus,   // Function to evaluate the rule list, determine the end result, set the action state for logging, and change the app status to completed.
-    setAction,                     // Function to set the action state.
-    setAppStatus,                  // Function to set the appStatus state.
-    setProgressPercentage,         // Function to set the progressPercentage state.
-    setRuleList,                   // Function to set the ruleList state.
-    setTries,                      // Function to set the tries state.
-    setResponseStatus,             // Function to set the responseStatus state.
-    setUuid,                       // Function to set the uuid state.
-  } = useStartAndRestart(firstRule, rules, currentRule, setCurrentRule)
+    setAction,                     // Asynchronous function to set the action state.
+    setAppStatus,                  // Asynchronous function to set the appStatus state.
+    setProgressPercentage,         // Asynchronous function to set the progressPercentage state.
+    setRuleList,                   // Asynchronous function to set the ruleList state.
+    setTries,                      // Asynchronous function to set the tries state.
+    setResponseStatus,             // Asynchronous function to set the responseStatus state.
+    setUuid,                       // Asynchronous function to set the uuid state.
+  } = useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule)
 
 
   // useRetryLogic: Custom hook to manage state and logic for handling retry rules.
@@ -115,7 +106,7 @@ function App() {
     currentRetryRule,              // Current retry rule being processed.
     handleRetry,                   // Function to handle retry for unsuccessful rules.
     handleRetryRuleChange,         // Function to handle retry rule change and update retry rules state.
-    setRetryRules,                 // Function to set the retryRules state.
+    setRetryRules,                 // Asynchronous function to set the retryRules state.
   } = useRetryLogic(
     handleEndResultAndAppStatus,
     setAppStatus,
@@ -133,7 +124,7 @@ function App() {
   const endPathLength = useEndPathLength(ruleList, rules, appStatus)
 
 
-  // useStandardRuleAssessment: Custom hook to assess rules, when the user starts or restarts, based on the current rule and application status.
+  // useStandardRuleAssessment: Custom hook to assess rules, when the user starts, restarts, or continues, hooked on currentRule and appStatus.
   useStandardRuleAssessment(
     currentRule,
     appStatus,
@@ -146,7 +137,7 @@ function App() {
   )
 
 
-  // useRetryRuleAssessment: Custom hook to assess retry rules, when the user restarts, based on currentRetryRule and application status.
+  // useRetryRuleAssessment: Custom hook to assess retry rules, when the user retries, hooked on currentRetryRule and appStatus.
   useRetryRuleAssessment(
     currentRetryRule,
     setRetryRules,

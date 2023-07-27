@@ -61,8 +61,6 @@ function useStandardRuleAssessment(currentRule, appStatus, tryDelay, tries, setT
       })()
     }
   }, [currentRule, appStatus])
-  
-  return { }
 }
 
 export default useStandardRuleAssessment

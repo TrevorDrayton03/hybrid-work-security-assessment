@@ -181,6 +181,7 @@ html {
 }
 
 .btn-primary-split {
+  width: 220px !important;
   border-radius: 100px 0 0 100px !important;
   background-color: var(--color-tru-teal) !important;
   border-color: var(--color-tru-teal) !important;

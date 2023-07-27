@@ -3,7 +3,7 @@ import { isPassRule, isFailRule, isRuleEnd } from '../helpers/helpers'
 import { v4 as uuidv4 } from 'uuid'
 
 /**
- * Custom Hook: useStartAndRestart
+ * Custom Hook: useStartAndRestartLogic
  * 
  * Description:
  * This custom hook manages the state and logic for starting, restarting, and processing rules in the web application.
@@ -40,7 +40,7 @@ import { v4 as uuidv4 } from 'uuid'
  * - setResponseStatus: A function to set the responseStatus state.
  * - setUuid: A function to set the uuid state.
  */
-function useStartAndRestart(firstRule, rules, currentRule, setCurrentRule) {
+function useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule) {
 
 /**
  * State Variables
@@ -195,4 +195,4 @@ function useStartAndRestart(firstRule, rules, currentRule, setCurrentRule) {
   }
 }
 
-export default useStartAndRestart
+export default useStartAndRestartLogic

@@ -68,8 +68,6 @@ function useRetryRuleAssessment(currentRetryRule, setRetryRules, appStatus, tryD
       })()
     }
   }, [currentRetryRule, appStatus])
-  
-  return { }
 }
 
 export default useRetryRuleAssessment
