@@ -5,7 +5,7 @@ const path = require('path')
 const fs = require('fs')
 const app = express()
 const http = require('http').Server(app)
-const port = 80
+const port = 8080
 const cors = require('cors')
 const buildPath = path.join(__dirname, '..', 'build')
 require('dotenv').config({ path: path.join(__dirname, '../.env') })
@@ -130,12 +130,10 @@ app.get('/api/rules', (req, res) => {
     }
 })
 
-
 // Serve the React app on all other routes
 app.get('*', (req, res) => {
     res.sendFile(path.join(buildPath, 'index.html'))
 })
-
 
 // app.listen(port, () => {
 //     console.log(`Server is running on port ${port}`)

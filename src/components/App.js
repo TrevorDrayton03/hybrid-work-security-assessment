@@ -248,7 +248,7 @@ function App() {
               endPathLength={endPathLength}
             />
             <RuleList
-              ruleList={ruleList}
+              ruleList={ruleList}y
               appStatus={appStatus}
               uuid={uuid}
               copy={handleCopy}
