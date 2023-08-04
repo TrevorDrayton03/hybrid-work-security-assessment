@@ -6,7 +6,6 @@ import { useEffect } from 'react'
  * Description:
  * This custom hook manages the state and logic for assessing retry rules in the web application.
  * It takes into account the currentRetryRule, application status, tryDelay, tries count, and the base URL for fetch requests.
- * The hook is designed to work with the useStartAndRestart custom hook to provide a retry mechanism for incomplete rules.
  * It uses React hooks, such as useState, to manage state variables and perform rule assessment.
  * The hook is responsible for retrying the assessment of incomplete rules at a specified delay and updating the tries count.
  * When a rule assessment reaches 100% progress, it updates the app status and sets the appropriate progress percentage.

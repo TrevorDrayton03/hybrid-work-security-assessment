@@ -11,8 +11,6 @@ import { v4 as uuidv4 } from 'uuid'
  * The hook encapsulates the application status, response status, progress percentage, rule list, tries count,
  * action type, unique identifier (UUID), and handles various user actions for rule assessment.
  * It also handles the logic to change the current rule, update the rule list, and determine the end result of the assessment.
- * The hook is designed to work with other custom hooks, such as useFetchRulesConfig and useRetryLogic, to provide
- * a comprehensive rule assessment and processing mechanism.
  * 
  * Parameters:
  * @param {string} firstRule - The key property value of the first rule to start the assessment.
