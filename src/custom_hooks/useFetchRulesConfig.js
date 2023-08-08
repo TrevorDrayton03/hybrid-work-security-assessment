@@ -51,7 +51,7 @@ const useFetchRulesConfig = (firstRule, delay) => {
       })
   }, [])
 
-  return { isLoading, rules, currentRule, setCurrentRule, tryDelay }
+  return { isLoading, rules, currentRule, setCurrentRule, tryDelay, setRules }
 }
 
 export default useFetchRulesConfig

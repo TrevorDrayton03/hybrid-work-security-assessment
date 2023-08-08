@@ -56,6 +56,8 @@ import useRetryLogic from '../custom_hooks/useRetryLogic.js'
 import useStandardRuleAssessment from '../custom_hooks/useStandardRuleAssessment.js'
 import useRetryRuleAssessment from '../custom_hooks/useRetryRuleAssessment.js'
 import useEndPathLength from '../custom_hooks/useEndPathLength.js'
+import openSocket from 'socket.io-client'
+const socket = openSocket('http://localhost:8080')
 
 function App() {
   /**
@@ -76,7 +78,19 @@ function App() {
     currentRule,                   // Current rule being processed from the fetched rules data.
     setCurrentRule,                // Asynchronous function to set the currentRule state.
     tryDelay,                      // Delay time (in milliseconds) between attempts when processing rules.
+    setRules
   } = useFetchRulesConfig(firstRule, delay)
+
+  useEffect(() => {
+    socket.on('configUpdate', (newConfig) => {
+      setRules(newConfig);
+      setCurrentRule(Object.values(newConfig).find(data => data.key === firstRule))
+    })
+
+    return () => {
+      socket.disconnect()
+    }
+  }, [])
 
 
   // useStartAndRestartLogic: Custom hook to manage the state and logic for starting, restarting, and processing rules.

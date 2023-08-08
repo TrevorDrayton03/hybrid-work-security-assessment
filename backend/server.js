@@ -10,6 +10,7 @@ const cors = require('cors')
 const buildPath = path.join(__dirname, '..', 'build')
 require('dotenv').config({ path: path.join(__dirname, '../.env') })
 const ruleConfigPath = path.join(__dirname, process.env.CONFIG_PATH)
+const io = require('socket.io')(http)
 
 app.use(express.static(buildPath))
 app.use(express.json())
@@ -25,6 +26,28 @@ const pool = mariadb.createPool({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
     connectionLimit: process.env.DB_CONNECTION_LIMIT
+})
+
+
+io.on('connection', (socket) => {
+  console.log('Client connected')
+  socket.emit('configUpdate', JSON.parse(fs.readFileSync(ruleConfigPath, 'utf8')))
+
+  socket.on('disconnect', () => {
+      console.log('Client disconnected')
+  })
+})
+
+fs.watchFile(ruleConfigPath, (curr, prev) => {
+  if (curr.mtime > prev.mtime) {
+      fs.readFile(ruleConfigPath, 'utf8', (err, data) => {
+          if (!err) {
+              const config = JSON.parse(data)
+              io.emit('configUpdate', config)
+              console.log("config update emitted")
+          }
+      })
+  }
 })
 
 
