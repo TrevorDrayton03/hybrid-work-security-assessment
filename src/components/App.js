@@ -78,7 +78,7 @@ function App() {
     currentRule,                   // Current rule being processed from the fetched rules data.
     setCurrentRule,                // Asynchronous function to set the currentRule state.
     tryDelay,                      // Delay time (in milliseconds) between attempts when processing rules.
-    setRules
+    setRules                       // TESTING: for the socket
   } = useFetchRulesConfig(firstRule, delay)
 
   // useStartAndRestartLogic: Custom hook to manage the state and logic for starting, restarting, and processing rules.

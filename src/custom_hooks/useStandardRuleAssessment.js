@@ -37,8 +37,12 @@ function useStandardRuleAssessment(currentRule, appStatus, tryDelay, tries, setT
           try {
             response = await fetch(baseUrl + currentRule.port)
             let status = response.status
-            if (currentTries === 0) {
+            if (currentTries === 0 && status !== 200) {
               setResponseStatus(status)
+            } else if (currentTries === 0 && status === 200) { 
+              shouldBreak = true
+              setResponseStatus(status)
+              setProgressPercentage(100)
             } else {
               setResponseStatus(prevStatus => {
                 if (status !== prevStatus) {
