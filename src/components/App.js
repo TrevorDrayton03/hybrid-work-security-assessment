@@ -81,18 +81,6 @@ function App() {
     setRules
   } = useFetchRulesConfig(firstRule, delay)
 
-  useEffect(() => {
-    socket.on('configUpdate', (newConfig) => {
-      setRules(newConfig);
-      setCurrentRule(Object.values(newConfig).find(data => data.key === firstRule))
-    })
-
-    return () => {
-      socket.disconnect()
-    }
-  }, [])
-
-
   // useStartAndRestartLogic: Custom hook to manage the state and logic for starting, restarting, and processing rules.
   const {
     action,                        // Action type [start, restart, retry, continue] for logging purposes.
@@ -130,7 +118,7 @@ function App() {
     setRuleList,
     setUuid,
     action,
-    setAction
+    setAction,
   )
 
 
@@ -165,6 +153,37 @@ function App() {
 
 
   /**
+   * TESTING: used to test in the development environment
+   * Testing is done by changing the port in rule_config.json from a valid port to an invalid port.
+   * This hook detects those changes using a socket and updates the app state necessary for 
+   * the standard rule assessment and retry rule assessment.
+   */
+  useEffect(() => {
+    socket.on('configUpdate', (newConfig) => {
+      setRules(newConfig)
+      setCurrentRule(Object.values(newConfig).find(data => data.key === firstRule))
+      // testing: the rule list needs to be updated for the retry assessment/logic to test for changes in the response status
+      // testing: this is because i am testing via changing the port ∴ the ruleList needs the updated port 
+      setRuleList(prevRuleList => {
+        if(prevRuleList){
+          let newRuleList = prevRuleList.map(listRule => {
+            const matchingRule = Object.values(newConfig).find(rule => rule.key === listRule.key)
+            return { ...matchingRule, responseStatus: listRule.responseStatus }
+          })          
+          console.log("newRuleList", newRuleList)
+          return newRuleList
+        }
+      return []
+      })
+    })
+
+    return () => {
+      socket.disconnect()
+    }
+  }, [])
+
+
+  /**
    * Handles the continue button click event.
    * 
    * This function updates the application status to 'running', sets the current rule to the next rule in the sequence,
@@ -193,9 +212,9 @@ function App() {
   /**
    * A useful side effect for debugging.
    */
-  useEffect(() => {
-    console.log(appStatus, responseStatus, currentRule, tries, ruleList, action)
-  }, [appStatus, responseStatus, currentRule, tries, ruleList, action])
+  // useEffect(() => {
+  //   console.log(appStatus, responseStatus, currentRule, tries, ruleList, action, currentRetryRule)
+  // }, [appStatus, responseStatus, currentRule, tries, ruleList, action, currentRetryRule])
 
 
   /**
@@ -218,6 +237,7 @@ function App() {
       handleRuleChange()
     }
     else if (progressPercentage >= 100 && appStatus === "retry") {
+      console.log("handleRetryRuleChange")
       handleRetryRuleChange()
     }
   }, [progressPercentage])
