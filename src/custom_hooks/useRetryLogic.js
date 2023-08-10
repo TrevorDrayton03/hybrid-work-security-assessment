@@ -31,7 +31,7 @@ import { isRuleEnd, isRetryRuleEnd, isUnsuccessful, isAWarning, isAnError } from
  * - handleRetryRuleChange: A function to update the retry rule and retry the rule assessment.
  * - setRetryRules: A function to set the retryRules state in the parent component.
  */
-function useRetryLogic(handleEndResultAndAppStatus, setAppStatus, setProgressPercentage, setTries, ruleList, setRuleList, setUuid, action, setAction) {
+function useRetryLogic(handleEndResultAndAppStatus, setAppStatus, setProgressPercentage, setTries, ruleList, setRuleList, setUuid, action, setAction, rules, setCurrentRule) {
   /**
    * State Variables
    * 
@@ -111,18 +111,7 @@ function useRetryLogic(handleEndResultAndAppStatus, setAppStatus, setProgressPer
         return rule
       })
 
-      setRuleList(rList)
-      
-      if (isRetryRuleEnd(currentRetryRule) && isRuleEnd(rList[0])) {
-        result = handleEndResultAndAppStatus(rList)
-      } else if (currentRetryRule.continueOption === true) {
-        setAppStatus("paused") 
-        result = "incomplete"
-      } else {
-        setAppStatus("error")
-        result = "incomplete"
-      }
-
+    const postRequest = async() => {
       const response = await fetch('/api/data', {
         method: 'POST',
         headers: {
@@ -139,10 +128,31 @@ function useRetryLogic(handleEndResultAndAppStatus, setAppStatus, setProgressPer
         console.log('Data posted successfully')
       } else {
         console.log('Failed to post data')
-      }
+      }}
+
+      if (isRuleEnd(rList[0])) {
+        result = handleEndResultAndAppStatus(rList)
+        postRequest()
+      } else if (currentRetryRule.continueOption === true && rList.some(rule => isAnError(rule))) {
+        setAppStatus("paused") 
+        result = "incomplete"
+        postRequest()
+      } else if (currentRetryRule.continueOption === false && rList.some(rule => isAnError(rule))){
+        setAppStatus("error")
+        result = "incomplete"
+        postRequest()
+      } else if(!isRuleEnd(rList[0]) && rList.every(rule => !isAnError(rule))) {
+        setAction('continue')
+        setAppStatus('running')
+        setCurrentRule(Object.values(rules).find(rule => rule.key === currentRetryRule.passRule))
+        setProgressPercentage(0)
+        setTries(0)
+      } 
+
+      setRuleList(rList)
       setCurrentRetryRule(null)
     }
-  },[currentRetryRule, retryRules, ruleList, action])
+  },[currentRetryRule, retryRules, ruleList, action, rules])
 
   return {
     currentRetryRule,

@@ -93,7 +93,14 @@ function useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule) 
     } else {
       handleNoRuleChange(currentRule, ruleList)
     }
+
+    // prevents duplicates that can occur in very specific situations
+    let isRuleAlreadyPresent = ruleList.some(rule =>
+      Object.keys(rule).every(key => rule[key] === currentRule[key])
+    )
+    if(!isRuleAlreadyPresent){
     setRuleList(prevArray => [currentRule, ...prevArray])
+    }
   },[currentRule, responseStatus, ruleList])
 
   /**

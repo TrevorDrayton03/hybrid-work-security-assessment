@@ -28,7 +28,7 @@ const pool = mariadb.createPool({
     connectionLimit: process.env.DB_CONNECTION_LIMIT
 })
 
-
+// TESTING: socket for testing changes
 io.on('connection', (socket) => {
   console.log('Client connected')
   socket.emit('configUpdate', JSON.parse(fs.readFileSync(ruleConfigPath, 'utf8')))
@@ -38,6 +38,7 @@ io.on('connection', (socket) => {
   })
 })
 
+// TESTING: watching for changes in the config file
 fs.watchFile(ruleConfigPath, (curr, prev) => {
   if (curr.mtime > prev.mtime) {
       fs.readFile(ruleConfigPath, 'utf8', (err, data) => {

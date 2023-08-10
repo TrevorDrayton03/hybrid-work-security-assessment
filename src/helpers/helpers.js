@@ -1,4 +1,9 @@
 /**
+ * These helpers are general purpose functions that may be used up to multiple times throughout the application.
+ */
+
+
+/**
  * Used to determine if the application is not assessing any rules.
  * 
  * @param {string} appStatus - The application status.

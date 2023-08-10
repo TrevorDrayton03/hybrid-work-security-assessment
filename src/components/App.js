@@ -71,7 +71,7 @@ function App() {
   const delay = "tryDelay"
   const baseUrl = process.env.REACT_APP_HIPS_BASE_URL
 
-  // useFetchRulesConfig: Custom hook to fetch rules configuration data from the server and manage loading state.
+  // useFetchRulesConfig: Custom hook to fetch rule configuration data from the server and manage loading state.
   const {
     isLoading,                     // Boolean indicating if the rules configuration data is currently being fetched.
     rules,                         // Object containing the fetched rules configuration data.
@@ -119,6 +119,8 @@ function App() {
     setUuid,
     action,
     setAction,
+    rules,
+    setCurrentRule
   )
 
 
@@ -169,7 +171,7 @@ function App() {
           let newRuleList = prevRuleList.map(listRule => {
             const matchingRule = Object.values(newConfig).find(rule => rule.key === listRule.key)
             return { ...matchingRule, responseStatus: listRule.responseStatus }
-          })          
+          })
           console.log("newRuleList", newRuleList)
           return newRuleList
         }
