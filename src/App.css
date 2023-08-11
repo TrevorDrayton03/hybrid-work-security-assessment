@@ -108,6 +108,10 @@ html {
   margin: 0 50px 0 50px;
   margin-left: clamp(20px, 15vw, 400px);
   margin-right: clamp(20px, 15vw, 400px);
+  /* display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction:column; */
 }
 
 .App-container {

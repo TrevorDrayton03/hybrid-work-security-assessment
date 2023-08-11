@@ -127,7 +127,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
 
     return (
         <div style={{ padding: '5px 10px 10px 0', flex:1,}}>
-            <div style={{ padding: 0, flex:1, marginLeft: '35px' }}>
+            <div style={{ padding: 0, flex:1, marginLeft: 0 }}>
                 {Object.values(ruleList).map((rule) => { // error panel
                     return (
                         isAnError(rule) ? 

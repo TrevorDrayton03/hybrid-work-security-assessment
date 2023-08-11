@@ -29,7 +29,7 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
                         </em>
                     </p> */}
                     <p style={{marginBottom:0}}>
-                        This tool assesses your computer against Thompson River University's network security requirements. &nbsp;
+                        This tool assesses your device against Thompson River University's network security requirements. &nbsp;
                     </p>
                 </div>
             )}

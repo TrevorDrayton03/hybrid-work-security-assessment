@@ -12,7 +12,7 @@
   },
   "GP2": {
     "key": "GP2",
-    "port": 4003,
+    "port": 4004,
     "title": "Valid Operating System",
     "failText": "You must use Windows or Mac operating system.",
     "passRule": "GP3",
@@ -45,7 +45,7 @@
   },
   "GP5": {
     "key": "GP5",
-    "port": 4003,
+    "port": 4004,
     "title": "Valid Antivirus Definitions",
     "failText": "Your antivirus definitions must be updated from within 60 days",
     "passRule": "GP6",
@@ -56,7 +56,7 @@
   },
   "GP6": {
     "key": "GP6",
-    "port": 4003,
+    "port": 4004,
     "title": "Sufficient Amount of RAM",
     "failText": "Your computer must have atleast 8GB of RAM. Without 8GB of RAM, you may experience issues using TRU's platform that cannot be resolved by TRU's IT department.",
     "passRule": "end",

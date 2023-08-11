@@ -1,5 +1,5 @@
 /**
- * Hybrid Work-from-Home Security Assessment
+ * Hybrid Work Security Assessment
  *
  * This application assesses security requirements of staff devices to ensure they meet the necessary criteria for safely connecting remotely 
  * to TRU's network. It accomplishes this task by making fetch requests to TRU's servers that host HIPS rules.
@@ -252,7 +252,7 @@ function App() {
       </header>
       <div className="App">
         <h1>
-            Hybrid Work-from-Home Security Assessment
+            Hybrid Work Security Assessment
         </h1>
         {
         isLoading ?
