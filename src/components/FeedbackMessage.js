@@ -23,13 +23,8 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
         <div style={{ paddingBottom: appStatus === 'completed' || appStatus === 'paused' ? 0 : '15px' }}>
             {appStatus === "idle" && (
                 <div>
-                    {/* <p style={{marginBottom:5}}>
-                        <em>
-                            Press the start button to begin your assessment.
-                        </em>
-                    </p> */}
                     <p style={{marginBottom:0}}>
-                        This tool assesses your device against Thompson River University's network security requirements. &nbsp;
+                        This tool assesses your device's compliance with Thompson River University's network security requirements. &nbsp;
                     </p>
                 </div>
             )}
@@ -39,26 +34,24 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
             {appStatus === "error" && (
                 <div>
                     <p style={{marginBottom:0, fontSize:22}}>
-                        You did not pass the security checks listed below.
+                        Your device did not pass the security checks listed below. You must resolve the <span className="errors">{errorText}</span> to continue.
                     </p>
-                    <p style={{marginBottom:5}}>
+                    {/* <p style={{marginBottom:5}}>
                         <em>
                             You must resolve the <span className="errors">{errorText}</span>, which {isAre} preventing further security checks from being assessed.
                         </em>
-                    </p> 
+                    </p>  */}
                 </div>
             )}
             {appStatus === "completed" && (
                 <div>
                     <p style={{ marginBottom: 0, fontSize:22 }}>
-                    {/* Your assessment is <b>complete</b> with {errors > 0 ? <span className="errors">{errors} {errorText}</span> : errors + " " + errorText} and {warnings > 0 ? <span className="warnings">{warnings} {warningText}</span> : warnings + " " + warningText}. */}
-                        Assessment is completed with {errors + ' ' + errorText} and {warnings + ' ' + warningText}, and a total of {total} security checks assessed.
+                        The assessment has completed with {errors + ' ' + errorText} and {warnings + ' ' + warningText}, and with a total of {total} security checks assessed.
                     </p>
                     {errors > 0 && 
                     <p style={{marginBottom:5}}>
                         <em>
-                            {/* You must resolve the {errorText} to connect to the TRU network. */}
-                            You must resolve the <span className="errors">{errorText}</span> to connect to the TRU network.
+                            You must resolve the <span className="errors">{errorText}</span> to connect to TRU's network.
                         </em>
                     </p>
                     }
@@ -67,14 +60,8 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
             {appStatus === "paused" && (
                 <div>
                     <p style={{marginBottom:0, fontSize:22 }}>
-                        {/* messages for warning = true and false */}
-                        You did not pass the security checks listed below.
+                        Your device did not pass the security checks listed below. The assessment has not completed, please continue.
                     </p>
-                    {/* <p style={{marginBottom:5}}>
-                        <em>
-                            Continue the assessment by pressing the Continue button.
-                        </em>
-                    </p> */}
                 </div>
             )}
         </div>

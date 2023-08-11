@@ -152,7 +152,6 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
                 {ruleList.some(rule => isUnsuccessful(rule)) && // error footer
                     (
                         <div>
-                            {/* <Summary /> */}
                             <CopyUUID />
                             <p>
                                 If you require assistance, please contact&nbsp;  
@@ -172,7 +171,6 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
                 {appStatus === 'completed' && !ruleList.some(rule => isUnsuccessful(rule)) && // complete footer
                     (
                         <div>
-                            {/* <Summary /> */}
                             <CopyUUID />
                             <p>  
                                 <a

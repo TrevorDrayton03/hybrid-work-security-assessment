@@ -213,7 +213,9 @@ function App() {
   return (
     <div className="App-container">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="TRU Logo" />
+        <a href="https://www.tru.ca">
+          <img src={logo} className="App-logo" alt="TRU Logo" />
+        </a>
       </header>
       <div className="App">
         <h1>
