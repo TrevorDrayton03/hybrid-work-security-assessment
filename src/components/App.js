@@ -56,8 +56,6 @@ import useRetryLogic from '../custom_hooks/useRetryLogic.js'
 import useStandardRuleAssessment from '../custom_hooks/useStandardRuleAssessment.js'
 import useRetryRuleAssessment from '../custom_hooks/useRetryRuleAssessment.js'
 import useEndPathLength from '../custom_hooks/useEndPathLength.js'
-import openSocket from 'socket.io-client'
-const socket = openSocket('http://localhost:8080')
 
 function App() {
   /**
@@ -78,7 +76,6 @@ function App() {
     currentRule,                   // Current rule being processed from the fetched rules data.
     setCurrentRule,                // Asynchronous function to set the currentRule state.
     tryDelay,                      // Delay time (in milliseconds) between attempts when processing rules.
-    setRules                       // TESTING: for the socket
   } = useFetchRulesConfig(firstRule, delay)
 
   // useStartAndRestartLogic: Custom hook to manage the state and logic for starting, restarting, and processing rules.
@@ -155,37 +152,6 @@ function App() {
 
 
   /**
-   * TESTING: used to test in the development environment
-   * Testing is done by changing the port in rule_config.json from a valid port to an invalid port.
-   * This hook detects those changes using a socket and updates the app state necessary for 
-   * the standard rule assessment and retry rule assessment.
-   */
-  useEffect(() => {
-    socket.on('configUpdate', (newConfig) => {
-      setRules(newConfig)
-      setCurrentRule(Object.values(newConfig).find(data => data.key === firstRule))
-      // testing: the rule list needs to be updated for the retry assessment/logic to test for changes in the response status
-      // testing: this is because i am testing via changing the port ∴ the ruleList needs the updated port 
-      setRuleList(prevRuleList => {
-        if(prevRuleList){
-          let newRuleList = prevRuleList.map(listRule => {
-            const matchingRule = Object.values(newConfig).find(rule => rule.key === listRule.key)
-            return { ...matchingRule, responseStatus: listRule.responseStatus }
-          })
-          console.log("newRuleList", newRuleList)
-          return newRuleList
-        }
-      return []
-      })
-    })
-
-    return () => {
-      socket.disconnect()
-    }
-  }, [])
-
-
-  /**
    * Handles the continue button click event.
    * 
    * This function updates the application status to 'running', sets the current rule to the next rule in the sequence,
@@ -239,7 +205,6 @@ function App() {
       handleRuleChange()
     }
     else if (progressPercentage >= 100 && appStatus === "retry") {
-      console.log("handleRetryRuleChange")
       handleRetryRuleChange()
     }
   }, [progressPercentage])

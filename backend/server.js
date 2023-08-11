@@ -10,7 +10,6 @@ const cors = require('cors')
 const buildPath = path.join(__dirname, '..', 'build')
 require('dotenv').config({ path: path.join(__dirname, '../.env') })
 const ruleConfigPath = path.join(__dirname, process.env.CONFIG_PATH)
-const io = require('socket.io')(http)
 
 app.use(express.static(buildPath))
 app.use(express.json())
@@ -26,29 +25,6 @@ const pool = mariadb.createPool({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
     connectionLimit: process.env.DB_CONNECTION_LIMIT
-})
-
-// TESTING: socket for testing changes
-io.on('connection', (socket) => {
-  console.log('Client connected')
-  socket.emit('configUpdate', JSON.parse(fs.readFileSync(ruleConfigPath, 'utf8')))
-
-  socket.on('disconnect', () => {
-      console.log('Client disconnected')
-  })
-})
-
-// TESTING: watching for changes in the config file
-fs.watchFile(ruleConfigPath, (curr, prev) => {
-  if (curr.mtime > prev.mtime) {
-      fs.readFile(ruleConfigPath, 'utf8', (err, data) => {
-          if (!err) {
-              const config = JSON.parse(data)
-              io.emit('configUpdate', config)
-              console.log("config update emitted")
-          }
-      })
-  }
 })
 
 
@@ -128,7 +104,6 @@ app.post('/api/data', isPostDataTampered, async (req, res) => {
     try {
         conn = await pool.getConnection()
         const queryResult  = await conn.query('INSERT INTO test_table3 (uuid, sequence, ip, action, result, timestamp, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?)', [uid, sequenceJson, req.ip, action, result, timestamp, req.headers['user-agent']])
-        // console.log(queryResult)
         res.status(200).json({ message: 'Data inserted successfully' })
     } catch (err) {
         // throw err

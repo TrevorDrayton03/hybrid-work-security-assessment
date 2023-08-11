@@ -57,7 +57,6 @@ function useRetryLogic(handleEndResultAndAppStatus, setAppStatus, setProgressPer
     setAppStatus('retry')
     setProgressPercentage(0)
     setTries(0)
-    console.log("handleRetry ruleList", ruleList) // testing
     let retryRules
     if (!type) {
       retryRules = Object.values(ruleList).filter(rule => isUnsuccessful(rule))
@@ -95,9 +94,7 @@ function useRetryLogic(handleEndResultAndAppStatus, setAppStatus, setProgressPer
       setProgressPercentage(0)
       let nextRetryRule = Object.values(retryRules).find(rule => rule.key === currentRetryRule.nextRule)
       setCurrentRetryRule(nextRetryRule)
-      console.log("not is retry rule end") // testing
     } else if (isRetryRuleEnd(currentRetryRule)) {
-      console.log("retry rule is end") // testing
       let result
       let id = uuidv4()
       setUuid(id)
