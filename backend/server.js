@@ -13,7 +13,7 @@ const ruleConfigPath = path.join(__dirname, process.env.CONFIG_PATH)
 
 app.use(express.static(buildPath))
 app.use(express.json())
-app.use(cors())
+app.use(cors({ origin: false }))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
