@@ -39,14 +39,12 @@ function useRetryRuleAssessment(currentRetryRule, setRetryRules, appStatus, tryD
         while (currentTries < currentRetryRule.maxTries && !shouldBreak) {
           await new Promise((resolve) => setTimeout(resolve, tryDelay))
           try {
-            console.log("useRetryRuleAssessment currentRetryRule before response", currentRetryRule)
             response = await fetch(baseUrl + currentRetryRule.port)
             let status = response.status
             if (currentRetryRule.responseStatus !== status) { 
               setProgressPercentage(100)
               shouldBreak = true
               setRetryRules(prevRetryRules => {
-                console.log("useRetryRuleAssessment PREV RETRY RULES", prevRetryRules)
                 let updatedRetryRules = [...prevRetryRules]
                 let index = updatedRetryRules.findIndex(rule => rule.key === currentRetryRule.key)
                 if (index !== -1) {
@@ -55,7 +53,6 @@ function useRetryRuleAssessment(currentRetryRule, setRetryRules, appStatus, tryD
                     responseStatus: status
                   }
                 }
-                console.log( "useRetryRuleAssessment UPDATED RETRY RULES",updatedRetryRules)
                 return updatedRetryRules
               })
             }    
