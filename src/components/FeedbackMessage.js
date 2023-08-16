@@ -23,11 +23,6 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
         <div style={{ paddingBottom: appStatus === 'completed' || appStatus === 'paused' ? 0 : '15px' }}>
             {appStatus === "idle" && (
                 <div>
-                    {/* <p style={{marginBottom:5}}>
-                        <em>
-                            Press the start button to begin your assessment.
-                        </em>
-                    </p> */}
                     <p style={{marginBottom:0}}>
                         This tool assesses your computer against Thompson River University's network security requirements. &nbsp;
                     </p>
