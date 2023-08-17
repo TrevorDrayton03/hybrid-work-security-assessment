@@ -33,9 +33,9 @@
  * TTFB (Time to First Byte): 100ms to 300ms
  * FID (First Input Delay): 10ms to 100ms
  * 
- * Author: Trevor Drayton
+ * Author: Trevor Drayton, Co-op Student
  * Version: 1.1.1
- * Last Updated: Jul 26, 2023
+ * Last Updated: Aug 17, 2023
  * 
  * Thompson Rivers University
  * Department: Information Technology Services Information Security

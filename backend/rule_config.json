@@ -12,7 +12,7 @@
   },
   "GP2": {
     "key": "GP2",
-    "port": 4004,
+    "port": 4003,
     "title": "Valid Operating System",
     "failText": "You must use Windows or Mac operating system.",
     "passRule": "GP3",
@@ -23,7 +23,7 @@
   },
   "GP3": {
     "key": "GP3",
-    "port": 4004,
+    "port": 4003,
     "title": "Antivirus Enabled",
     "failText": "You must turn on your antivirus.",
     "passRule": "GP4",
