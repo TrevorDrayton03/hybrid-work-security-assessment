@@ -4,38 +4,28 @@ import { useEffect } from 'react'
  * Custom Hook: useRetryRuleAssessment
  * 
  * Description:
- * This custom hook manages the state and logic for assessing retry rules in the web application.
- * It takes into account the currentRetryRule, application status, tryDelay, tries count, and the base URL for fetch requests.
- * It uses React hooks, such as useState, to manage state variables and perform rule assessment.
- * The hook is responsible for retrying the assessment of incomplete rules at a specified delay and updating the tries count.
- * When a rule assessment reaches 100% progress, it updates the app status and sets the appropriate progress percentage.
+ * This custom hook reassesses violations (when the user retries), dependent on currentRetryRule and appStatus.
+ * It functions similarly to useStandardRuleAssessment custom hook, with the difference being
+ * that it is just looking for a change in the rule's response status and updating the ruleList to reflect the change. 
  * 
  * Parameters:
- * @param {object} currentRetryRule - The current retry rule being processed.
- * @param {function} setRetryRules - The function to set the retryRules state in the parent component.
- * @param {string} appStatus - The current status of the application [idle, running, completed, error, paused].
- * @param {number} tryDelay - The delay time (in milliseconds) between retry attempts when processing rules.
- * @param {number} tries - The number of fetch attempts for the current rule.
+ * @param {object} currentRetryRule - The violation being reevaluated.
+ * @param {function} setRetryRules - Asynchronous function to set the retryRules state.
+ * @param {string} appStatus - idle, running, completed, error, or paused.
+ * @param {number} tryDelay - Delay time (in milliseconds) between tries when evaluation rules.
+ * @param {number} tries - Number of fetch attempts for the current rule.
  * @param {function} setTries - The function to set the tries state in the parent component.
- * @param {string} baseUrl - The base URL used for fetch requests.
- * @param {function} setProgressPercentage - The function to set the progressPercentage state in the parent component.
- * 
- * Return Values:
- * The hook doesn't return any values directly. Instead, it manages state and performs rule assessments as side effects.
- * It updates the app status, progress percentage, and tries count to indicate the progress of rule assessment.
+ * @param {string} baseUrl - the apache server url
+ * @param {function} setProgressPercentage - Asynchronous function to set the progressPercentage state.
  */
 function useRetryRuleAssessment(currentRetryRule, setRetryRules, appStatus, tryDelay, tries, setTries, baseUrl, setProgressPercentage) {
-
-  /**
-   * Side effect hooked into currentRetryRule and appStatus that executes the retry rule assessment process.
-   */
   useEffect(() => {
     let currentTries = tries
     let shouldBreak = false
     let response = null
 
     if (appStatus === "retry") {
-      (async () => {
+      (async () => { // Immediately Invoked Function Expression (IIFE)
         while (currentTries < currentRetryRule.maxTries && !shouldBreak) {
           await new Promise((resolve) => setTimeout(resolve, tryDelay))
           try {

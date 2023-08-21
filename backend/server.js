@@ -32,7 +32,7 @@ const pool = mariadb.createPool({
 })
 
 
-// Read the rules configuration file and store the values in separate arrays
+// Read the rules configuration file and store the values in separate arrays as safe values
 const rules = JSON.parse(fs.readFileSync(ruleConfigPath, 'utf8'))
 const rulesArray = Object.values(rules)
 const safeKeys = rulesArray.map(({ key }) => key)
@@ -133,7 +133,7 @@ app.get('/api/rules', (req, res) => {
     }
 })
 
-// Serve the React app on all other routes
+// Serve the React app
 app.get('*', (req, res) => {
     res.sendFile(path.join(buildPath, 'index.html'))
 })

@@ -1,18 +1,17 @@
 /**
  * Hybrid Work Security Assessment
  *
- * This application assesses security requirements of staff devices to ensure they meet the necessary criteria for safely connecting remotely 
- * to TRU's network. It accomplishes this task by making fetch requests to TRU's servers that host HIPS rules.
- * The HIPS rules assess the user's device and return a response status based on the result of the assessment. These are the same rules that Global Protect is
- * automatically checking on its own interval to ensure the user's device is compliant with TRU's security requirements. This application is a tool to help 
- * users identify and resolve security issues that arise when connecting to TRU's network through the Global Protect VPN.
+ * This application assesses compliance of staff devices with TRU's HIPS (Host-Based Intrustion Prevention System) for connecting remotely 
+ * to TRU's network for the Hybrid Work Program. It accomplishes this task by making fetch requests to an apache server for each HIPS rule.
+ * The HIPS rules assess the user's device and return a response status based on the result of the assessment. 
+ * 
  *
  * Features:
- * - Fetches the rules_config.json file from the server and stores it in the application state for rule evaluation.
- * - Sends the data of each assessment result to a database for logging and tracking.
- * - Incorporates a responsive design to ensure usability on various screen sizes including mobile, tablet, and desktop.
- * - Ensures cross-browser compatibility for broad accessibility.
- * - Learnable and easy to use with an intuitive user interface.
+ * - Gets instructions from a rules_config.json file and stores it in the application state for rule evaluation.
+ * - Logs each assessment result to a database.
+ * - A device-friendly, responsive design.
+ * - Ensures cross-browser compatibility.
+ * - Learnable and easy to use (UX).
  * - Complies with ES6 standards for code readability, maintainability, and modern features.
  * - Robust error handling.
  * - The code is well documented, modular, cohesive, testable, and reusable. 
@@ -33,9 +32,9 @@
  * TTFB (Time to First Byte): 100ms to 300ms
  * FID (First Input Delay): 10ms to 100ms
  * 
- * Author: Trevor Drayton, Co-op Student
+ * Author: Trevor Drayton, Co-op
  * Version: 1.1.1
- * Last Updated: Aug 17, 2023
+ * Last Updated: Aug 21, 2023
  * 
  * Thompson Rivers University
  * Department: Information Technology Services Information Security
@@ -61,35 +60,35 @@ function App() {
   /**
    * Constants
    * 
-   * firstRule is the key property value that determines which rule in the rule_config.json file the fetch loop begins with
-   * delay is the time in milliseconds that the fetch loop waits before sending another request, which is read from the rule_config.json file
-   * baseUrl is the server url for the HIPS requests read from the .env file
+   * firstRule is the key value of the first instruction from the config file
+   * delay is the key value used to get the delay time from the config file
+   * baseUrl is the apache server url
    */
   const firstRule = "FirstRule"
   const delay = "tryDelay"
   const baseUrl = process.env.REACT_APP_HIPS_BASE_URL
 
-  // useFetchRulesConfig: Custom hook to fetch rule configuration data from the server and manage loading state.
+  // Custom Hook: useFetchRulesConfig -- manages initial page loading and states.
   const {
-    isLoading,                     // Boolean indicating if the rules configuration data is currently being fetched.
-    rules,                         // Object containing the fetched rules configuration data.
-    currentRule,                   // Current rule being processed from the fetched rules data.
+    isLoading,                     // Boolean indicating if the rules configuration data is being fetched.
+    rules,                         // Object, the contents of the config file.
+    currentRule,                   // Current rule, initially set to the first rule.
     setCurrentRule,                // Asynchronous function to set the currentRule state.
-    tryDelay,                      // Delay time (in milliseconds) between attempts when processing rules.
+    tryDelay,                      // Delay time (in milliseconds) between tries when evaluation rules.
   } = useFetchRulesConfig(firstRule, delay)
 
-  // useStartAndRestartLogic: Custom hook to manage the state and logic for starting, restarting, and processing rules.
+  // Custom Hook: useStartAndRestartLogic -- provides the functions for starting and restarting assessments and instruction evalution.
   const {
-    action,                        // Action type [start, restart, retry, continue] for logging purposes.
-    appStatus,                     // Current status of the application [idle, running, completed, error, paused].
-    progressPercentage,            // Progress percentage for the current rule processing.
-    ruleList,                      // Array of rules that have been assessed and logged in the database.
+    action,                        // start, restart, retry, or continue.
+    appStatus,                     // idle, running, completed, error, or paused.
+    progressPercentage,            // Number between 0 to 100, for the progress bar.
+    ruleList,                      // Array, evaluated instructions in sequence.
     tries,                         // Number of fetch attempts for the current rule.
     responseStatus,                // HTTP response status code for the current rule.
-    uuid,                          // Unique identifier for the current sequence referencing the sequence in the database.
+    uuid,                          // Unique identifier for assessments.
     handleStart,                   // Function to handle the start and restart button onClick events.
-    handleRuleChange,              // Function to change the current rule and update the rule list with the results of rule assessment.
-    handleEndResultAndAppStatus,   // Function to evaluate the rule list, determine the end result, set the action state for logging, and change the app status to completed.
+    handleRuleChange,              // Function to change the current rule and update the ruleList to include the evaluation of the current rule.
+    handleEndResultAndAppStatus,   // Function to evaluate the rule list, determine the end result, set the action state, and change the app status to completed.
     setAction,                     // Asynchronous function to set the action state.
     setAppStatus,                  // Asynchronous function to set the appStatus state.
     setProgressPercentage,         // Asynchronous function to set the progressPercentage state.
@@ -100,11 +99,11 @@ function App() {
   } = useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule)
 
 
-  // useRetryLogic: Custom hook to manage state and logic for handling retry rules.
+  // Custom Hook: useRetryLogic -- provides the functions for reassessing violations.
   const {
-    currentRetryRule,              // Current retry rule being processed.
-    handleRetry,                   // Function to handle retry for unsuccessful rules.
-    handleRetryRuleChange,         // Function to handle retry rule change and update retry rules state.
+    currentRetryRule,              // The violation being reevaluated.
+    handleRetry,                   // Function to handle the user clicking on the retry button.
+    handleRetryRuleChange,         // Function to handle changing to the next violation.
     setRetryRules,                 // Asynchronous function to set the retryRules state.
   } = useRetryLogic(
     handleEndResultAndAppStatus,
@@ -121,11 +120,11 @@ function App() {
   )
 
 
-  // useEndPathLength: Custom hook to calculate the length of the end path based on processed rule list.
+  // Custom Hook: useEndPathLength -- calculate the length of the end path based on processed rule list.
   const endPathLength = useEndPathLength(ruleList, rules, appStatus)
 
 
-  // useStandardRuleAssessment: Custom hook to assess rules, when the user starts, restarts, or continues, hooked on currentRule and appStatus.
+  // Custom Hook: useStandardRuleAssessment -- the standard assessment process (when the user starts, restarts, or continues) dependent on currentRule and appStatus.
   useStandardRuleAssessment(
     currentRule,
     appStatus,
@@ -138,7 +137,7 @@ function App() {
   )
 
 
-  // useRetryRuleAssessment: Custom hook to assess retry rules, when the user retries, hooked on currentRetryRule and appStatus.
+  // Custom Hook: useRetryRuleAssessment -- reassesses violations (when the user retries), dependent on currentRetryRule and appStatus.
   useRetryRuleAssessment(
     currentRetryRule,
     setRetryRules,
@@ -152,10 +151,7 @@ function App() {
 
 
   /**
-   * Handles the continue button click event.
-   * 
-   * This function updates the application status to 'running', sets the current rule to the next rule in the sequence,
-   * resets the progress percentage, and sets the number of tries to the initial value.
+   * Continues a standard assessment at the last violation's passRule, when the user presses the continue button.
    */
   const handleContinue = useCallback(() => {
     setAction('continue')
@@ -186,9 +182,7 @@ function App() {
 
 
   /**
-   * Side effect that manages the progress bar percentage.
-   * 
-   * It calculates a normalized percentage that the ProgressIndicator uses.
+   * This hook calculates a normalized progress percentage for the ProgressIndicator.
    */
   useEffect(() => {
     if (currentRule) {
@@ -198,7 +192,7 @@ function App() {
 
 
   /**
-   * It calls handleRuleChange or handleRetryRuleChange when progress percentage reaches 100%.
+   * This hook calls rule change functions, hooked into the progress percentage.
    */
   useEffect(() => {
     if (progressPercentage >= 100 && appStatus === "running") {
@@ -226,7 +220,6 @@ function App() {
           <div className="skeleton-loading">
             <div className="skeleton-button"></div>
             <div className="skeleton-text1"></div>
-            {/* <div className="skeleton-text2"></div> */}
           </div>
           : 
           <>

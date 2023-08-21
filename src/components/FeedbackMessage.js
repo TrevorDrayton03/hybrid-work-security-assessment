@@ -3,9 +3,9 @@ import { failedCount, passedCount, warningsCount, errorsCount } from '../helpers
 
 
 /**
- * Displays a feedback message based on the application status. Guides and informs the user.
- * @param {string} appStatus - The application status.
- * @param {array} ruleList - The list of assessed rules.
+ * Displays a feedback message which informs the user based on the application state.
+ * @param {string} appStatus - idle, running, completed, error, or paused.
+ * @param {array} ruleList - Array, evaluated instructions in sequence.
  * @param {number} endPathLength - The length of the end path, if it exists.
  */
 const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
@@ -36,11 +36,6 @@ const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
                     <p style={{marginBottom:0, fontSize:22}}>
                         Your device did not pass the security checks listed below. You must resolve the <span className="errors">{errorText}</span> to continue.
                     </p>
-                    {/* <p style={{marginBottom:5}}>
-                        <em>
-                            You must resolve the <span className="errors">{errorText}</span>, which {isAre} preventing further security checks from being assessed.
-                        </em>
-                    </p>  */}
                 </div>
             )}
             {appStatus === "completed" && (

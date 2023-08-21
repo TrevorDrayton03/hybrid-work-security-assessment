@@ -6,51 +6,40 @@ import { isRuleEnd, isRetryRuleEnd, isUnsuccessful, isAWarning, isAnError } from
  * Custom Hook: useRetryLogic
  * 
  * Description:
- * This custom hook manages the state and logic for retrying rule assessments in the web application.
- * It takes several state variables and functions as parameters to coordinate the retry mechanism.
- * The hook works in conjunction with the useStartAndRestart custom hook to provide retry functionality for incomplete rules.
- * It uses React hooks, such as useState and useCallback, to manage various state variables and functions.
- * The hook is responsible for retrying the assessment of incomplete rules, updating the app status, progress percentage,
- * tries count, rule list, and UUID for each retry attempt. It also manages the action type for logging purposes.
+ * This custom hook provides the functions for reassessing violations.
  * 
  * Parameters:
- * @param {function} handleEndResultAndAppStatus - The function to evaluate the rule list and determine the end result and app status.
- * @param {function} setAppStatus - The function to set the appStatus state in the parent component.
- * @param {function} setProgressPercentage - The function to set the progressPercentage state in the parent component.
- * @param {function} setTries - The function to set the tries state in the parent component.
- * @param {array} ruleList - An array of rules that have been assessed and logged in the database as 'sequence.'
- * @param {function} setRuleList - The function to set the ruleList state in the parent component.
- * @param {function} setUuid - The function to set the uuid state in the parent component.
- * @param {string} action - The action type [start, restart, retry, continue] indicating user events.
- * @param {function} setAction - The function to set the action state in the parent component.
+ * @param {function} handleEndResultAndAppStatus - Function to evaluate the rule list, determine the end result, set the action state, and change the app status to completed.
+ * @param {function} setAppStatus - Asynchronous function to set the appStatus state.
+ * @param {function} setProgressPercentage - Asynchronous function to set the progressPercentage state.
+ * @param {function} setTries - Asynchronous function to set the tries state.
+ * @param {array} ruleList - Array, evaluated instructions in sequence.
+ * @param {function} setRuleList - Asynchronous function to set the ruleList state.
+ * @param {function} setUuid - Asynchronous function to set the uuid state.
+ * @param {string} action - start, restart, retry, or continue.
+ * @param {function} setAction - Asynchronous function to set the action state.
  * 
  * Return Values:
  * The hook returns an object containing state variables and functions related to retry logic.
- * - currentRetryRule: The current retry rule being processed during retry attempts.
- * - handleRetry: A function to handle the retry button onClick event.
- * - handleRetryRuleChange: A function to update the retry rule and retry the rule assessment.
- * - setRetryRules: A function to set the retryRules state in the parent component.
+ * - currentRetryRule: Current violation.
+ * - handleRetry: Function to handle the user clicking on the retry button.
+ * - handleRetryRuleChange: Function to handle changing to the next violation.
+ * - setRetryRules: Asynchronous function to set the retryRules state.
  */
 function useRetryLogic(handleEndResultAndAppStatus, setAppStatus, setProgressPercentage, setTries, ruleList, setRuleList, setUuid, action, setAction, rules, setCurrentRule) {
   /**
    * State Variables
    * 
-   * retryRules is an array of rules that have been filtered from the ruleList to be retried
-   * currentRetryRule refers to the rule currently undergoing the retry assessment
+   * retryRules is an array of the violations of the assessment
+   * currentRetryRule is the violation being reevaluated.
    */
   const [retryRules, setRetryRules] = useState(null)
   const [currentRetryRule, setCurrentRetryRule] = useState(null)
 
   /**
-   * Handles the retry button click event. It sets the application status to 'retry', 
-   * resets the progress percentage and tries, and prepares the rules to be retried 
-   * based on the which type of rules the user wants to retry. Default is all failed rules 
-   * when the user preses the retry button.
+   * Function to handle the user clicking on the retry button.
    * 
-   * Once a filtered array is created, the items are linked together with a nextRule before
-   * it gets fed into the retry mechanism
-   * 
-   * @param {string} type - the type of rules to be reassessed [null (will do all failed rules), warning, error]
+   * @param {string} type - violations type (warning, error, or all (null))
    */
   const handleRetry = useCallback(async (type) => {
     setAction('retry')
@@ -83,8 +72,7 @@ function useRetryLogic(handleEndResultAndAppStatus, setAppStatus, setProgressPer
   },[ruleList])
 
   /**
-   * Handles the change of rule in the retry process. It sets the number of tries and progress percentage to 
-   * initial values, finds the next rule to retry, and sets it as the current retry rule.
+   * Function to handle changing to the next violation.
    * Sends a final POST request to the server with the updated rule list and the end result.
    */
   const handleRetryRuleChange = useCallback(async () => {

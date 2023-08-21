@@ -5,12 +5,12 @@ import { hasUnsuccessfulRules, hasErrorAndWarning } from '../helpers/helpers'
 
 
 /**
- * Displays the start, restart, retry, and continue buttons based on the application status.
- * @param {string} appStatus - The application status.
- * @param {function} start - The function to start the application from the firstRule.
- * @param {function} retry - The function to retry failed checks.
- * @param {function} continu - The function to continue the application when it's paused on a rule (continue is a keyword).
- * @param {object} ruleList - The list of assessed rules.
+ * Displays the start, restart, retry, and continue buttons based.
+ * @param {string} appStatus - idle, running, completed, error, or paused.
+ * @param {function} start - Function to handle the start and restart button onClick events.
+ * @param {function} retry - Function to handle the user clicking on the retry button.
+ * @param {function} continu - Function to handle continueing a standard assessment at the last violation's passRule.
+ * @param {object} ruleList - Array, evaluated instructions in sequence.
  */
 const ControlButton = ({ appStatus, start, retry, continu, ruleList }) => {
     let buttonContent

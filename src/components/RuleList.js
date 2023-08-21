@@ -2,16 +2,15 @@ import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
 import { RiFileCopy2Line } from "react-icons/ri"
 import React, { useState, useCallback } from "react"
-import { isNotFetching, isUnsuccessful, isAnError, isAWarning, failedCount, passedCount, warningsCount, errorsCount } from '../helpers/helpers'
+import { isUnsuccessful, isAnError, isAWarning, failedCount, passedCount, warningsCount, errorsCount } from '../helpers/helpers'
 
 
 /**
- * The panel component to display warnings, errors, and the success panels.
- * Below the aforementioned panels, there are footers displayed based on appstatus.
+ * The panel component. Also displays the footer below the panels
  * 
- * @param {object} ruleList - The array of assessed rules.
- * @param {string} appStatus - The application status.
- * @param {string} uuid - The UUID.
+ * @param {object} ruleList - Array, evaluated instructions in sequence.
+ * @param {string} appStatus - idle, running, completed, error, or paused.
+ * @param {string} uuid - The unique identifier of the assessment.
  * @param {function} copy - The copy UUID function.
  */
 const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
@@ -65,7 +64,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
      * @param {string} variant - The alert variant [primary, warning, danger].
      * @param {string} body - The body text of the alert.
      * @param {boolean} success - A boolean that is used to trigger the success panel.
-     * @returns {object} - The RuleList component [JSX object].
+     * @returns {object} - A panel component.
      */
     const Panel = ({ rule, variant, body, success }) => {
         const csvValues = body.includes(':')
@@ -104,7 +103,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
      * Meant to utilize the endPathLength and/or show a more overall summary that includes total passed rules out of endlengthpath rules.
      * Not finished or used.
      * 
-     * @returns {object} - The Summary component [JSX object]. 
+     * @returns {object} - The Summary component. 
      */
     const Summary = () => {
         return (

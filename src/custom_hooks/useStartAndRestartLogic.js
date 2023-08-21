@@ -6,8 +6,7 @@ import { v4 as uuidv4 } from 'uuid'
  * Custom Hook: useStartAndRestartLogic
  * 
  * Description:
- * This custom hook manages the state and logic for starting, restarting, and processing rules in the web application.
- * It uses React hooks, such as useState and useCallback, to manage various state variables and functions.
+ * This custom hook provides the functions for starting and restarting assessments and instruction evalution.
  * The hook encapsulates the application status, response status, progress percentage, rule list, tries count,
  * action type, unique identifier (UUID), and handles various user actions for rule assessment.
  * It also handles the logic to change the current rule, update the rule list, and determine the end result of the assessment.
@@ -39,18 +38,6 @@ import { v4 as uuidv4 } from 'uuid'
  * - setUuid: A function to set the uuid state.
  */
 function useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule) {
-
-/**
- * State Variables
- * 
- * appStatus is the primary state of the app [idle, running, completed, error, paused]
- * responseStatus refers to the http response status code; it gets appended to rules in the ruleList
- * ruleList is an array of rules that have been assessed, logged in the database as 'sequence' and used to show the user their results
- * tries keeps count of the number of fetch requests for the current rule
- * progressPercentage refers to the value that's used for the progress bar component [ProgressIndicator.js]
- * uuid is the unique identifier for the current sequence, referencing the sequence in the database
- * action is for the purpose of logging the user event [start, restart, retry, continue]
- */
   const [appStatus, setAppStatus] = useState('idle')
   const [responseStatus, setResponseStatus] = useState(null)
   const [progressPercentage, setProgressPercentage] = useState(0)
@@ -65,7 +52,7 @@ function useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule) 
    * This function sets the application status to 'running' and resets the app state if it is not already running.
    * It also receives the action from the button that was clicked for logging purposes.
    * 
-   * @param {string} action - the user event
+   * @param {string} action - The action type [start, restart, retry, continue] indicating user events.
    */
   const handleStart = useCallback((action) => {
     setAction(action)
@@ -79,9 +66,8 @@ function useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule) 
   },[appStatus, rules])
 
   /**
-   * Encapsulates the logic required to change the current rule to either the pass rule, fail rule, or end rule,
-   * and update the rule list with the results of the current rule's assessment.
-   * Called when progress of the currentRule reaches 100%.
+   * Encapsulates the logic required to change the current rule to either the pass rule, fail rule, or end (terminate),
+   * and update the rule list with the results.
    */  
   const handleRuleChange = useCallback(async () => {
     await new Promise((resolve) => setTimeout(resolve, 500))
@@ -94,19 +80,20 @@ function useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule) 
       handleNoRuleChange(currentRule, ruleList)
     }
 
-    // prevents duplicates that can occur in very specific situations
+    // prevents duplicates in the ruleList that can occur in very niche situations
     let isRuleAlreadyPresent = ruleList.some(rule =>
       Object.keys(rule).every(key => rule[key] === currentRule[key])
     )
+    
     if(!isRuleAlreadyPresent){
     setRuleList(prevArray => [currentRule, ...prevArray])
     }
   },[currentRule, responseStatus, ruleList])
 
   /**
-   * Used to set the state of the app for the next rule utilized in handleRuleChange.
+   * Used to set the state of the app for the next rule.
    * 
-   * @param {string} nextRule - the key property value
+   * @param {string} nextRule - key value of the next rule
    */
   const changeToRule = useCallback((nextRule) => {
     setCurrentRule(Object.values(rules).find(rule => rule.key === nextRule))
@@ -116,9 +103,9 @@ function useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule) 
   },[rules])
 
   /**
-   * Used in both the standard process and the retry process.
-   * 
    * Evaluates the rule list to determine the end result and change the app state to completed.
+   * 
+   * Used in both the standard process and the retry process.
    * 
    * @param {array} rList - the list of rules that have been evaluated
    * @returns {string} - the end result of the assessment
@@ -139,10 +126,10 @@ function useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule) 
   },[])
 
   /**
-   * Handles scenarios where no rule change occurs, determining the final state and logging.
+   * Determines final state then performs the post request to log the assessment.
    * 
    * @param {object} currentRule - the current rule being evaluated
-   * @param {array} ruleList - the list of rules that have been evaluated so far
+   * @param {array} ruleList - the list of rules that have been evaluated
    */
   const handleNoRuleChange = useCallback(async (currentRule, ruleList) => {
     let rList = [currentRule, ...ruleList] // synchronous solution for posting immediately
