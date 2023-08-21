@@ -6,14 +6,14 @@ const fs = require('fs')
 const app = express()
 const http = require('http').Server(app)
 const port = 8080
-// const cors = require('cors')
+const cors = require('cors')
 const buildPath = path.join(__dirname, '..', 'build')
 require('dotenv').config({ path: path.join(__dirname, '../.env') })
 const ruleConfigPath = path.join(__dirname, process.env.CONFIG_PATH)
 
 app.use(express.static(buildPath))
 app.use(express.json())
-// app.use(cors({ origin: false }))
+app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
