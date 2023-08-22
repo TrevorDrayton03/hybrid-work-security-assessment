@@ -10,6 +10,7 @@ const cors = require('cors')
 const buildPath = path.join(__dirname, '..', 'build')
 require('dotenv').config({ path: path.join(__dirname, '../.env') })
 const ruleConfigPath = path.join(__dirname, process.env.CONFIG_PATH)
+const tableName = process.env.DB_TABLE
 
 app.use(express.static(buildPath))
 app.use(express.json())
@@ -107,8 +108,8 @@ app.post('/api/data', isPostDataTampered, async (req, res) => {
     let timestamp = new Date()
     try {
         conn = await pool.getConnection()
-        const queryResult  = await conn.query('INSERT INTO test_table3 (uuid, sequence, ip, action, result, timestamp, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?)', [uid, sequenceJson, req.ip, action, result, timestamp, req.headers['user-agent']])
-        res.status(200).json({ message: 'Data inserted successfully' })
+        const query = `INSERT INTO ${tableName} (uuid, sequence, ip, action, result, timestamp, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?)`
+        const queryResult = await conn.query(query, [uid, sequenceJson, req.ip, action, result, timestamp, req.headers['user-agent']]);        res.status(200).json({ message: 'Data inserted successfully' })
     } catch (err) {
         // throw err
         console.log(err)
