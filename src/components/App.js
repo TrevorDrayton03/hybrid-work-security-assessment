@@ -56,7 +56,7 @@ import useStandardRuleAssessment from '../custom_hooks/useStandardRuleAssessment
 import useRetryRuleAssessment from '../custom_hooks/useRetryRuleAssessment.js'
 import useEndPathLength from '../custom_hooks/useEndPathLength.js'
 
-function App() {
+const App = () => {
   /**
    * Constants
    * 
@@ -75,6 +75,7 @@ function App() {
     currentRule,                   // Current rule, initially set to the first rule.
     setCurrentRule,                // Asynchronous function to set the currentRule state.
     tryDelay,                      // Delay time (in milliseconds) between tries when evaluation rules.
+    uuid                           // Permanent cookie, unique user reference number.
   } = useFetchRulesConfig(firstRule, delay)
 
   // Custom Hook: useStartAndRestartLogic -- provides the functions for starting and restarting assessments and instruction evalution.
@@ -85,7 +86,6 @@ function App() {
     ruleList,                      // Array, evaluated instructions in sequence.
     tries,                         // Number of fetch attempts for the current rule.
     responseStatus,                // HTTP response status code for the current rule.
-    uuid,                          // Unique identifier for assessments.
     handleStart,                   // Function to handle the start and restart button onClick events.
     handleRuleChange,              // Function to change the current rule and update the ruleList to include the evaluation of the current rule.
     handleEndResultAndAppStatus,   // Function to evaluate the rule list, determine the end result, set the action state, and change the app status to completed.
@@ -95,8 +95,7 @@ function App() {
     setRuleList,                   // Asynchronous function to set the ruleList state.
     setTries,                      // Asynchronous function to set the tries state.
     setResponseStatus,             // Asynchronous function to set the responseStatus state.
-    setUuid,                       // Asynchronous function to set the uuid state.
-  } = useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule)
+  } = useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule, uuid)
 
 
   // Custom Hook: useRetryLogic -- provides the functions for reassessing violations.
@@ -112,7 +111,7 @@ function App() {
     setTries,
     ruleList,
     setRuleList,
-    setUuid,
+    uuid,
     action,
     setAction,
     rules,

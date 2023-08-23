@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 import { isRuleEnd, isRetryRuleEnd, isUnsuccessful, isAWarning, isAnError } from '../helpers/helpers'
 
 /**
@@ -15,7 +14,6 @@ import { isRuleEnd, isRetryRuleEnd, isUnsuccessful, isAWarning, isAnError } from
  * @param {function} setTries - Asynchronous function to set the tries state.
  * @param {array} ruleList - Array, evaluated instructions in sequence.
  * @param {function} setRuleList - Asynchronous function to set the ruleList state.
- * @param {function} setUuid - Asynchronous function to set the uuid state.
  * @param {string} action - start, restart, retry, or continue.
  * @param {function} setAction - Asynchronous function to set the action state.
  * 
@@ -26,7 +24,7 @@ import { isRuleEnd, isRetryRuleEnd, isUnsuccessful, isAWarning, isAnError } from
  * - handleRetryRuleChange: Function to handle changing to the next violation.
  * - setRetryRules: Asynchronous function to set the retryRules state.
  */
-function useRetryLogic(handleEndResultAndAppStatus, setAppStatus, setProgressPercentage, setTries, ruleList, setRuleList, setUuid, action, setAction, rules, setCurrentRule) {
+const useRetryLogic = (handleEndResultAndAppStatus, setAppStatus, setProgressPercentage, setTries, ruleList, setRuleList, uuid, action, setAction, rules, setCurrentRule) => {
   /**
    * State Variables
    * 
@@ -84,8 +82,6 @@ function useRetryLogic(handleEndResultAndAppStatus, setAppStatus, setProgressPer
       setCurrentRetryRule(nextRetryRule)
     } else if (isRetryRuleEnd(currentRetryRule)) {
       let result
-      let id = uuidv4()
-      setUuid(id)
       let rList = [...ruleList]
 
       rList = rList.map(rule => {
@@ -103,7 +99,7 @@ function useRetryLogic(handleEndResultAndAppStatus, setAppStatus, setProgressPer
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          uid: id,
+          uid: uuid,
           sequence: rList,
           action: action,
           result: result

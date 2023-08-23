@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react'
 import { isPassRule, isFailRule, isRuleEnd } from '../helpers/helpers'
-import { v4 as uuidv4 } from 'uuid'
 
 /**
  * Custom Hook: useStartAndRestartLogic
@@ -8,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid'
  * Description:
  * This custom hook provides the functions for starting and restarting assessments and instruction evalution.
  * The hook encapsulates the application status, response status, progress percentage, rule list, tries count,
- * action type, unique identifier (UUID), and handles various user actions for rule assessment.
+ * action type, and handles various user actions for rule assessment.
  * It also handles the logic to change the current rule, update the rule list, and determine the end result of the assessment.
  * 
  * Parameters:
@@ -25,7 +24,6 @@ import { v4 as uuidv4 } from 'uuid'
  * - ruleList: An array of rules that have been assessed and logged in the database as 'sequence.'
  * - tries: The number of fetch attempts for the current rule.
  * - responseStatus: The HTTP response status code for the current rule.
- * - uuid: The unique identifier (UUID) for the current sequence, referencing the sequence in the database.
  * - handleStart: A function to handle the start and restart button onClick events.
  * - handleRuleChange: A function to change the current rule and update the rule list with the results of rule assessment.
  * - handleEndResultAndAppStatus: A function to evaluate the rule list and determine the end result and change the app status to completed.
@@ -35,16 +33,14 @@ import { v4 as uuidv4 } from 'uuid'
  * - setRuleList: A function to set the ruleList state.
  * - setTries: A function to set the tries state.
  * - setResponseStatus: A function to set the responseStatus state.
- * - setUuid: A function to set the uuid state.
  */
-function useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule) {
+const useStartAndRestartLogic = (firstRule, rules, currentRule, setCurrentRule, uuid) => {
   const [appStatus, setAppStatus] = useState('idle')
   const [responseStatus, setResponseStatus] = useState(null)
   const [progressPercentage, setProgressPercentage] = useState(0)
   const [ruleList, setRuleList] = useState([])
   const [tries, setTries] = useState(0)
   const [action, setAction] = useState(null)
-  const [uuid, setUuid] = useState(null)
 
   /**
    * Handles the start and restart button onClick events.
@@ -77,7 +73,7 @@ function useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule) 
     } else if (isFailRule(currentRule)) {
       changeToRule(currentRule.failRule)
     } else {
-      handleNoRuleChange(currentRule, ruleList)
+      handleNoRuleChange()
     }
 
     // prevents duplicates in the ruleList that can occur in very niche situations
@@ -131,10 +127,8 @@ function useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule) 
    * @param {object} currentRule - the current rule being evaluated
    * @param {array} ruleList - the list of rules that have been evaluated
    */
-  const handleNoRuleChange = useCallback(async (currentRule, ruleList) => {
+  const handleNoRuleChange = useCallback(async () => {
     let rList = [currentRule, ...ruleList] // synchronous solution for posting immediately
-    let id = uuidv4()
-    setUuid(id)
     let result
   
     if (isRuleEnd(currentRule)) {
@@ -153,7 +147,7 @@ function useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule) 
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        uid: id,
+        uid: uuid,
         sequence: rList,
         action: action,
         result: result
@@ -173,7 +167,6 @@ function useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule) 
     ruleList,
     tries,
     responseStatus,
-    uuid,
     handleStart,
     handleRuleChange,
     handleEndResultAndAppStatus,
@@ -183,7 +176,6 @@ function useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule) 
     setRuleList,
     setTries,
     setResponseStatus,
-    setUuid,
   }
 }
 

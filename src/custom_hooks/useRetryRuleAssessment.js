@@ -18,7 +18,7 @@ import { useEffect } from 'react'
  * @param {string} baseUrl - the apache server url
  * @param {function} setProgressPercentage - Asynchronous function to set the progressPercentage state.
  */
-function useRetryRuleAssessment(currentRetryRule, setRetryRules, appStatus, tryDelay, tries, setTries, baseUrl, setProgressPercentage) {
+const useRetryRuleAssessment = (currentRetryRule, setRetryRules, appStatus, tryDelay, tries, setTries, baseUrl, setProgressPercentage) => {
   useEffect(() => {
     let currentTries = tries
     let shouldBreak = false

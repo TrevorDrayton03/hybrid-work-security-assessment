@@ -19,7 +19,7 @@ import { useEffect } from 'react'
  * @param {string} baseUrl - The apache server url
  * @param {function} setProgressPercentage - Asynchronous function to set the progressPercentage state.
  */
-function useStandardRuleAssessment(currentRule, appStatus, tryDelay, tries, setTries, setResponseStatus, baseUrl, setProgressPercentage) {
+const useStandardRuleAssessment = (currentRule, appStatus, tryDelay, tries, setTries, setResponseStatus, baseUrl, setProgressPercentage) => {
 
   useEffect(() => {
     let currentTries = tries

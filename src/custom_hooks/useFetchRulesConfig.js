@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { v4 as uuidv4 } from 'uuid'
+import Cookies from 'js-cookie'
 
 /**
  * Custom Hook: useFetchRulesConfig
@@ -20,12 +22,14 @@ import { useState, useEffect } from 'react'
  * - tryDelay: Delay time (in milliseconds) between tries when evaluation rules.
  * - currentRule: Current rule state, initially set to the first rule.
  * - setCurrentRule: Asynchronous function to set the currentRule state.
+ * - uuid: The unique identifier (UUID) for the current sequence, referencing the sequence in the database.
  */
 const useFetchRulesConfig = (firstRule, delay) => {
   const [isLoading, setIsLoading] = useState(true)
   const [rules, setRules] = useState({})
   const [tryDelay, setTryDelay] = useState(0)
   const [currentRule, setCurrentRule] = useState(null)
+  const [uuid, setUuid] = useState(null)
 
   useEffect(() => {
     fetch("/api/rules")
@@ -39,9 +43,21 @@ const useFetchRulesConfig = (firstRule, delay) => {
       .catch(error => {
         console.error('Error:', error)
       })
+      if (navigator.cookieEnabled) {
+        const userUuid = Cookies.get('user_uuid')
+        if (!userUuid) {
+          const newUuid = uuidv4()
+          Cookies.set('user_uuid', newUuid, { expires: 365 * 10 })
+          setUuid(newUuid)
+        } else {
+          setUuid(userUuid)
+        }
+      } else {
+        setUuid(uuidv4())
+      }
   }, [])
 
-  return { isLoading, rules, currentRule, setCurrentRule, tryDelay }
+  return { isLoading, rules, currentRule, setCurrentRule, tryDelay, uuid }
 }
 
 export default useFetchRulesConfig
