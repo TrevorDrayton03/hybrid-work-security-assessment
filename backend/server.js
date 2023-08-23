@@ -110,7 +110,7 @@ app.post('/api/data', sanitizeHttpRequest, async (req, res) => {
   try {
     const { uid, sequence, action, result } = req.body
     const sequenceJson = JSON.stringify(sequence)
-    const sanitizedIp = encodeURIComponent(req.socket.remoteAddress)
+    const sanitizedIp = encodeURIComponent(req.ip)
     const timestamp = new Date()
     const userAgent = req.headers['user-agent']
     const sanitizedUserAgent = encodeURIComponent(userAgent);
