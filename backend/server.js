@@ -19,9 +19,9 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 app.use((req, res, next) => {
-  res.setHeader('Content-Security-Policy', "default-src 'self'");
-  next();
-});
+  res.setHeader('Content-Security-Policy', "default-src 'self'")
+  next()
+})
 
 
 // Create a connection to the database
@@ -47,9 +47,8 @@ const safeContinueOption = rulesArray.map(({ continueOption }) => continueOption
 const safeWarning = rulesArray.map(({ warning }) => warning)
 
 
-
 // Middleware to check if post data has been tampered with
-const isPostDataTampered = (req, res, next) => {
+const sanitizeHttpRequest = (req, res, next) => {
   try {
     const { uid, sequence, action, result } = req.body
     const safeHttpResponses = /^[1-5]\d{2}$/
@@ -58,6 +57,7 @@ const isPostDataTampered = (req, res, next) => {
     const cookies = req.headers.cookie
     const userUuidCookie = cookies.split(';').find(cookie => cookie.trim().startsWith('user_uuid='))
     const userUuid = userUuidCookie ? userUuidCookie.split('=')[1] : null
+    const contentType = req.headers['content-type']
 
 
     // Check if all sequence properties match the safe values defined earlier
@@ -87,33 +87,39 @@ const isPostDataTampered = (req, res, next) => {
     }
 
 
-    // Check if the UUID is valid
+    // Check if the UUID and the user_uuid cookie are valid
     const uuidIsSafe = () => {
       return ((safeUUIDPattern.test(uid) && uid.length === safeUUIDLength) && (safeUUIDPattern.test(userUuid) && userUuid.length === safeUUIDLength))
     }
 
 
     // Call the sanitization checks, and return a 405 status code (which cancels the request) if any of them return false
-    if (!sequenceIsSafe || !actionAndResultAreSafe() || !uuidIsSafe()) {
+    if (!sequenceIsSafe || !actionAndResultAreSafe() || !uuidIsSafe() || contentType !== 'application/json') {
       return res.status(405).json({ message: 'Data has been tampered with, ceasing request.' })
     }
       next()
   } catch(err){
-    console.log(err, " Error in middleware")
+    console.log(err)
+    res.status(500).json({ message: " Error in middleware" })
   }
 }
 
 
 // Inserts the data into the database.
-app.post('/api/data', isPostDataTampered, async (req, res) => {
+app.post('/api/data', sanitizeHttpRequest, async (req, res) => {
   try {
     const { uid, sequence, action, result } = req.body
     const sequenceJson = JSON.stringify(sequence)
-    let timestamp = new Date()
+    const sanitizedIp = encodeURIComponent(req.socket.remoteAddress)
+    const timestamp = new Date()
+    const userAgent = req.headers['user-agent']
+    const sanitizedUserAgent = encodeURIComponent(userAgent);
+
     try {
         conn = await pool.getConnection()
         const query = `INSERT INTO ${tableName} (uuid, sequence, ip, action, result, timestamp, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?)`
-        const queryResult = await conn.query(query, [uid, sequenceJson, req.ip, action, result, timestamp, req.headers['user-agent']]);        res.status(200).json({ message: 'Data inserted successfully' })
+        const queryResult = await conn.query(query, [uid, sequenceJson, sanitizedIp, action, result, timestamp, sanitizedUserAgent])
+        res.status(200).json({ message: 'Data inserted successfully' })
     } catch (err) {
         console.log(err)
         res.status(500).json({ message: 'Error inserting data' })
