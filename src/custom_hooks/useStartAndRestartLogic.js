@@ -73,7 +73,7 @@ const useStartAndRestartLogic = (firstRule, rules, currentRule, setCurrentRule, 
     } else if (isFailRule(currentRule)) {
       changeToRule(currentRule.failRule)
     } else {
-      handleNoRuleChange()
+      handleNoRuleChange(currentRule, ruleList)
     }
 
     // prevents duplicates in the ruleList that can occur in very niche situations
@@ -127,7 +127,7 @@ const useStartAndRestartLogic = (firstRule, rules, currentRule, setCurrentRule, 
    * @param {object} currentRule - the current rule being evaluated
    * @param {array} ruleList - the list of rules that have been evaluated
    */
-  const handleNoRuleChange = useCallback(async () => {
+  const handleNoRuleChange = useCallback(async (currentRule, ruleList) => {
     let rList = [currentRule, ...ruleList] // synchronous solution for posting immediately
     let result
   

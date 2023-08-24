@@ -23,28 +23,58 @@ app.use((req, res, next) => {
   next()
 })
 
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({ error: 'Error in body' });
+  }
 
-// Create a connection to the database
-const pool = mariadb.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-})
-  
+  console.error(err);
+  res.status(500).json({ error: 'Something went wrong' });
+});
 
-// Read the rules configuration file and store the values in separate arrays as safe values
-const rules = JSON.parse(fs.readFileSync(ruleConfigPath, 'utf8'))
-const rulesArray = Object.values(rules)
-const safeKeys = rulesArray.map(({ key }) => key)
-const safePorts = rulesArray.map(({ port }) => port)
-const safeTitles = rulesArray.map(({ title }) => title)
-const safeFailTexts = rulesArray.map(({ failText }) => failText)
-const safeFailRules = rulesArray.map(({ failRule }) => failRule)
-const safePassRules = rulesArray.map(({ passRule }) => passRule)
-const safeMaxTries = rulesArray.map(({ maxTries }) => maxTries)
-const safeContinueOption = rulesArray.map(({ continueOption }) => continueOption)
-const safeWarning = rulesArray.map(({ warning }) => warning)
+const safeKeys = [];
+const safePorts = [];
+const safeTitles = [];
+const safeFailTexts = [];
+const safeFailRules = [];
+const safePassRules = [];
+const safeMaxTries = [];
+const safeContinueOption = [];
+const safeWarning = [];
+
+let pool; // Declare the pool variable outside the try-catch
+
+try {
+  // Create a connection to the database
+  pool = mariadb.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+  });
+
+  // Read the rules configuration file and store the values in separate arrays as safe values
+  const rules = JSON.parse(fs.readFileSync(ruleConfigPath, 'utf8'));
+  const rulesArray = Object.values(rules);
+
+  rulesArray.forEach(({ key, port, title, failText, failRule, passRule, maxTries, continueOption, warning }) => {
+    safeKeys.push(key);
+    safePorts.push(port);
+    safeTitles.push(title);
+    safeFailTexts.push(failText);
+    safeFailRules.push(failRule);
+    safePassRules.push(passRule);
+    safeMaxTries.push(maxTries);
+    safeContinueOption.push(continueOption);
+    safeWarning.push(warning);
+  });
+} catch (error) {
+  // Handle errors here, like logging or throwing a custom error
+  console.error('An error occurred:', error);
+}
+
+// Now you can use pool and the safe value arrays outside the try-catch as needed
+
 
 
 // Middleware to check if post data has been tampered with
