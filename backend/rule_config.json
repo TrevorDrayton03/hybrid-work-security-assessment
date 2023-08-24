@@ -65,9 +65,6 @@
     "continueOption": false,
     "warning": true
   },
-  "End": {
-    "key": "end"
-  },
   "TryDelay": {
     "key": "tryDelay",
     "milliseconds": 500

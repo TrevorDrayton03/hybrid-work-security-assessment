@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { isRuleEnd, isSecurityCheck} from '../helpers/helpers'
+import { isFinalRule, isComplianceCheck} from '../helpers/helpers'
 
 /**
  * Custom Hook: useEndPathLength
@@ -22,10 +22,10 @@ const useEndPathLength = (ruleList, rules, appStatus) => {
     if(ruleList.length !== 0 && appStatus !== 'retry') {
       let tempCurrentRule = ruleList[0]
       let count = 0
-        while (isSecurityCheck(tempCurrentRule)) {
+        while (isComplianceCheck(tempCurrentRule)) {
           tempCurrentRule = rules[tempCurrentRule.passRule]
           count++
-          if (isRuleEnd(tempCurrentRule)) {
+          if (isFinalRule(tempCurrentRule)) {
             setEndPathLength(ruleList.length + count)
             break
           } else {

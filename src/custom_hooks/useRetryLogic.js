@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { isRuleEnd, isRetryRuleEnd, isUnsuccessful, isAWarning, isAnError } from '../helpers/helpers'
+import { isFinalRule, isRetryRuleEnd, isViolation, isAWarning, isAnError } from '../helpers/helpers'
 
 /**
  * Custom Hook: useRetryLogic
@@ -16,6 +16,8 @@ import { isRuleEnd, isRetryRuleEnd, isUnsuccessful, isAWarning, isAnError } from
  * @param {function} setRuleList - Asynchronous function to set the ruleList state.
  * @param {string} action - start, restart, retry, or continue.
  * @param {function} setAction - Asynchronous function to set the action state.
+ * @param {object} rules - The object containing rules configuration data fetched from the server.
+ * @param {function} setCurrentRule - The function to set the currentRule state.
  * 
  * Return Values:
  * The hook returns an object containing state variables and functions related to retry logic.
@@ -46,7 +48,7 @@ const useRetryLogic = (handleEndResultAndAppStatus, setAppStatus, setProgressPer
     setTries(0)
     let retryRules
     if (!type) {
-      retryRules = Object.values(ruleList).filter(rule => isUnsuccessful(rule))
+      retryRules = Object.values(ruleList).filter(rule => isViolation(rule))
     } else if (type === "warning") {
       retryRules = Object.values(ruleList).filter(rule => isAWarning(rule))
     } else {
@@ -111,25 +113,29 @@ const useRetryLogic = (handleEndResultAndAppStatus, setAppStatus, setProgressPer
         console.log('Failed to post data')
       }}
 
-      if (isRuleEnd(rList[0])) {
+      // if it's the final rule, evaluate the end result and set the app status
+      if (isFinalRule(rList[0])) {
         result = handleEndResultAndAppStatus(rList)
         postRequest()
-      } else if (currentRetryRule.continueOption === true && rList.some(rule => isAnError(rule))) {
+        // else there is an violations in the ruleList with continue option
+      } else if (currentRetryRule.continueOption === true && rList.some(rule => isViolation(rule))) {
         setAppStatus("paused") 
         result = "incomplete"
         postRequest()
-      } else if (currentRetryRule.continueOption === false && rList.some(rule => isAnError(rule))){
+        // else there is an violations in the ruleList without continue option
+      } else if (currentRetryRule.continueOption === false && rList.some(rule => isViolation(rule))){
         setAppStatus("error")
         result = "incomplete"
         postRequest()
-      } else if(!isRuleEnd(rList[0]) && rList.every(rule => !isAnError(rule))) {
+        // else there are no violationss, automatically continue for the user
+      } else if (rList.every(rule => !isViolation(rule))) {
         setAction('continue')
         setAppStatus('running')
         setCurrentRule(Object.values(rules).find(rule => rule.key === currentRetryRule.passRule))
         setProgressPercentage(0)
         setTries(0)
       } 
-
+      
       setRuleList(rList)
       setCurrentRetryRule(null)
     }

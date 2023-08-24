@@ -2,7 +2,7 @@ import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
 import { RiFileCopy2Line } from "react-icons/ri"
 import React, { useState, useCallback } from "react"
-import { isUnsuccessful, isAnError, isAWarning, failedCount, passedCount, warningsCount, errorsCount } from '../helpers/helpers'
+import { isViolation, isAnError, isAWarning, failedCount, passedCount, warningsCount, errorsCount } from '../helpers/helpers'
 
 
 /**
@@ -148,7 +148,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
                 })}
             </div>
             <div id="footers" style={{margin:0, padding:'20px 0 0 0'}}>
-                {ruleList.some(rule => isUnsuccessful(rule)) && // error footer
+                {ruleList.some(rule => isViolation(rule)) && // error footer
                     (
                         <div>
                             <CopyUUID />
@@ -167,7 +167,7 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
                         </div>
                     )
                 }
-                {appStatus === 'completed' && !ruleList.some(rule => isUnsuccessful(rule)) && // complete footer
+                {appStatus === 'completed' && !ruleList.some(rule => isViolation(rule)) && // complete footer
                     (
                         <div>
                             <CopyUUID />

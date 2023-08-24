@@ -19,7 +19,7 @@ export const isNotFetching = (appStatus) => {
  * @param {object} rule - The evaluated instruction object.
  * @returns {boolean} - True if the rule is a violation.
  */
-export const isUnsuccessful = (rule) => {
+export const isViolation = (rule) => {
   return ((rule.responseStatus > 299 || rule.responseStatus === null) && rule.failRule.toLowerCase() === "end") 
 }
 
@@ -30,7 +30,7 @@ export const isUnsuccessful = (rule) => {
  * @returns {boolean} - True if the violation is an error.
  */
 export const isAnError = (rule) => {
-  return (isUnsuccessful(rule) && rule.warning === false)
+  return (isViolation(rule) && rule.warning === false)
 }
 
 /**
@@ -40,7 +40,7 @@ export const isAnError = (rule) => {
  * @returns {boolean} - True if the violation is a warning.
  */
 export const isAWarning = (rule) => {
-  return (isUnsuccessful(rule) && rule.warning === true)
+  return (isViolation(rule) && rule.warning === true)
 }
 
 /**
@@ -67,7 +67,7 @@ export const isFailRule = (rule) => {
  * @param {object} currentRule - the current rule being evaluated
  * @returns {boolean} - true if the current rule is a final rule, false otherwise
  */
-export const isRuleEnd = (rule) => {
+export const isFinalRule = (rule) => {
   return rule.passRule.toLowerCase() === "end" && rule.failRule.toLowerCase() === "end"
 }
 
@@ -88,7 +88,7 @@ export const isRetryRuleEnd = (rule) => {
  * @param {object} rule - the current rule being evaluated
  * @returns {boolean} - true if the current rule is a compliance check, false otherwise
  */
-export const isSecurityCheck = (rule) => {
+export const isComplianceCheck = (rule) => {
   return rule.passRule.toLowerCase() !== "end" && rule.failRule.toLowerCase() === "end"
 }
 
@@ -139,7 +139,7 @@ export const errorsCount = (ruleList) =>  {
  * @returns {boolean}
  */
 export const hasUnsuccessfulRules = (ruleList) => {
-  return ruleList.some(rule => isUnsuccessful(rule))
+  return ruleList.some(rule => isViolation(rule))
 }
 
 /**

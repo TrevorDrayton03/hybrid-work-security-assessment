@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { isPassRule, isFailRule, isRuleEnd } from '../helpers/helpers'
+import { isPassRule, isFailRule, isFinalRule } from '../helpers/helpers'
 
 /**
  * Custom Hook: useStartAndRestartLogic
@@ -131,7 +131,7 @@ const useStartAndRestartLogic = (firstRule, rules, currentRule, setCurrentRule, 
     let rList = [currentRule, ...ruleList] // synchronous solution for posting immediately
     let result
   
-    if (isRuleEnd(currentRule)) {
+    if (isFinalRule(currentRule)) {
       result = handleEndResultAndAppStatus(rList)
     } else if (currentRule.continueOption === true) {
       setAppStatus("paused")
