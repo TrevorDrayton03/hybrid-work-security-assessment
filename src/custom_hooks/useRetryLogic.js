@@ -30,7 +30,7 @@ const useRetryLogic = (handleEndResultAndAppStatus, setAppStatus, setProgressPer
   /**
    * State Variables
    * 
-   * retryRules is an array of the violations of the assessment
+   * retryRules is an array of the violations of the assessment.
    * currentRetryRule is the violation being reevaluated.
    */
   const [retryRules, setRetryRules] = useState(null)
@@ -113,21 +113,21 @@ const useRetryLogic = (handleEndResultAndAppStatus, setAppStatus, setProgressPer
         console.log('Failed to post data')
       }}
 
-      // if it's the final rule, evaluate the end result and set the app status
+      // if it's the final rule, re-evaluate the end result
       if (isFinalRule(rList[0])) {
         result = handleEndResultAndAppStatus(rList)
         postRequest()
-        // else there is an violations in the ruleList with continue option
+        // else there is a violation in the ruleList with continue option
       } else if (currentRetryRule.continueOption === true && rList.some(rule => isViolation(rule))) {
         setAppStatus("paused") 
         result = "incomplete"
         postRequest()
-        // else there is an violations in the ruleList without continue option
+        // else there is a violation in the ruleList without continue option
       } else if (currentRetryRule.continueOption === false && rList.some(rule => isViolation(rule))){
         setAppStatus("error")
         result = "incomplete"
         postRequest()
-        // else there are no violationss, automatically continue for the user
+        // else all violations have been resolved, automatically continue for the user
       } else if (rList.every(rule => !isViolation(rule))) {
         setAction('continue')
         setAppStatus('running')
