@@ -6,15 +6,15 @@ const fs = require('fs')
 const app = express()
 // const http = require('http').Server(app)
 const https = require('https')
-const port = 443
+const port = 8080
 const cors = require('cors')
 const buildPath = path.join(__dirname, '..', 'build')
 require('dotenv').config({ path: path.join(__dirname, '../.env') })
 const ruleConfigPath = path.join(__dirname, process.env.CONFIG_PATH)
 const tableName = process.env.DB_TABLE
 const httpsOptions = {
-  key: fs.readFileSync(path.join(__dirname,'private-key.key'), 'utf8'), // public key certificate
-  cert: fs.readFileSync(path.join(__dirname,'ServerCertificate.crt'), 'utf8') //intermediate certificates
+  key: fs.readFileSync('private-key.key'), // private key certificate
+  cert: fs.readFileSync('ServerCertificate.crt') //SSL certificate
 }
 
 const server = https.createServer(httpsOptions, app)
