@@ -31,5 +31,11 @@ The HIPS rules assess the user's device and return a response status based on th
 - FCP (First Contentful Paint): 800ms to 1200ms
 - TTFB (Time to First Byte): 100ms to 300ms
 - FID (First Input Delay): 10ms to 100ms
- 
+
+## Documentation
+- [User Stories.docx](https://github.com/TrevorDrayton03/hybrid-work-security-assessment/files/12443731/User.Stories.docx)
+- [ITS User Guide.docx](https://github.com/TrevorDrayton03/hybrid-work-security-assessment/files/12443732/ITS.User.Guide.docx)
+- [Appendix A - Glossary.docx](https://github.com/TrevorDrayton03/hybrid-work-security-assessment/files/12443733/Appendix.A.-.Glossary.docx)
+
+
 Thompson Rivers University, Co-op
