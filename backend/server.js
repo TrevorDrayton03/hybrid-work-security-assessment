@@ -180,7 +180,7 @@ app.get('/api/rules', (req, res) => {
     }
 })
 
-
+// serve the frontend (react build file)
 app.get('*', (req, res) => {
   try {
     res.sendFile(path.join(buildPath, 'index.html'))
@@ -190,7 +190,7 @@ app.get('*', (req, res) => {
   }
 })
 
-
+// run the https server
 try {
   server.listen(port, () => {
     console.log(`Server is running on port ${port}`)
@@ -199,9 +199,3 @@ try {
   console.log(err)
   res.status(500).send("Error starting server")
 }
-
-
-// // Start the server
-// http.listen(port, () => {
-//     console.log(`Server is running on port ${port}`)
-// })
