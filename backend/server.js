@@ -4,13 +4,20 @@ const mariadb = require('mariadb')
 const path = require('path')
 const fs = require('fs')
 const app = express()
-const http = require('http').Server(app)
-const port = 8080
+// const http = require('http').Server(app)
+const https = require('https')
+const port = 443
 const cors = require('cors')
 const buildPath = path.join(__dirname, '..', 'build')
 require('dotenv').config({ path: path.join(__dirname, '../.env') })
 const ruleConfigPath = path.join(__dirname, process.env.CONFIG_PATH)
 const tableName = process.env.DB_TABLE
+const httpsOptions = {
+  key: fs.readFileSync(path.join(__dirname,'private-key.key'), 'utf8'), // public key certificate
+  cert: fs.readFileSync(path.join(__dirname,'ServerCertificate.crt'), 'utf8') //intermediate certificates
+}
+
+const server = https.createServer(httpsOptions, app)
 
 app.use(express.static(buildPath))
 app.use(express.json())
@@ -23,26 +30,27 @@ app.use((req, res, next) => {
   next()
 })
 
+
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
-    return res.status(400).json({ error: 'Error in body' });
+    return res.status(400).json({ error: 'Error in body' })
   }
 
-  console.error(err);
-  res.status(500).json({ error: 'Something went wrong' });
-});
+  console.error(err)
+  res.status(500).json({ error: 'Something went wrong' })
+})
 
-const safeKeys = [];
-const safePorts = [];
-const safeTitles = [];
-const safeFailTexts = [];
-const safeFailRules = [];
-const safePassRules = [];
-const safeMaxTries = [];
-const safeContinueOption = [];
-const safeWarning = [];
+const safeKeys = []
+const safePorts = []
+const safeTitles = []
+const safeFailTexts = []
+const safeFailRules = []
+const safePassRules = []
+const safeMaxTries = []
+const safeContinueOption = []
+const safeWarning = []
 
-let pool; // Declare the pool variable outside the try-catch
+let pool 
 
 try {
   // Create a connection to the database
@@ -51,30 +59,25 @@ try {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
-  });
+  })
 
-  // Read the rules configuration file and store the values in separate arrays as safe values
-  const rules = JSON.parse(fs.readFileSync(ruleConfigPath, 'utf8'));
-  const rulesArray = Object.values(rules);
+  const rules = JSON.parse(fs.readFileSync(ruleConfigPath, 'utf8'))
+  const rulesArray = Object.values(rules)
 
   rulesArray.forEach(({ key, port, title, failText, failRule, passRule, maxTries, continueOption, warning }) => {
-    safeKeys.push(key);
-    safePorts.push(port);
-    safeTitles.push(title);
-    safeFailTexts.push(failText);
-    safeFailRules.push(failRule);
-    safePassRules.push(passRule);
-    safeMaxTries.push(maxTries);
-    safeContinueOption.push(continueOption);
-    safeWarning.push(warning);
-  });
+    safeKeys.push(key)
+    safePorts.push(port)
+    safeTitles.push(title)
+    safeFailTexts.push(failText)
+    safeFailRules.push(failRule)
+    safePassRules.push(passRule)
+    safeMaxTries.push(maxTries)
+    safeContinueOption.push(continueOption)
+    safeWarning.push(warning)
+  })
 } catch (error) {
-  // Handle errors here, like logging or throwing a custom error
-  console.error('An error occurred:', error);
+  console.error('An error occurred:', error)
 }
-
-// Now you can use pool and the safe value arrays outside the try-catch as needed
-
 
 
 // Middleware to check if post data has been tampered with
@@ -143,7 +146,7 @@ app.post('/api/data', sanitizeHttpRequest, async (req, res) => {
     const sanitizedIp = encodeURIComponent(req.ip)
     const timestamp = new Date()
     const userAgent = req.headers['user-agent']
-    const sanitizedUserAgent = encodeURIComponent(userAgent);
+    const sanitizedUserAgent = encodeURIComponent(userAgent)
 
     try {
         conn = await pool.getConnection()
@@ -189,7 +192,7 @@ app.get('*', (req, res) => {
 
 
 try {
-  app.listen(port, () => {
+  server.listen(port, () => {
     console.log(`Server is running on port ${port}`)
   })
 } catch (err) {

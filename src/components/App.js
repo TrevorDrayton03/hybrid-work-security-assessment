@@ -1,8 +1,9 @@
 /**
  * Hybrid Work Security Assessment
  *
- * This application assesses compliance of staff devices with TRU's HIPS (Host-Based Intrustion Prevention System) for connecting remotely 
- * to TRU's network for the Hybrid Work Program. It accomplishes this task by making fetch requests to an apache server for each HIPS rule.
+ * This application assesses compliance of TRU staff's personal devices with TRU's HIPS (Host-Based Intrustion Prevention System) to allow staff to connect remotely 
+ * to TRU's network for the Hybrid Work Program. It accomplishes this task by making network requests to an apache server, which interfaces
+ * with a HIPS server, for each HIPS rule.
  * The HIPS rules assess the user's device and return a response status based on the result of the assessment. 
  * 
  *
@@ -23,7 +24,7 @@
  * MariaDB: Database management system for storing the data of the security check assessments.
  * Express: Web application framework for building server side applications in Node.js.
  * react-scripts: Configuration and scripts for running a React application in development and production environments.
- * uuid: Library for generating unique identifiers (UUIDs) for each security check assessment.
+ * uuid: Library for generating unique identifiers (UUIDs) for each user.
  * whatwg-fetch: Polyfill that provides a global fetch function for making web requests in browsers that do not support the native Fetch API.
  * react-icons: Library of icons for React applications, used for the copy UUID button.
  * 
@@ -32,11 +33,11 @@
  * TTFB (Time to First Byte): 100ms to 300ms
  * FID (First Input Delay): 10ms to 100ms
  * 
- * Author: Trevor Drayton, Co-op
+ * Author: Trevor Drayton
  * Version: 1.1.1
- * Last Updated: Aug 21, 2023
+ * Last Updated: Aug 25, 2023
  * 
- * Thompson Rivers University
+ * Thompson Rivers University, Co-op
  * Department: Information Technology Services Information Security
  * Contact: trevorpdrayton@gmail.com or linkedin.com/in/trevor-drayton/
  */
@@ -170,14 +171,6 @@ const App = () => {
         console.error('Failed to copy text:', error)
       })
   },[uuid])
-
-
-  /**
-   * A useful side effect for debugging.
-   */
-  // useEffect(() => {
-  //   console.log(appStatus, responseStatus, currentRule, tries, ruleList, action, currentRetryRule)
-  // }, [appStatus, responseStatus, currentRule, tries, ruleList, action, currentRetryRule])
 
 
   /**
