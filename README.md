@@ -1,70 +1,35 @@
-# Getting Started with Create React App
+# Hybrid Work Security Assessment
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This application assesses compliance of TRU staff's personal devices with TRU's HIPS (Host-Based Intrustion Prevention System) to allow staff to connect remotely 
+to TRU's network for the Hybrid Work Program. It accomplishes this task by making network requests to an apache server, which interfaces
+with a HIPS server, for each HIPS rule.
+The HIPS rules assess the user's device and return a response status based on the result of the assessment. 
+ 
 
-## Available Scripts
+## Features:
+- Gets instructions from a rules_config.json file and stores them in state for rule evaluation.
+- Logs each assessment to a database.
+- A device-friendly, responsive design.
+- Ensures cross-browser compatibility.
+- Learnable and easy to use (UX).
+- Complies with ES6 standards for code readability, maintainability, and modern features.
+- Robust error handling.
+- The code is well documented, modular, cohesive, testable, and reusable. 
 
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Libraries/Dependencies:
+- Node.js: JavaScript runtime environment.
+- React: JavaScript library for building user interfaces.
+- Bootstrap & React-Bootstrap: Popular CSS framework for responsive and mobile-first web development.
+- MariaDB: Database management system for storing the data of the security check assessments.
+- Express: Web application framework for building server side applications in Node.js.
+- react-scripts: Configuration and scripts for running a React application in development and production environments.
+- uuid: Library for generating unique identifiers (UUIDs) for each user.
+- whatwg-fetch: Polyfill that provides a global fetch function for making web requests in browsers that do not support the native Fetch API.
+- react-icons: Library of icons for React applications, used for the copy UUID button.
+ 
+## Web Vital Statistics:
+- FCP (First Contentful Paint): 800ms to 1200ms
+- TTFB (Time to First Byte): 100ms to 300ms
+- FID (First Input Delay): 10ms to 100ms
+ 
+Thompson Rivers University, Co-op
