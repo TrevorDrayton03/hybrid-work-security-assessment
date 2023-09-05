@@ -1,9 +1,8 @@
 # Hybrid Work Security Assessment
 
-This application assesses compliance of TRU staff's personal devices with TRU's HIPS (Host-Based Intrustion Prevention System) to allow staff to connect remotely 
+This application assesses device compliance with TRU's (Thompson Rivers University) HIPS (Host-Based Intrustion Prevention System) to allow for staff to connect remotely 
 to TRU's network for the Hybrid Work Program. It accomplishes this task by making network requests to an apache server, which interfaces
-with a HIPS server, for each HIPS rule.
-The HIPS rules assess the user's device and return a response status based on the result of the assessment. 
+with a HIPS server, for each HIPS rule. The HIPS rules assess the user's device and return a response status based on the result of the assessment. 
  
 ## Documentation
 - [User Stories.docx](https://github.com/TrevorDrayton03/hybrid-work-security-assessment/files/12443731/User.Stories.docx)
