@@ -1,8 +1,6 @@
 # Hybrid Work Security Assessment
 
-This application assesses device compliance with TRU's (Thompson Rivers University) HIPS (Host-Based Intrustion Prevention System) to allow for staff to connect remotely 
-to TRU's network for the Hybrid Work Program. It accomplishes this task by making network requests to an apache server, which interfaces
-with a HIPS server, for each HIPS rule. The HIPS rules assess the user's device and return a response status based on the result of the assessment. 
+The Hybrid Work Security Assessment (HWSA) checks if individual devices (clients) meet TRU's (Thompson Rivers University's) security standards. Passing the HWSA is a mandatory requirement for joining the Hybrid Work Program. HIPS rules are reviewed separately, regularly, and asynchronously. The HWSA is specifically designed as a flexible tool to interact with this process, allowing it to be easily reconfigured when the process undergoes changes.
  
 ## Documentation
 - [User Stories.docx](https://github.com/TrevorDrayton03/hybrid-work-security-assessment/files/12443731/User.Stories.docx)
