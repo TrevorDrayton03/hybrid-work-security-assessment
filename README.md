@@ -11,11 +11,10 @@ The Hybrid Work Security Assessment (HWSA) checks if individual devices (clients
 - Gets instructions from a rules_config.json file and stores them in state for rule evaluation.
 - Logs each assessment to a database.
 - A device-friendly, responsive design.
-- Ensures cross-browser compatibility.
-- Learnable and easy to use (UX).
+- Learnable and easy to use.
 - Complies with ES6 standards for code readability, maintainability, and modern features.
-- Robust error handling.
-- The code is well documented, modular, cohesive, testable, and reusable. 
+- Robust error handling and data sanitization.
+- Well documented, modular, cohesive, and testable. 
 
 ## Libraries/Dependencies:
 - Node.js: JavaScript runtime environment.
