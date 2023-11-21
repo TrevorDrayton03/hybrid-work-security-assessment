@@ -6,23 +6,21 @@ import Cookies from 'js-cookie'
  * Custom Hook: useFetchRulesConfig
  * 
  * Description:
- * This custom hook fetches the rules_config.json file and stores the data in the rules state.
- * It also sets the currentRule and tryDelay states using the firstRule and delay props.
- * The hook works as an initialization effect on the initial page load.
- * The hook sets the isLoading state to true during data fetching and false once the rules are fetched.
+ * Fetches the rules_config.json file and stores the data in the rules state
+ * Sets the currentRule, tryDelay, and isLoading states
  * 
  * Parameters:
- * @param {string} firstRule - The is the key value of the first instruction from the config file
- * @param {string} delay - The is the key value used to get the delay time from the config file
+ * @param {string} firstRule - key value of the first instruction from the config file
+ * @param {string} delay - key value used to get the delay time from the config file
  * 
  * Return Values:
- * The hook returns an object containing state variables and functions related to rules data fetching and handling.
- * - isLoading: Boolean indicating if the rules configuration data is being fetched.
- * - rules: Object, the contents of the config file.
- * - tryDelay: Delay time (in milliseconds) between tries when evaluation rules.
- * - currentRule: Current rule state, initially set to the first rule.
- * - setCurrentRule: Asynchronous function to set the currentRule state.
- * - uuid: The unique identifier (UUID) for the current sequence, referencing the sequence in the database.
+ * Returns an object containing state variables and functions related to rules data fetching and handling
+ * - isLoading: Boolean indicating if the rules configuration data is being fetched
+ * - rules: Object, the contents of the config file
+ * - tryDelay: Delay time (in milliseconds) between tries when evaluation rules
+ * - currentRule: Current rule state, initially set to the first rule
+ * - setCurrentRule: Asynchronous function to set the currentRule state
+ * - uuid: The unique identifier (UUID) for the current sequence, referencing the sequence in the database
  */
 const useFetchRulesConfig = (firstRule, delay) => {
   const [isLoading, setIsLoading] = useState(true)

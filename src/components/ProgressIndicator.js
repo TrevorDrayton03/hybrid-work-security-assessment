@@ -4,9 +4,9 @@ import { Spinner } from "react-bootstrap"
 
 
 /**
- * Displays the progress indicator bar for the current rule.
- * @param {number} progressPercentage - Number between 0 to 100, for the progress bar.
- * @param {object} currentRule - Current rule, initially set to the first rule.
+ * Displays the progress indicator bar for the current rule
+ * @param {number} progressPercentage - number between 0 to 100, for the progress bar
+ * @param {object} currentRule - current rule, initially set to the first rule
  */
 const ProgressIndicator = ({ progressPercentage, currentRule, currentRetryRule }) => {
     return (

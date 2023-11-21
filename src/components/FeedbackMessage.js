@@ -1,18 +1,18 @@
 import React from "react"
-import { failedCount, passedCount, warningsCount, errorsCount } from '../helpers/helpers'
+import { getFailedCount, getPassedCount, getWarningCount, getErrorsCount } from '../helpers/helpers'
 
 
 /**
- * Displays a feedback message which informs the user based on the application state.
- * @param {string} appStatus - idle, running, completed, error, or paused.
- * @param {array} ruleList - Array, evaluated instructions in sequence.
- * @param {number} endPathLength - The length of the end path, if it exists.
+ * Displays a feedback message which informs the user based on the application state
+ * @param {string} appStatus - idle, running, completed, error, or paused
+ * @param {array} ruleList - evaluated instructions in sequence
+ * @param {number} endPathLength - length of the end path, if it exists
  */
 const FeedbackMessage = ({ appStatus, ruleList, endPathLength }) => {
-    let failed = failedCount(ruleList)
-    let passed = passedCount(ruleList)
-    let warnings = warningsCount(ruleList)
-    let errors = errorsCount(ruleList)
+    let failed = getFailedCount(ruleList)
+    let passed = getPassedCount(ruleList)
+    let warnings = getWarningCount(ruleList)
+    let errors = getErrorsCount(ruleList)
     let total = passed + errors + warnings 
     let errorText = errors === 1 ? "error" : "errors"
     let warningText = warnings === 1 ? "warning" : "warnings"

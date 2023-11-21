@@ -4,19 +4,19 @@ import { useEffect } from 'react'
  * Custom Hook: useRetryRuleAssessment
  * 
  * Description:
- * This custom hook reassesses violations (when the user retries), dependent on currentRetryRule and appStatus.
- * It functions similarly to useStandardRuleAssessment custom hook, with the difference being
- * that it is just looking for a change in the rule's response status and updating the ruleList to reflect the change. 
+ * Reassesses violations (when the user retries), dependent on currentRetryRule and appStatus
+ * Functions similarly to the useStandardRuleAssessment custom hook, with the difference being
+ * that it is looking for a change in the rule's response status and updating the ruleList to reflect the change
  * 
  * Parameters:
- * @param {object} currentRetryRule - The violation being reevaluated.
- * @param {function} setRetryRules - Asynchronous function to set the retryRules state.
- * @param {string} appStatus - idle, running, completed, error, or paused.
- * @param {number} tryDelay - Delay time (in milliseconds) between tries when evaluation rules.
- * @param {number} tries - Number of fetch attempts for the current rule.
- * @param {function} setTries - The function to set the tries state in the parent component.
+ * @param {object} currentRetryRule - the violation being reevaluated
+ * @param {function} setRetryRules - set the retryRules state
+ * @param {string} appStatus - idle, running, completed, error, or paused
+ * @param {number} tryDelay - delay time (in milliseconds) between tries when evaluation rules
+ * @param {number} tries - mumber of fetch attempts for the current rule
+ * @param {function} setTries - set the tries state in the parent component
  * @param {string} baseUrl - the apache server url
- * @param {function} setProgressPercentage - Asynchronous function to set the progressPercentage state.
+ * @param {function} setProgressPercentage - set the progressPercentage state
  */
 const useRetryRuleAssessment = (currentRetryRule, setRetryRules, appStatus, tryDelay, tries, setTries, baseUrl, setProgressPercentage) => {
   useEffect(() => {

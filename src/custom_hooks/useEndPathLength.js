@@ -5,15 +5,15 @@ import { isFinalRule, isComplianceCheck} from '../helpers/helpers'
  * Custom Hook: useEndPathLength
  * 
  * Description:
- * This custom hook sets the endPathLength state if there is a final, singular path available from the current rule to an end rule.
+ * Sets the endPathLength state if there is a final, singular path available from the current rule to an end rule
  * 
  * Parameters:
- * @param {array} ruleList - Array, evaluated instructions in sequence.
- * @param {object} rules - The object containing rules configuration data fetched from the server.
- * @param {string} appStatus - idle, running, completed, error, or paused.
+ * @param {array} ruleList - evaluated instructions in sequence
+ * @param {object} rules - contains rules configuration data fetched from the server
+ * @param {string} appStatus - idle, running, completed, error, or paused
  * 
  * Return Values:
- * The hook returns the endPathLength number to a final rule if possible.
+ * Returns the endPathLength number to a final rule if possible.
  */
 const useEndPathLength = (ruleList, rules, appStatus) => {
   const [endPathLength, setEndPathLength] = useState(null)

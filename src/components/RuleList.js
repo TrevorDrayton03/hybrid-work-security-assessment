@@ -2,30 +2,30 @@ import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
 import { RiFileCopy2Line } from "react-icons/ri"
 import React, { useState, useCallback } from "react"
-import { isViolation, isAnError, isAWarning, failedCount, passedCount, warningsCount, errorsCount } from '../helpers/helpers'
+import { isViolation, isAnError, isAWarning, getFailedCount, getPassedCount, getWarningCount, getErrorsCount } from '../helpers/helpers'
 
 
 /**
  * The panel component. Also displays the footer below the panels
  * 
- * @param {object} ruleList - Array, evaluated instructions in sequence.
- * @param {string} appStatus - idle, running, completed, error, or paused.
- * @param {string} uuid - The unique identifier of the assessment.
- * @param {function} copy - The copy UUID function.
+ * @param {object} ruleList - evaluated instructions in sequence
+ * @param {string} appStatus - idle, running, completed, error, or paused
+ * @param {string} uuid - unique identifier of the assessment
+ * @param {function} copy - copy UUID function
  */
 const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
     const [isCopied, setIsCopied] = useState(false)
 
-    let failed = failedCount(ruleList)
-    let passed = passedCount(ruleList)
-    let warnings = warningsCount(ruleList)
-    let errors = errorsCount(ruleList)
+    let failed = getFailedCount(ruleList)
+    let passed = getPassedCount(ruleList)
+    let warnings = getWarningCount(ruleList)
+    let errors = getErrorsCount(ruleList)
     let total = passed + errors // warnings are not counted in the total
 
 
     /**
-     * Calls the copy UUID function and sets the isCopied state to true.
-     * Used to give the user a response to let them know when the UUID has been copied.
+     * Calls the copy UUID function and sets the isCopied state to true
+     * Used to give the user a response to let them know when the UUID has been copied
      */
     const handleClick = useCallback(() => {
       copy()
@@ -37,9 +37,9 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
 
 
     /**
-     * A subcomponent that displays the UUID and copy UUID button.
+     * A subcomponent that displays the UUID and copy UUID button
      * 
-     * @returns {object} - The CopyUUID component [JSX object]. 
+     * @returns {object} - The CopyUUID component
      */
     const CopyUUID = () => {
         return (
@@ -58,13 +58,13 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
 
 
     /**
-     * A subcomponent that displays the rule list.
+     * A subcomponent that displays the rule list
      * 
-     * @param {object} rule - The rule object.
-     * @param {string} variant - The alert variant [primary, warning, danger].
-     * @param {string} body - The body text of the alert.
-     * @param {boolean} success - A boolean that is used to trigger the success panel.
-     * @returns {object} - A panel component.
+     * @param {object} rule - rule object
+     * @param {string} variant - alert variant [primary, warning, danger]
+     * @param {string} body - body text of the alert
+     * @param {boolean} success - boolean that is used to trigger the success panel
+     * @returns {object} - panel component
      */
     const Panel = ({ rule, variant, body, success }) => {
         const csvValues = body.includes(':')
@@ -97,31 +97,6 @@ const RuleList = ({ ruleList, appStatus, uuid, copy }) => {
           </Alert>
         );
       };      
-
-
-    /**
-     * Meant to utilize the endPathLength and/or show a more overall summary that includes total passed rules out of endlengthpath rules.
-     * Not finished or used.
-     * 
-     * @returns {object} - The Summary component. 
-     */
-    const Summary = () => {
-        return (
-            <div style ={{padding:0, margin:0}}>
-                <p style={{marginBottom: 0}}>
-                    Security Check Summary:<br/>
-                    <ul>
-                        <li>
-                            Passed: {passed}
-                        </li>
-                        <li>
-                            Failed: {errors}
-                        </li>
-                    </ul>
-                </p>
-            </div>
-        )
-    }
 
 
     return (

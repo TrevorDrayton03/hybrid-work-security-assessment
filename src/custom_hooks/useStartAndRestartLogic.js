@@ -5,34 +5,34 @@ import { isPassRule, isFailRule, isFinalRule } from '../helpers/helpers'
  * Custom Hook: useStartAndRestartLogic
  * 
  * Description:
- * This custom hook provides the functions for starting and restarting assessments and instruction evalution.
+ * Provides the functions for starting and restarting assessments and instruction evalution
  * The hook encapsulates the application status, response status, progress percentage, rule list, tries count,
- * action type, and handles various user actions for rule assessment.
- * It also handles the logic to change the current rule, update the rule list, and determine the end result of the assessment.
+ * action type, and handles various user actions for rule assessment
+ * It also handles the logic to change the current rule, update the rule list, and determine the end result of the assessment
  * 
  * Parameters:
- * @param {string} firstRule - The key property value of the first rule to start the assessment.
- * @param {object} rules - The object containing rules configuration data fetched from the server.
- * @param {object} currentRule - The current rule being processed from the fetched rules data.
- * @param {function} setCurrentRule - The function to set the currentRule state.
+ * @param {string} firstRule - The key property value of the first rule to start the assessment
+ * @param {object} rules - The object containing rules configuration data fetched from the server
+ * @param {object} currentRule - The current rule being processed from the fetched rules data
+ * @param {function} setCurrentRule - The function to set the currentRule state
  * 
  * Return Values:
- * The hook returns an object containing various state variables and functions related to rule assessment and processing.
- * - action: The action type [start, restart, retry, continue] indicating user events.
- * - appStatus: The current status of the application [idle, running, completed, error, paused].
- * - progressPercentage: The progress percentage for the current rule processing.
- * - ruleList: An array of rules that have been assessed and logged in the database as 'sequence.'
- * - tries: The number of fetch attempts for the current rule.
- * - responseStatus: The HTTP response status code for the current rule.
- * - handleStart: A function to handle the start and restart button onClick events.
- * - handleRuleChange: A function to change the current rule and update the rule list with the results of rule assessment.
- * - handleEndResultAndAppStatus: A function to evaluate the rule list and determine the end result and change the app status to completed.
- * - setAction: A function to set the action state.
- * - setAppStatus: A function to set the appStatus state.
- * - setProgressPercentage: A function to set the progressPercentage state.
- * - setRuleList: A function to set the ruleList state.
- * - setTries: A function to set the tries state.
- * - setResponseStatus: A function to set the responseStatus state.
+ * Returns an object containing various state variables and functions related to rule assessment and processing
+ * - action: action type [start, restart, retry, continue] indicating user events
+ * - appStatus: current status of the application [idle, running, completed, error, paused]
+ * - progressPercentage: progress percentage for the current rule processing
+ * - ruleList: rules that have been assessed and logged in the database as 'sequence'
+ * - tries: number of fetch attempts for the current rule
+ * - responseStatus: HTTP response status code for the current rule
+ * - handleStart: handle the start and restart button onClick events
+ * - handleRuleChange: change the current rule and update the rule list with the results of rule assessment
+ * - handleEndResultAndAppStatus: evaluate the rule list and determine the end result and change the app status to completed
+ * - setAction: set the action state
+ * - setAppStatus: set the appStatus state
+ * - setProgressPercentage: set the progressPercentage state
+ * - setRuleList: set the ruleList state
+ * - setTries: set the tries state
+ * - setResponseStatus: set the responseStatus state
  */
 const useStartAndRestartLogic = (firstRule, rules, currentRule, setCurrentRule, uuid) => {
   const [appStatus, setAppStatus] = useState('idle')
@@ -43,12 +43,12 @@ const useStartAndRestartLogic = (firstRule, rules, currentRule, setCurrentRule, 
   const [action, setAction] = useState(null)
 
   /**
-   * Handles the start and restart button onClick events.
+   * Handles the start and restart button onClick events
    *
-   * This function sets the application status to 'running' and resets the app state if it is not already running.
-   * It also receives the action from the button that was clicked for logging purposes.
+   * Sets the application status to 'running' and resets the app state if it is not already running
+   * Receives the action from the button that was clicked for logging purposes
    * 
-   * @param {string} action - The action type [start, restart, retry, continue] indicating user events.
+   * @param {string} action - action type [start, restart, retry, continue] indicating user events
    */
   const handleStart = useCallback((action) => {
     setAction(action)
@@ -63,7 +63,7 @@ const useStartAndRestartLogic = (firstRule, rules, currentRule, setCurrentRule, 
 
   /**
    * Encapsulates the logic required to change the current rule to either the pass rule, fail rule, or end (terminate),
-   * and update the rule list with the results.
+   * and update the rule list with the results
    */  
   const handleRuleChange = useCallback(async () => {
     await new Promise((resolve) => setTimeout(resolve, 500))
@@ -87,7 +87,7 @@ const useStartAndRestartLogic = (firstRule, rules, currentRule, setCurrentRule, 
   },[currentRule, responseStatus, ruleList])
 
   /**
-   * Used to set the state of the app for the next rule.
+   * Set the state of the app for the next rule
    * 
    * @param {string} nextRule - key value of the next rule
    */
@@ -99,9 +99,9 @@ const useStartAndRestartLogic = (firstRule, rules, currentRule, setCurrentRule, 
   },[rules])
 
   /**
-   * Evaluates the rule list to determine the end result and change the app state to completed.
+   * Evaluates the rule list to determine the end result and change the app state to completed
    * 
-   * Used in both the standard process and the retry process.
+   * Used in both the standard process and the retry process
    * 
    * @param {array} rList - the list of rules that have been evaluated
    * @returns {string} - the end result of the assessment
@@ -122,7 +122,7 @@ const useStartAndRestartLogic = (firstRule, rules, currentRule, setCurrentRule, 
   },[])
 
   /**
-   * Determines final state then performs the post request to log the assessment.
+   * Determines final state then performs the post request to log the assessment
    * 
    * @param {object} currentRule - the current rule being evaluated
    * @param {array} ruleList - the list of rules that have been evaluated

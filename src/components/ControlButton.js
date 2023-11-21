@@ -5,12 +5,12 @@ import { hasUnsuccessfulRules, hasErrorAndWarning } from '../helpers/helpers'
 
 
 /**
- * Displays the start, restart, retry, and continue buttons based.
- * @param {string} appStatus - idle, running, completed, error, or paused.
- * @param {function} start - Function to handle the start and restart button onClick events.
- * @param {function} retry - Function to handle the user clicking on the retry button.
- * @param {function} continu - Function to handle continueing a standard assessment at the last violation's passRule.
- * @param {object} ruleList - Array, evaluated instructions in sequence.
+ * Displays the start, restart, retry, and continue buttons based
+ * @param {string} appStatus - idle, running, completed, error, or paused
+ * @param {function} start - handle the start and restart button onClick events
+ * @param {function} retry - handle the user clicking on the retry button
+ * @param {function} continu - handle continuing a standard assessment at the last violation's passRule
+ * @param {object} ruleList - evaluated instructions in sequence
  */
 const ControlButton = ({ appStatus, start, retry, continu, ruleList }) => {
     let buttonContent

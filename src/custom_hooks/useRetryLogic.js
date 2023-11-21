@@ -5,39 +5,39 @@ import { isFinalRule, isRetryRuleEnd, isViolation, isAWarning, isAnError } from 
  * Custom Hook: useRetryLogic
  * 
  * Description:
- * This custom hook provides the functions for reassessing violations.
+ * Provides the functions for reassessing violations
  * 
  * Parameters:
- * @param {function} handleEndResultAndAppStatus - Function to evaluate the rule list, determine the end result, set the action state, and change the app status to completed.
- * @param {function} setAppStatus - Asynchronous function to set the appStatus state.
- * @param {function} setProgressPercentage - Asynchronous function to set the progressPercentage state.
- * @param {function} setTries - Asynchronous function to set the tries state.
- * @param {array} ruleList - Array, evaluated instructions in sequence.
- * @param {function} setRuleList - Asynchronous function to set the ruleList state.
- * @param {string} action - start, restart, retry, or continue.
- * @param {function} setAction - Asynchronous function to set the action state.
- * @param {object} rules - The object containing rules configuration data fetched from the server.
- * @param {function} setCurrentRule - The function to set the currentRule state.
+ * @param {function} handleEndResultAndAppStatus - evaluate the rule list, determine the end result, set the action state, and change the app status to completed
+ * @param {function} setAppStatus - set the appStatus state
+ * @param {function} setProgressPercentage - set the progressPercentage state
+ * @param {function} setTries - set the tries state
+ * @param {array} ruleList - evaluated instructions in sequence
+ * @param {function} setRuleList - set the ruleList state
+ * @param {string} action - start, restart, retry, or continue
+ * @param {function} setAction - set the action state
+ * @param {object} rules - rules configuration data fetched from the server
+ * @param {function} setCurrentRule - sets the currentRule state
  * 
  * Return Values:
- * The hook returns an object containing state variables and functions related to retry logic.
- * - currentRetryRule: Current violation.
- * - handleRetry: Function to handle the user clicking on the retry button.
- * - handleRetryRuleChange: Function to handle changing to the next violation.
- * - setRetryRules: Asynchronous function to set the retryRules state.
+ * Returns an object containing state variables and functions related to retry logic
+ * - currentRetryRule: current violation
+ * - handleRetry: handle the user clicking on the retry button
+ * - handleRetryRuleChange: handle changing to the next violation
+ * - setRetryRules: set the retryRules state
  */
 const useRetryLogic = (handleEndResultAndAppStatus, setAppStatus, setProgressPercentage, setTries, ruleList, setRuleList, uuid, action, setAction, rules, setCurrentRule) => {
   /**
    * State Variables
    * 
-   * retryRules is an array of the violations of the assessment.
-   * currentRetryRule is the violation being reevaluated.
+   * retryRules is an array of the violations of the assessment
+   * currentRetryRule is the violation being reevaluated
    */
   const [retryRules, setRetryRules] = useState(null)
   const [currentRetryRule, setCurrentRetryRule] = useState(null)
 
   /**
-   * Function to handle the user clicking on the retry button.
+   * Handle the user clicking on the retry button
    * 
    * @param {string} type - violations type (warning, error, or all (null))
    */
@@ -72,8 +72,8 @@ const useRetryLogic = (handleEndResultAndAppStatus, setAppStatus, setProgressPer
   },[ruleList])
 
   /**
-   * Function to handle changing to the next violation.
-   * Sends a final POST request to the server with the updated rule list and the end result.
+   * Handles changing to the next violation
+   * Sends a final POST request to the server with the updated rule list and the end result
    */
   const handleRetryRuleChange = useCallback(async () => {
     await new Promise((resolve) => setTimeout(resolve, 500))

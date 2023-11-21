@@ -2,7 +2,9 @@
 
 It is with TRU's (Thompson Rivers University's) permission that I make this public on GitHub.
 
-The Hybrid Work Security Assessment (HWSA) checks if individual devices (clients) meet TRU's security standards. Passing the HWSA is a mandatory requirement for joining the Hybrid Work Program. HIPS rules are reviewed separately, regularly, and asynchronously. The HWSA is specifically designed as a flexible tool to interact with this process, allowing it to be easily reconfigured when the process undergoes changes.
+The Hybrid Work Security Assessment (HWSA) checks if individual devices (clients) meet TRU's security standards. Passing the HWSA is a mandatory requirement for joining the Hybrid Work Program. 
+
+HIPS rules are checked regularly and asynchronously from a separate process. The HWSA is specifically designed to interact flexibly with this process, allowing it to be easily reconfigured when the process undergoes changes.
  
 ## Documentation
 - [User Stories.docx](https://github.com/TrevorDrayton03/hybrid-work-security-assessment/files/12443731/User.Stories.docx)

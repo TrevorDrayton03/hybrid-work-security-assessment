@@ -1,47 +1,3 @@
-/**
- * Hybrid Work Security Assessment
- *
- * This application assesses compliance of TRU staff's personal devices with TRU's HIPS (Host-Based Intrustion Prevention System) to allow staff to connect remotely 
- * to TRU's network for the Hybrid Work Program. It accomplishes this task by making network requests to an apache server, which interfaces
- * with a HIPS server, for each HIPS rule.
- * The HIPS rules assess the user's device and return a response status based on the result of the assessment. 
- * 
- *
- * Features:
- * - Gets instructions from a rules_config.json file and stores it in the application state for rule evaluation.
- * - Logs each assessment result to a database.
- * - A device-friendly, responsive design.
- * - Ensures cross-browser compatibility.
- * - Learnable and easy to use (UX).
- * - Complies with ES6 standards for code readability, maintainability, and modern features.
- * - Robust error handling.
- * - The code is well documented, modular, cohesive, testable, and reusable. 
- * 
- * Libraries/Dependencies:
- * Node.js: JavaScript runtime environment.
- * React: JavaScript library for building user interfaces.
- * Bootstrap & React-Bootstrap: Popular CSS framework for responsive and mobile-first web development.
- * MariaDB: Database management system for storing the data of the security check assessments.
- * Express: Web application framework for building server side applications in Node.js.
- * react-scripts: Configuration and scripts for running a React application in development and production environments.
- * uuid: Library for generating unique identifiers (UUIDs) for each user.
- * whatwg-fetch: Polyfill that provides a global fetch function for making web requests in browsers that do not support the native Fetch API.
- * react-icons: Library of icons for React applications, used for the copy UUID button.
- * 
- * Web Vital Statistics (on my virtual machine in my development environment):
- * FCP (First Contentful Paint): 800ms to 1200ms
- * TTFB (Time to First Byte): 100ms to 300ms
- * FID (First Input Delay): 10ms to 100ms
- * 
- * Author: Trevor Drayton
- * Version: 1.1.1
- * Last Updated: Aug 25, 2023
- * 
- * Thompson Rivers University, Co-op
- * Department: Information Technology Services Information Security
- * Contact: trevorpdrayton@gmail.com or linkedin.com/in/trevor-drayton/
- */
-
 import logo from '../logo.png'
 import React, { useEffect, useCallback } from "react"
 import '../App.css'
@@ -57,6 +13,11 @@ import useStandardRuleAssessment from '../custom_hooks/useStandardRuleAssessment
 import useRetryRuleAssessment from '../custom_hooks/useRetryRuleAssessment.js'
 import useEndPathLength from '../custom_hooks/useEndPathLength.js'
 
+/**
+ * App Component
+ * 
+ * The main application component responsible for orchestrating the application
+ */
 const App = () => {
   /**
    * Constants
@@ -69,42 +30,46 @@ const App = () => {
   const delay = "tryDelay"
   const baseUrl = process.env.REACT_APP_HIPS_BASE_URL
 
-  // Custom Hook: useFetchRulesConfig -- manages initial page loading and states.
+  //////////////////////////////////////////////////////////////////////
+  /////////////////////////// CUSTOM HOOKS /////////////////////////////
+  //////////////////////////////////////////////////////////////////////
+
+  // Manages initial page load
   const {
-    isLoading,                     // Boolean indicating if the rules configuration data is being fetched.
-    rules,                         // Object, the contents of the config file.
-    currentRule,                   // Current rule, initially set to the first rule.
-    setCurrentRule,                // Asynchronous function to set the currentRule state.
-    tryDelay,                      // Delay time (in milliseconds) between tries when evaluation rules.
-    uuid                           // Permanent cookie, unique user reference number.
+    isLoading,                     // Boolean indicating if the rules configuration data is being fetched
+    rules,                         // Object, the contents of the config file
+    currentRule,                   // Current rule, initially set to the first rule
+    setCurrentRule,                // Asynchronous function to set the currentRule state
+    tryDelay,                      // Delay time (in milliseconds) between tries when evaluation rules
+    uuid                           // Permanent cookie, unique user reference number
   } = useFetchRulesConfig(firstRule, delay)
 
-  // Custom Hook: useStartAndRestartLogic -- provides the functions for starting and restarting assessments and instruction evalution.
+  // Provides the functions for starting and restarting assessments and instruction evalution
   const {
-    action,                        // start, restart, retry, or continue.
-    appStatus,                     // idle, running, completed, error, or paused.
-    progressPercentage,            // Number between 0 to 100, for the progress bar.
-    ruleList,                      // Array, evaluated instructions in sequence.
-    tries,                         // Number of fetch attempts for the current rule.
-    responseStatus,                // HTTP response status code for the current rule.
-    handleStart,                   // Function to handle the start and restart button onClick events.
-    handleRuleChange,              // Function to change the current rule and update the ruleList to include the evaluation of the current rule.
-    handleEndResultAndAppStatus,   // Function to evaluate the rule list, determine the end result, set the action state, and change the app status to completed.
-    setAction,                     // Asynchronous function to set the action state.
-    setAppStatus,                  // Asynchronous function to set the appStatus state.
-    setProgressPercentage,         // Asynchronous function to set the progressPercentage state.
-    setRuleList,                   // Asynchronous function to set the ruleList state.
-    setTries,                      // Asynchronous function to set the tries state.
-    setResponseStatus,             // Asynchronous function to set the responseStatus state.
+    action,                        // start, restart, retry, or continue
+    appStatus,                     // idle, running, completed, error, or paused
+    progressPercentage,            // Number between 0 to 100
+    ruleList,                      // Array, evaluated instructions in sequence
+    tries,                         // Number of fetch attempts for the current rule
+    responseStatus,                // HTTP response status code for the current rule
+    handleStart,                   // Function to handle the start and restart button onClick events
+    handleRuleChange,              // Function to change the current rule and update the ruleList to include the evaluation of the current rule
+    handleEndResultAndAppStatus,   // Function to evaluate the rule list, determine the end result, set the action state, and change the app status to completed
+    setAction,                     // Asynchronous function to set the action state
+    setAppStatus,                  // Asynchronous function to set the appStatus state
+    setProgressPercentage,         // Asynchronous function to set the progressPercentage state
+    setRuleList,                   // Asynchronous function to set the ruleList state
+    setTries,                      // Asynchronous function to set the tries state
+    setResponseStatus,             // Asynchronous function to set the responseStatus state
   } = useStartAndRestartLogic(firstRule, rules, currentRule, setCurrentRule, uuid)
 
 
-  // Custom Hook: useRetryLogic -- provides the functions for reassessing violations.
+  // Provides the functions for reassessing violations
   const {
-    currentRetryRule,              // The violation being reevaluated.
-    handleRetry,                   // Function to handle the user clicking on the retry button.
-    handleRetryRuleChange,         // Function to handle changing to the next violation.
-    setRetryRules,                 // Asynchronous function to set the retryRules state.
+    currentRetryRule,              // The violation being reevaluated
+    handleRetry,                   // Function to handle the user clicking on the retry button
+    handleRetryRuleChange,         // Function to handle changing to the next violation
+    setRetryRules,                 // Asynchronous function to set the retryRules state
   } = useRetryLogic(
     handleEndResultAndAppStatus,
     setAppStatus,
@@ -120,11 +85,11 @@ const App = () => {
   )
 
 
-  // Custom Hook: useEndPathLength -- calculate the length of the end path based on processed rule list.
+  // Calculates the length of the end path based on processed rule list
   const endPathLength = useEndPathLength(ruleList, rules, appStatus)
 
 
-  // Custom Hook: useStandardRuleAssessment -- the standard assessment process (when the user starts, restarts, or continues) dependent on currentRule and appStatus.
+  // Standard assessment process (when the user starts, restarts, or continues) dependent on currentRule and appStatus
   useStandardRuleAssessment(
     currentRule,
     appStatus,
@@ -137,7 +102,7 @@ const App = () => {
   )
 
 
-  // Custom Hook: useRetryRuleAssessment -- reassesses violations (when the user retries), dependent on currentRetryRule and appStatus.
+  // Reassesses violations (when the user retries), dependent on currentRetryRule and appStatus
   useRetryRuleAssessment(
     currentRetryRule,
     setRetryRules,
@@ -149,9 +114,12 @@ const App = () => {
     setProgressPercentage
   )
 
-
+  //////////////////////////////////////////////////////////////////////
+  ///////////////////////////// FUNCTIONS //////////////////////////////
+  //////////////////////////////////////////////////////////////////////
+  
   /**
-   * Continues a standard assessment at the last violation's passRule, when the user presses the continue button.
+   * Continues a standard assessment at the last violation's passRule, when the user presses the continue button
    */
   const handleContinue = useCallback(() => {
     setAction('continue')
@@ -163,7 +131,7 @@ const App = () => {
   
 
   /**
-   * Handle copy UUID onClick event.
+   * Handle copy UUID onClick event
    */
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(uuid)
@@ -172,9 +140,12 @@ const App = () => {
       })
   },[uuid])
 
+  //////////////////////////////////////////////////////////////////////
+  /////////////////////////////// HOOKS ////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
 
   /**
-   * This hook calculates a normalized progress percentage for the ProgressIndicator.
+   * Calculates a normalized progress percentage for the ProgressIndicator component
    */
   useEffect(() => {
     if (currentRule) {
@@ -184,7 +155,7 @@ const App = () => {
 
 
   /**
-   * This hook calls rule change functions, hooked into the progress percentage.
+   * Calls rule change functions, hooked into the progress percentage
    */
   useEffect(() => {
     if (progressPercentage >= 100 && appStatus === "running") {
@@ -195,6 +166,9 @@ const App = () => {
     }
   }, [progressPercentage])
 
+  //////////////////////////////////////////////////////////////////////
+  /////////////////////////////// COMPONENTS ///////////////////////////
+  //////////////////////////////////////////////////////////////////////
 
   return (
     <div className="App-container">
@@ -236,7 +210,7 @@ const App = () => {
               endPathLength={endPathLength}
             />
             <RuleList
-              ruleList={ruleList}y
+              ruleList={ruleList}
               appStatus={appStatus}
               uuid={uuid}
               copy={handleCopy}
