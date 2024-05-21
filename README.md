@@ -19,21 +19,14 @@ The Hybrid Work Security Assessment (HWSA) checks if individual devices (clients
 - Well documented, modular, cohesive, and testable. 
 
 ## Libraries/Dependencies
-- Node.js: JavaScript runtime environment.
-- React: JavaScript library for building user interfaces.
-- Bootstrap & React-Bootstrap: Popular CSS framework for responsive and mobile-first web development.
-- MariaDB: Database management system for storing the data of the security check assessments.
-- Express: Web application framework for building server side applications in Node.js.
-- react-scripts: Configuration and scripts for running a React application in development and production environments.
-- uuid: Library for generating unique identifiers (UUIDs) for each user.
-- whatwg-fetch: Polyfill that provides a global fetch function for making web requests in browsers that do not support the native Fetch API.
-- react-icons: Library of icons for React applications, used for the copy UUID button.
- 
-## Web Vital Statistics
-- FCP (First Contentful Paint): 800ms to 1200ms
-- TTFB (Time to First Byte): 100ms to 300ms
-- FID (First Input Delay): 10ms to 100ms
-
-
+- Node.js
+- React
+- Bootstrap
+- MariaDB
+- Express
+- react-scripts
+- uuid
+- whatwg-fetch
+- react-icons
 
 Thompson Rivers University, Co-op
