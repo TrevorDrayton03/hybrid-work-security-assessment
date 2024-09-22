@@ -4,7 +4,7 @@ Thompson Rivers University (TRU), Co-op
 
 It is with TRU's permission that I make this public on GitHub.
 
-The Hybrid Work Security Assessment (HWSA) is an integral component of a Host-Based Intrusion Prevention System (HIPS). It conducts a host-based preliminary cybersecurity check by diagnosing a host's compliance with HIPS rules on demand. A firewall routinely evaluates host compliance with HIPS rules, and the HWSA web app pings the firewall to retrieve this compliance information. This process actively guides hosts on the necessary actions to become compliant and allows them to re-assess themselves to confirm they have met the compliance requirements. If users need help from I.T., a unique ID is provided which I.T. can query to get all of the assessment information.
+The Hybrid Work Security Assessment (HWSA) is an integral component of a Host-Based Intrusion Prevention System (HIPS). It conducts a host-based preliminary cybersecurity check by assessing a host's compliance with HIPS rules on-demand. A firewall routinely evaluates host compliance with HIPS rules, and the HWSA web app pings the firewall to retrieve this compliance information. This process actively guides hosts on the necessary actions to become compliant and allows them to re-assess themselves to confirm they have met the compliance requirements. If users need help from I.T., a unique ID is provided which I.T. can query to get all of the assessment information.
 
 The benefit of the HWSA is that TRU employees can use their personal devices for remote work and keep TRU's network safe by conforming to TRU's network security standards.
 
